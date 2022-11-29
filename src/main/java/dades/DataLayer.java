@@ -1,13 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dades;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
 
 /**
  *
  * @author pablomorante
  */
-public class DataLayer {
+public abstract class DataLayer {
+    
+    Connection con;
+    
+    public DataLayer() throws SQLException {
+        this.con = connectarBD("m03uf6_22_23","root","123456");
+    }
+    
+    public Connection connectarBD (String db, String user, String password) throws SQLException {
+        Connection ret = null;
+        ret = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?useUnicode=true&"
+                            + "useJDBCCompliantTimezoneShift=true&"
+                            + "useLegacyDatetimeCode=false&serverTimezone=UTC", user, password);
+        return ret;
+    }
+    
+    public Connection getCon() {
+        return con;
+    }
+    
+    public void setCon(Connection _con) {
+        con = _con;
+    }
+    
+    public void Close() throws SQLException {
+        if (con != null) {
+            this.con.close();
+        }
+    }
     
 }

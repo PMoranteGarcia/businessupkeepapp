@@ -13,11 +13,15 @@ import java.io.IOException;
 public class App extends Application {
     private static Scene scene;
     
+    public static void main(String[] args) {
+        App.starter(args);
+    }
+    
     @Override
     public void start(Stage primaryStage) throws IOException {
         try {
-            String fxml = "view/mainScreen";
-            
+            String fxml = "presentacio/primary";
+           
             FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getClassLoader().getResource(fxml + ".fxml"));
             
             Parent p = fxmlLoader.load();

@@ -6,8 +6,9 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <mainClass>presentacio.App</mainClass>
     </properties>
     <dependencies>
         <dependency>
@@ -36,7 +37,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>com.mycompany.m03uf6prac1.App</mainClass>
+                    <mainClass>presentacio.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>

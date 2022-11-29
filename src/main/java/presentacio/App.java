@@ -8,8 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- *
- * @author pablomorante
+ * @author GrupD
  */
 public class App extends Application {
     private static Scene scene;

@@ -1,8 +1,7 @@
 package presentacio;
 
 /**
- *
- * @author pablomorante
+ * @author GrupD
  */
 public class Main {
     public static void main(String[] args) {

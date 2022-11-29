@@ -7,4 +7,6 @@ package entitats;
  */
 public class Manager {
     
+    
+    
 }

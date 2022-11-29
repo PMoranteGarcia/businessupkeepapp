@@ -5,8 +5,9 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 
 /**
- *
- * @author pablomorante
+ * Connexió a BBDD
+ * 
+ * @author GrupD
  */
 public abstract class DataLayer {
     

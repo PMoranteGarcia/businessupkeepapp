@@ -1,0 +1,38 @@
+/* 
+    Created on : 30 nov 2022, 19:20:27
+    Author     : Txell Llanas
+*/
+
+/** ESTILS GENÈRICS **/
+.hideCursor {-fx-cursor:none!important;}
+.btn_primary, .btn_cancel {-fx-text-fill:#fff; -fx-border-width:0; -fx-padding:5 10px;}
+.btn_primary {-fx-background-color: #007bff;}
+.btn_primary:hover {-fx-background-color: #0062cc;}
+.btn_cancel {-fx-background-color: #dc3545;}
+.btn_cancel:hover {-fx-background-color: #b71928;}
+.btn_back, .btn_back:hover  {-fx-background-radius:50%;
+                             -fx-background-color: #aaa; 
+                             -fx-background-repeat: no-repeat;
+                             -fx-background-position: center;
+                             -fx-background-size: 15px;
+                             -fx-padding: 10px;
+                             -fx-pref-width: 40px; 
+                             -fx-pref-height: 40px;
+                             -fx-border-width:0;}
+.btn_back {-fx-background-image:url("../imatges/icon-arrow-dark.png");}
+.btn_back:hover {-fx-background-image:url("../imatges/icon-arrow-light.png");}
+
+/** BOTONS **/
+Button, Button:hover, .btn_back:hover {-fx-padding:0 10px; -fx-cursor:hand;}
+Button {-fx-background-color:#eee; -fx-border-color:#aaa; -fx-border-width:1px; -fx-text-fill:#000; -fx-font-size:16px;}
+Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-text-fill:#fff; -fx-border-width:0;}
+
+/** NAVEGACIÓ **/
+#nav Button {-fx-font-size:20px; -fx-padding:10 20px; -fx-font-weight: bold; -fx-background-color:#aaa; -fx-border-width:0;}
+#nav Button:hover, .active {-fx-background-color: #666!important; -fx-text-fill:#fff!important; -fx-border-width:0;}
+
+/** TEXTES **/
+#title, #subtotal-txt, #moneda-txt, #total {-fx-font-size: 30px; -fx-font-weight: bold;}
+
+
+

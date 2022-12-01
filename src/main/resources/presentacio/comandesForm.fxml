@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ComandesFormController">
+     <children>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Button id="btn_back" fx:id="btnBack" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToOrdersList" styleClass="btn_back" stylesheets="@../css/styles.css" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <Label id="title" text="Detall Comanda #" />
+            <Label id="title" fx:id="orderNumber" text="001" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Button id="btn_save" fx:id="btnSave" mnemonicParsing="false" onAction="#saveOrder" styleClass="btn_primary" text="Desar">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button id="btn_cancel" fx:id="btnCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancelOrder" styleClass="btn_cancel" text="Descartar" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <VBox prefWidth="250.0">
+               <children>
+                  <Label text="Client" />
+                  <ComboBox prefWidth="250.0" />
+               </children>
+            </VBox>
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
+            <VBox>
+               <children>
+                  <Label text="Data d'entrega" />
+                  <DatePicker id="datePicker" fx:id="datePickerTo1" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+               </children>
+            </VBox>
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
+            <VBox prefWidth="120.0">
+               <children>
+                  <Label text="Hora d'entrega" />
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <TextField fx:id="fieldMinutes" minWidth="-Infinity" prefWidth="40.0" />
+                        <Label text=":">
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="fieldHour1" minWidth="-Infinity" prefWidth="40.0" />
+                        <Label text="h">
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+      </HBox>
+      <HBox alignment="BOTTOM_LEFT" VBox.vgrow="NEVER">
+         <children>
+            <VBox fx:id="selectorProduct" prefWidth="250.0">
+               <children>
+                  <Label text="Producte" />
+                  <ComboBox prefWidth="250.0" />
+               </children>
+            </VBox>
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
+            <Button id="searchBtn" fx:id="btnaddProduct" mnemonicParsing="false" onAction="#addProduct" text="Afegir" />
+         </children>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+      </HBox>
+      <TableView id="llistat" fx:id="orderLinesList" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn id="productCode" fx:id="columnProductCode" editable="false" maxWidth="200.0" minWidth="75.0" prefWidth="75.0" text="Codi" />
+          <TableColumn id="productName" fx:id="columnProductName" editable="false" minWidth="200.0" prefWidth="200.0" text="Producte" />
+            <TableColumn id="quantityOrdered" fx:id="columnQuantityOrdered" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Quantitat" />
+            <TableColumn id="priceEach" fx:id="columnPriceEach" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Preu Unitat" />
+            <TableColumn id="amount" fx:id="columnAmount" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Preu Total" />
+            <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="100.0" minWidth="50.0" prefWidth="50.0" />
+        </columns>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <HBox id="subtotalRow" alignment="CENTER_RIGHT">
+         <children>
+            <Label id="subtotal-txt" text="Subtotal" />
+            <Label id="total" fx:id="totalAmount" alignment="CENTER_RIGHT" maxWidth="500.0" minWidth="150.0" prefWidth="150.0" text="2000,00" textAlignment="RIGHT">
+               <padding>
+                  <Insets right="20.0" />
+               </padding></Label>
+            <Label id="moneda-txt" text="€" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="50.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

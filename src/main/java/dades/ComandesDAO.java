@@ -1,9 +1,10 @@
 package dades;
 
 /**
- * CRUD de Comandes a la BBDD
+ * CRUD de Comandes a la BBDD.
  * 
- * @author GrupD
+ * @author Pablo Morante - Creació/Implementació
+ * @author Victor García - Creació/Implementació
  */
 public class ComandesDAO {
     

@@ -8,7 +8,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * @author GrupD
+ * Classe que defineix l'objecte Aplicació.
+ * Permet configurar la finestra de l'aplicació i què i com ho mostrarà.
+ * 
+ * @author Pablo Morante - Creació/Implementació
+ * @author Victor García - Creació/Implementació
+ * @author Txell Llanas  - Creació/Implementació
  */
 public class App extends Application {
     private static Scene scene;
@@ -20,18 +25,19 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         try {
-            String fxml = "presentacio/primary";
-           
-            FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getClassLoader().getResource(fxml + ".fxml"));
-            
-            Parent p = fxmlLoader.load();
+
+            // Carregar vista principal "COMANDES (Llistat)"
+            Parent p = FXMLLoader.load(this.getClass().getClassLoader().getResource("presentacio/comandes.fxml"));
             
             scene = new Scene(p);
-            // falta carregar full css
             
+            // Fulla d'estils CSS
+            scene.getStylesheets().add("/css/styles.css");
+            
+            // Propietats de la finestra
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Mantenimient empresa");
-            primaryStage.setMinWidth(700);
+            primaryStage.setTitle("Manteniment empresa");
+            primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(500);
             primaryStage.show();
         } catch (IOException ex) {
@@ -40,6 +46,37 @@ public class App extends Application {
         }
     }
     
+    /**
+     * Mètode per carregar una vista *.fxml dins un Stage definit com a 
+     * principal (Root).
+     * 
+     * @param fxml Layout *.fxml a visualitzar dins l'Stage
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació/Implementació
+     */
+    static void setRoot(String fxml) throws IOException {
+        scene.setRoot(loadFXML(fxml));
+    }
+
+    /**
+     * Mètode per carregar una vista *.fxml dins un Stage.
+     * @param fxml Ruta al layout *.fxml
+     * 
+     * @return Parent que conté el layout *.fxml a visualitzar dins l'Stage
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació/Implementació
+     */
+    private static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        return fxmlLoader.load();
+    }
+    
+    /**
+     * Executa l'aplicació.
+     * 
+     * @param args 
+     * @author Txell Llanas - Creació/Implementació
+     */
     public static void starter(String[] args) {
         launch();
     }

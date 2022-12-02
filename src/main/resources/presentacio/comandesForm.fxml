@@ -44,14 +44,14 @@
             <VBox prefWidth="250.0">
                <children>
                   <Label text="Client" />
-                  <ComboBox prefWidth="250.0" />
+                  <ComboBox fx:id="selectorClient" prefWidth="250.0" />
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
             <VBox>
                <children>
                   <Label text="Data d'entrega" />
-                  <DatePicker id="datePicker" fx:id="datePickerTo1" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                  <DatePicker id="datePicker" fx:id="datePicker" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
@@ -60,13 +60,13 @@
                   <Label text="Hora d'entrega" />
                   <HBox alignment="CENTER_LEFT">
                      <children>
-                        <TextField fx:id="fieldMinutes" minWidth="-Infinity" prefWidth="40.0" />
+                        <TextField fx:id="fieldHour" minWidth="-Infinity" prefWidth="40.0" />
                         <Label text=":">
                            <padding>
                               <Insets left="5.0" right="5.0" />
                            </padding>
                         </Label>
-                        <TextField fx:id="fieldHour1" minWidth="-Infinity" prefWidth="40.0" />
+                        <TextField fx:id="fieldMinutes" minWidth="-Infinity" prefWidth="40.0" />
                         <Label text="h">
                            <padding>
                               <Insets left="5.0" />
@@ -86,7 +86,7 @@
             <VBox fx:id="selectorProduct" prefWidth="250.0">
                <children>
                   <Label text="Producte" />
-                  <ComboBox prefWidth="250.0" />
+                  <ComboBox fx:id="selectorProduct" prefWidth="250.0" />
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />

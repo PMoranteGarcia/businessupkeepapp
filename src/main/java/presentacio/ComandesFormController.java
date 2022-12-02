@@ -1,5 +1,6 @@
 package presentacio;
 
+import entitats.Client;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -7,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -49,15 +51,17 @@ public class ComandesFormController implements Initializable {
     @FXML
     private Label totalAmount;
     @FXML
-    private DatePicker datePickerTo1;
-    @FXML
     private VBox selectorProduct;
     @FXML
     private Button btnaddProduct;
     @FXML
-    private TextField fieldMinutes;
+    private ComboBox<Client> selectorClient;
     @FXML
-    private TextField fieldHour1;
+    private DatePicker datePicker;
+    @FXML
+    private TextField fieldHour;
+        @FXML
+    private TextField fieldMinutes;
 
     /**
      * Initializes the controller class.

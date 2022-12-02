@@ -83,7 +83,7 @@
       </HBox>
       <HBox alignment="BOTTOM_LEFT" VBox.vgrow="NEVER">
          <children>
-            <VBox fx:id="selectorProduct" prefWidth="250.0">
+            <VBox prefWidth="250.0">
                <children>
                   <Label text="Producte" />
                   <ComboBox fx:id="selectorProduct" prefWidth="250.0" />

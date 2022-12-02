@@ -14,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'.
@@ -51,7 +50,7 @@ public class ComandesFormController implements Initializable {
     @FXML
     private Label totalAmount;
     @FXML
-    private VBox selectorProduct;
+    private ComboBox<?> selectorProduct;
     @FXML
     private Button btnaddProduct;
     @FXML
@@ -60,7 +59,7 @@ public class ComandesFormController implements Initializable {
     private DatePicker datePicker;
     @FXML
     private TextField fieldHour;
-        @FXML
+    @FXML
     private TextField fieldMinutes;
 
     /**

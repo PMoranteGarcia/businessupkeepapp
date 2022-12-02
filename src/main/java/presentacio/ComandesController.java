@@ -90,9 +90,6 @@ public class ComandesController implements Initializable {
         
         // Carregar la vista del formulari "COMANDES (Detalls)" in-situ
         App.setRoot("comandesForm");
-        
-//      VBox content = FXMLLoader.load(this.getClass().getClassLoader().getResource("presentacio/comandesForm.fxml"));
-//      rootPane.getChildren().setAll(content);
     }
 
     /**

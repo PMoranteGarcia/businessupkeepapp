@@ -89,9 +89,6 @@ public class ComandesFormController implements Initializable {
         
         // Carregar la vista del llistat "COMANDES (Llistat)" in-situ
         App.setRoot("comandes");
-        
-//      VBox content = FXMLLoader.load(this.getClass().getClassLoader().getResource("presentacio/comandes.fxml"));
-//      rootPane.getChildren().setAll(content);
     }    
 
     /**

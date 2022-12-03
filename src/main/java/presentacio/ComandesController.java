@@ -101,7 +101,7 @@ public class ComandesController implements Initializable {
      */
     @FXML
     private void goToCustomers() throws IOException {
-        //App.setRoot("customers");  <-- descomentar quan ho editeu
+        App.setRoot("clients");  
     }
 
     /**
@@ -113,7 +113,7 @@ public class ComandesController implements Initializable {
      */
     @FXML
     private void goToProducts() throws IOException {
-         //App.setRoot("products");  <-- descomentar quan ho editeu
+         App.setRoot("productes");  
     }
 
     /**

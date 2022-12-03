@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ProductesFormController">
+     <children>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Button id="btn_back" fx:id="btnBack" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToProducts" styleClass="btn_back" stylesheets="@../css/styles.css" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <Label id="title" text="Producte #" />
+            <Label id="title" fx:id="orderNumber" text="001" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox>
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </VBox.margin>
+         <children>
+            <Label text="Nom" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
+            <TextField fx:id="textFieldNom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="473.0" />
+         </children>
+      </HBox>
+      <HBox nodeOrientation="LEFT_TO_RIGHT">
+         <children>
+            <Label text="Codi">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Label>
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="25.0" />
+            <TextField fx:id="textFieldCodi" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="218.0" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="17.0" />
+            <Label text="Preu" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="15.0" />
+            <TextField fx:id="textFieldPreu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="191.0" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="31.0" prefWidth="537.0">
+         <children>
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="286.0" />
+            <Label text="Stock" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="12.0" />
+            <TextField fx:id="textFieldStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="195.0" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="31.0" prefWidth="492.0">
+         <children>
+            <VBox prefHeight="52.0" prefWidth="533.0">
+               <children>
+                  <Label text="Descripció" />
+                  <TextField fx:id="textFieldDescripcio" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="0.0" />
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox>
+         <children>
+            <Button fx:id="btnDesarProducte" mnemonicParsing="false" onAction="#saveProducte" styleClass="btn_primary" text="Desar" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="49.0" />
+            <Button fx:id="btnCancelProducte" mnemonicParsing="false" onAction="#cancelProducte" styleClass="btn_cancel" text="Cancelar" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

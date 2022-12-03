@@ -47,7 +47,7 @@
                   <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="35.0" VBox.vgrow="NEVER">
                      <children>
                         <TextField fx:id="textAreaCercarClients" />
-                        <Separator opacity="0.0" orientation="VERTICAL" prefHeight="35.0" prefWidth="33.0" />
+                        <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
                         <Button id="searchBtn" fx:id="btnSearchCustomer" mnemonicParsing="false" onAction="#searchCustomer" text="Cercar Client" />
                      </children>
                   </HBox>
@@ -63,11 +63,11 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
          <columns>
-            <TableColumn id="orderNumber" fx:id="columnOrderNumber" editable="false" maxWidth="202.0" minWidth="75.0" prefWidth="202.0" text="Email" />
-            <TableColumn id="requiredDate" fx:id="columnRequiredDate" editable="false" maxWidth="500.0" minWidth="48.0" prefWidth="200.0" text="Nom" />
-            <TableColumn id="shippedDate" fx:id="columnShippedDate" editable="false" maxWidth="500.0" minWidth="65.0" prefWidth="113.0" text="Aniversari" />
-            <TableColumn id="customerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="0.0" prefWidth="0.0" text="Phone" />
-            <TableColumn id="orderAmount" fx:id="columnCustomerEmail1" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="CreditLimit" />
+            <TableColumn id="orderNumber" fx:id="columnOrderNumber" editable="false" minWidth="200.0" prefWidth="200.0" text="Email" />
+            <TableColumn id="requiredDate" fx:id="columnRequiredDate" editable="false" minWidth="120.0" prefWidth="120.0" text="Nom" />
+            <TableColumn id="shippedDate" fx:id="columnShippedDate" editable="false" minWidth="100.0" prefWidth="100.0" text="Data Naixement" />
+            <TableColumn id="customerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="90.0" prefWidth="90.0" text="Phone" />
+            <TableColumn id="orderAmount" fx:id="columnCustomerEmail1" editable="false" minWidth="75.0" prefWidth="75.0" text="Crèdit" />
             <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
          </columns>
          <VBox.margin>

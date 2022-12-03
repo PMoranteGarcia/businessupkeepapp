@@ -39,35 +39,39 @@
             <Insets left="20.0" right="20.0" />
          </VBox.margin>
       </VBox>
-      <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="35.0">
+      <HBox alignment="CENTER_LEFT">
          <children>
             <VBox alignment="CENTER_LEFT">
                <children>
                   <Label text="Cercar Clients" />
-                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="35.0" VBox.vgrow="NEVER">
+                  <HBox alignment="BOTTOM_LEFT" minHeight="-Infinity" prefHeight="35.0" VBox.vgrow="NEVER">
                      <children>
-                        <TextField fx:id="textAreaCercarClients" />
+                        <TextField fx:id="inputSearchCustomer" prefWidth="300.0" promptText="Cercar per nom o dni o telèfon..." />
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                        <Button id="searchBtn" fx:id="btnSearchCustomer" mnemonicParsing="false" onAction="#searchCustomer" text="Cercar Client" />
+                        <Button id="searchBtn" fx:id="btnCleanContent" mnemonicParsing="false" onAction="#cleanContent" text="Netejar" />
                      </children>
                   </HBox>
                </children>
             </VBox>
          </children>
          <VBox.margin>
-            <Insets left="20.0" right="20.0" top="20.0" />
+            <Insets />
          </VBox.margin>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
       </HBox>
-      <TableView id="llistat" fx:id="ordersList">
+      <TableView id="customersTableView" fx:id="customersTableView" VBox.vgrow="ALWAYS">
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
          <columns>
-            <TableColumn id="columnCustomerEmail" fx:id="columnOrderNumber" editable="false" minWidth="200.0" prefWidth="200.0" text="Email" />
-            <TableColumn id="columnCustomerName" fx:id="columnRequiredDate" editable="false" minWidth="120.0" prefWidth="120.0" text="Nom" />
-            <TableColumn id="columnBirthDate" fx:id="columnShippedDate" editable="false" minWidth="100.0" prefWidth="100.0" text="Data Naixement" />
-            <TableColumn id="columnPhone" fx:id="columnCustomerEmail" editable="false" minWidth="90.0" prefWidth="90.0" text="Phone" />
-            <TableColumn id="columnCreditLimit" fx:id="columnCustomerEmail1" editable="false" minWidth="75.0" prefWidth="75.0" text="Crèdit" />
+            <TableColumn id="columnCustomerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="200.0" prefWidth="200.0" text="Email" />
+            <TableColumn id="columnCustomerName" fx:id="columnCustomerName" editable="false" minWidth="120.0" prefWidth="120.0" text="Nom" />
+            <TableColumn id="columnBirthDate" fx:id="columnIdCard" editable="false" minWidth="100.0" prefWidth="100.0" text="Dni" />
+            <TableColumn id="columnBirthDate" fx:id="columnBirthDate" editable="false" minWidth="100.0" prefWidth="100.0" text="Data Naixement" />
+            <TableColumn id="columnPhone" fx:id="columnPhone" editable="false" minWidth="90.0" prefWidth="90.0" text="Phone" />
+            <TableColumn id="columnCreditLimit" fx:id="columnCreditLimit" editable="false" minWidth="75.0" prefWidth="75.0" text="Crèdit" />
             <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
          </columns>
          <VBox.margin>

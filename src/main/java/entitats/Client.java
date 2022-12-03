@@ -12,10 +12,7 @@ import java.util.Date;
  */
 public class Client {
     
-    private String customerEmail;                                               // PK del client
-    private String idCard;
-    private String customerName;
-    private String phone;
+    private String customerEmail, idCard, customerName, phone;
     private float creditLimit;
     private Date birthDate;
 

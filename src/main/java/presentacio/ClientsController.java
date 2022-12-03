@@ -1,17 +1,25 @@
 package presentacio;
 
+import dades.ClientDAO;
 import entitats.Client;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * Controlador de la vista 'clients.fxml'. Permet a l'usuari gestionar el CRUD
@@ -25,38 +33,109 @@ import javafx.scene.control.TextArea;
 public class ClientsController implements Initializable {
 
     @FXML
-    private Button btnOrders;
+    private Button btnOrders, btnCustomers, btnProducts, btnAbout, 
+            btnNewCustomer, btnCleanContent;
     @FXML
-    private Button btnCustomers;
+    private TableView<Client> customersTableView;
     @FXML
-    private Button btnProducts;
+    private TableColumn columnCustomerEmail, columnCustomerName, columnIdCard,
+            columnBirthDate, columnPhone, columnCreditLimit, columnActions;
     @FXML
-    private Button btnAbout;
-    @FXML
-    private Button btnNewCustomer;
-    @FXML
-    private TableView<Client> ordersList;
-    @FXML
-    private TableColumn<?, ?> columnOrderNumber;
-    @FXML
-    private TableColumn<?, ?> columnRequiredDate;
-    @FXML
-    private TableColumn<?, ?> columnShippedDate;
-    @FXML
-    private TableColumn<?, ?> columnCustomerEmail;
-    @FXML
-    private TableColumn<?, ?> columnCustomerEmail1;
-    @FXML
-    private TableColumn<?, ?> columnActions;
-    @FXML
-    private TextArea textArea;
-    @FXML
-    private Button btnSearchCustomer;
+    private TextField inputSearchCustomer;
+    
 
+    // Definir una llista observable d'objectes de tipus Client
+    ObservableList<Client> llistaObservableClient = FXCollections.observableArrayList();
+    
+            
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       
+        
+        // Obtenir el texte dels botons
+        String text1 = btnOrders.getText();
+        String text2 = btnCustomers.getText();
+        String text3 = btnProducts.getText();
+        String text4 = btnAbout.getText();
+        String text5 = btnNewCustomer.getText();
+        String text6 = btnCleanContent.getText();
+        
+        // Passar el texte a MAJÚSCULES
+        btnOrders.setText(text1.toUpperCase());
+        btnCustomers.setText(text2.toUpperCase());
+        btnProducts.setText(text3.toUpperCase());
+        btnAbout.setText(text4.toUpperCase());
+        btnNewCustomer.setText(text5.toUpperCase());
+        btnCleanContent.setText(text6.toUpperCase());
+        
+        // Recuperar registres taula 'customers'
+        try {
+            
+            // Instància del ClientDAO per carregar els registres de la taula 'customers'
+            ClientDAO data = new ClientDAO();
+
+            // Afegir els registres existents a la taula dins la llista
+            llistaObservableClient.addAll(data.getAll());
+        
+            // Establir vincle entre els atributs de l'objecte Client i cada columna
+            // de la taula per mostrar les dades recuperades dins el tableview:
+            columnCustomerEmail.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
+            columnCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            columnIdCard.setCellValueFactory(new PropertyValueFactory<>("idCard"));
+            columnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+            columnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+            columnCreditLimit.setCellValueFactory(new PropertyValueFactory<>("creditLimit"));
+
+            // Afegir els elements a la taula
+            customersTableView.setItems(llistaObservableClient);
+            
+            // Filtrar registres segons el texte introduït al cercador
+            FilteredList<Client> filteredData = new FilteredList<>(llistaObservableClient, b -> true);
+            
+            inputSearchCustomer.textProperty().addListener((observable, oldValue, newValue) -> {
+                
+                filteredData.setPredicate(client -> {
+                    
+                    // Si no s'escriu res al cercador o no hi ha coincidències amb el texte introduït, mostrar tots els registres
+                    if( newValue.isEmpty()|| newValue.isBlank() || newValue == null ) {
+                        return true;
+                    }
+                    
+                    String searchKeyword = newValue.toLowerCase();                    
+                    String castCreditLimit = Float.toString(client.getCreditLimit());
+                    String castGetBirthDate = client.getBirthDate().toString();
+                    
+                    // Definir filtres de cerca: buscar a tots els camps (-1: no trobat)
+                    if( client.getCustomerEmail().toLowerCase().contains(searchKeyword) ) {
+                        return true;
+                    } else if( client.getCustomerName().toLowerCase().contains(searchKeyword) ) {
+                        return true;                       
+                    } else if( client.getIdCard().toLowerCase().contains(searchKeyword) ) {
+                        return true;
+                    } else if( client.getPhone().toLowerCase().contains(searchKeyword) ) {
+                        return true;                       
+                    } else if( castCreditLimit.contains(searchKeyword) ) {
+                        return true;
+                    } else return castGetBirthDate.indexOf(searchKeyword) > -1; // contingut no trobat
+                    
+                });
+                
+            });
+            
+            // Ordenar els resultats coincidents (descarta els registres que no coincideixen amb les paraules cercades)
+            SortedList<Client> sortedData = new SortedList <>(filteredData);
+            
+            // Establir vincle de la SortedList amb la TableView
+            sortedData.comparatorProperty().bind(customersTableView.comparatorProperty());
+            
+            // Aplicar filtratge a la taula
+            customersTableView.setItems(sortedData);
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+    
     
     @FXML
     private void goToCustomers() {
@@ -82,8 +161,13 @@ public class ClientsController implements Initializable {
         App.setRoot("clientsForm");
     }
 
+    /**
+     * Neteja el camp de texte del cercador.
+     * @param event Acció que afecti al 'btnCleanContent' (ex: clicar)
+     */
     @FXML
-    private void searchCustomer() {
+    private void cleanContent(ActionEvent event) {
+        inputSearchCustomer.clear();
     }
 
 }

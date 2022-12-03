@@ -1,8 +1,12 @@
 package presentacio;
 
+import entitats.Client;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
@@ -18,7 +22,7 @@ import javafx.scene.control.TextArea;
  * @author Izan Jimenez - Creació vista FXML
  * @author Txell Llanas - Implementació
  */
-public class ClientsController {
+public class ClientsController implements Initializable {
 
     @FXML
     private Button btnOrders;
@@ -31,7 +35,7 @@ public class ClientsController {
     @FXML
     private Button btnNewCustomer;
     @FXML
-    private TableView<?> ordersList;
+    private TableView<Client> ordersList;
     @FXML
     private TableColumn<?, ?> columnOrderNumber;
     @FXML
@@ -49,6 +53,11 @@ public class ClientsController {
     @FXML
     private Button btnSearchCustomer;
 
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+       
+    }
+    
     @FXML
     private void goToCustomers() {
     }

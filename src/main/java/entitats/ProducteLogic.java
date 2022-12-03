@@ -7,6 +7,6 @@ package entitats;
  * @author Victor García - Creació
  * @author Izan Jimenez  - Creació/Implementació
  */
-public class ProductesLogic {
+public class ProducteLogic {
     
 }

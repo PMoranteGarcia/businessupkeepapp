@@ -1,11 +1,11 @@
-package dades;
+package entitats;
 
 /**
- * CRUD de Comandes a la BBDD.
- * 
+ * Aquí anirà la classe/entitat de comandes
+ *
  * @author Pablo Morante - Creació/Implementació
  * @author Victor García - Creació/Implementació
  */
-public class ComandesDAO {
+public class Comanda {
     
 }

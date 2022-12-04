@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,7 +46,9 @@ public class ClientsController implements Initializable {
     private TableView<Client> customersTableView;
     @FXML
     private TableColumn columnCustomerEmail, columnCustomerName, columnIdCard,
-            columnBirthDate, columnPhone, columnCreditLimit;
+            columnBirthDate, columnPhone;
+    @FXML
+    private TableColumn<Client, Number> columnCreditLimit;
     @FXML
     private TableColumn<Client, Client> columnActions;
     @FXML
@@ -154,7 +157,22 @@ public class ClientsController implements Initializable {
             columnIdCard.setCellValueFactory(new PropertyValueFactory<>("idCard"));
             columnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
             columnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-            columnCreditLimit.setCellValueFactory(new PropertyValueFactory<>("creditLimit"));
+            //columnCreditLimit.setCellValueFactory(new PropertyValueFactory<>("creditLimit"));
+            
+            // Establir format numèric (2 decimals) + símbol de moneda (€) a mostrar al camp 'creditLimit'
+            columnCreditLimit.setCellValueFactory(cellData -> 
+                new ReadOnlyDoubleWrapper(cellData.getValue().getCreditLimit()));
+            columnCreditLimit.setCellFactory(tc -> new TableCell<Client, Number>() {
+                @Override
+                protected void updateItem(Number value, boolean empty) {
+                    super.updateItem(value, empty) ;
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.2f", value.doubleValue()) + " €");
+                    }
+                }
+            });
             
             // Afegir botons per les accions de fila
             columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));

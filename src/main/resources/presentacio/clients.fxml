@@ -20,7 +20,11 @@
                   <Cursor fx:constant="NONE" />
                </cursor></Button>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
-            <Button fx:id="btnCustomers" layoutX="10.0" layoutY="10.0" onAction="#goToCustomers" styleClass="active" text="CLIENTS" />
+            <Button fx:id="btnCustomers" layoutX="10.0" layoutY="10.0" text="CLIENTS">
+               <styleClass>
+                  <String fx:value="active" />
+                  <String fx:value="hideCursor" />
+               </styleClass></Button>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
             <Button fx:id="btnProducts" layoutX="101.0" layoutY="10.0" onAction="#goToProducts" text="PRODUCTES" />
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
@@ -48,7 +52,7 @@
                      <children>
                         <TextField fx:id="inputSearchCustomer" prefWidth="300.0" promptText="Cercar per nom o dni o telèfon..." />
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                        <Button id="searchBtn" fx:id="btnCleanContent" mnemonicParsing="false" onAction="#cleanContent" text="Netejar" />
+                        <Button id="searchBtn" fx:id="btnClearContent" mnemonicParsing="false" onAction="#clearContent" text="Netejar" />
                      </children>
                   </HBox>
                </children>
@@ -69,9 +73,9 @@
             <TableColumn id="columnCustomerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="200.0" prefWidth="200.0" text="Email" />
             <TableColumn id="columnCustomerName" fx:id="columnCustomerName" editable="false" minWidth="120.0" prefWidth="120.0" text="Nom" />
             <TableColumn id="columnBirthDate" fx:id="columnIdCard" editable="false" minWidth="100.0" prefWidth="100.0" text="Dni" />
-            <TableColumn id="columnBirthDate" fx:id="columnBirthDate" editable="false" minWidth="100.0" prefWidth="100.0" text="Data Naixement" />
-            <TableColumn id="columnPhone" fx:id="columnPhone" editable="false" minWidth="90.0" prefWidth="90.0" text="Phone" />
-            <TableColumn id="columnCreditLimit" fx:id="columnCreditLimit" editable="false" minWidth="75.0" prefWidth="75.0" text="Crèdit" />
+            <TableColumn id="columnBirthDate" fx:id="columnBirthDate" editable="false" minWidth="120.0" prefWidth="120.0" text="Aniversari" />
+            <TableColumn id="columnPhone" fx:id="columnPhone" editable="false" minWidth="90.0" prefWidth="90.0" text="Telèfon" />
+            <TableColumn id="columnCreditLimit" fx:id="columnCreditLimit" editable="false" minWidth="65.0" prefWidth="65.0" text="Crèdit" />
             <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
          </columns>
          <VBox.margin>

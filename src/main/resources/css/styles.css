@@ -32,7 +32,7 @@ Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa
 #nav Button:hover, .active {-fx-background-color: #666!important; -fx-text-fill:#fff!important; -fx-border-width:0;}
 
 /** TEXTES **/
-#title, #subtotal-txt, #moneda-txt, #total {-fx-font-size: 30px; -fx-font-weight: bold;}
+#title, #idCustomer, #subtotal-txt, #moneda-txt, #total {-fx-font-size: 30px; -fx-font-weight: bold;}
 
 
 /* TAULES */

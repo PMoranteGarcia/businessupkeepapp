@@ -34,7 +34,7 @@ public class ClientsController implements Initializable {
 
     @FXML
     private Button btnOrders, btnCustomers, btnProducts, btnAbout, 
-            btnNewCustomer, btnCleanContent;
+            btnNewCustomer, btnClearContent;
     @FXML
     private TableView<Client> customersTableView;
     @FXML
@@ -57,7 +57,7 @@ public class ClientsController implements Initializable {
         String text3 = btnProducts.getText();
         String text4 = btnAbout.getText();
         String text5 = btnNewCustomer.getText();
-        String text6 = btnCleanContent.getText();
+        String text6 = btnClearContent.getText();
         
         // Passar el texte a MAJÚSCULES
         btnOrders.setText(text1.toUpperCase());
@@ -65,9 +65,72 @@ public class ClientsController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewCustomer.setText(text5.toUpperCase());
-        btnCleanContent.setText(text6.toUpperCase());
+        btnClearContent.setText(text6.toUpperCase());
         
         // Recuperar registres taula 'customers'
+        fillCustomersTable();
+        
+        // Filtrar registres segons el texte introduït al cercador
+        searchCustomersDataFilter();
+        
+    }
+    
+    /**
+     * Mostra l'apartat 'Comandes' i al llistat que conté tots els registres de 
+     * la BD.
+     * 
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació
+     */
+    @FXML
+    private void goToOrders() throws IOException {
+        App.setRoot("comandes");
+    }
+
+    /**
+     * Mostra l'apartat 'Productes' i al llistat que conté tots els registres de 
+     * la BD.
+     * 
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació
+     */
+    @FXML
+    private void goToProducts() throws IOException {
+        App.setRoot("productes");
+
+    }
+
+    /**
+     * Mostra l'apartat 'Crèdits'.
+     * Indica la versió de l'aplicació i els seus desenvolupadors.
+     * 
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació
+     */
+    @FXML
+    private void goToAbout() {
+    }
+
+    @FXML
+    private void goToNewClient() throws IOException {
+        App.setRoot("clientsForm");
+    }
+
+    /**
+     * Mètode que neteja el camp de texte del cercador (clear).
+     * @param event Acció que afecti al 'btnCleanContent' (ex: clicar)
+     */
+    @FXML
+    private void clearContent(ActionEvent event) {
+        inputSearchCustomer.clear();
+    }
+    
+    /**
+     * Mètode que recupera tots els registres de la taula 'customers'.
+     * @author Txell Llanas
+     */
+    private void fillCustomersTable(){
+        
         try {
             
             // Instància del ClientDAO per carregar els registres de la taula 'customers'
@@ -88,86 +151,59 @@ public class ClientsController implements Initializable {
             // Afegir els elements a la taula
             customersTableView.setItems(llistaObservableClient);
             
-            // Filtrar registres segons el texte introduït al cercador
-            FilteredList<Client> filteredData = new FilteredList<>(llistaObservableClient, b -> true);
-            
-            inputSearchCustomer.textProperty().addListener((observable, oldValue, newValue) -> {
-                
-                filteredData.setPredicate(client -> {
-                    
-                    // Si no s'escriu res al cercador o no hi ha coincidències amb el texte introduït, mostrar tots els registres
-                    if( newValue.isEmpty()|| newValue.isBlank() || newValue == null ) {
-                        return true;
-                    }
-                    
-                    String searchKeyword = newValue.toLowerCase();                    
-                    String castCreditLimit = Float.toString(client.getCreditLimit());
-                    String castGetBirthDate = client.getBirthDate().toString();
-                    
-                    // Definir filtres de cerca: buscar a tots els camps (-1: no trobat)
-                    if( client.getCustomerEmail().toLowerCase().contains(searchKeyword) ) {
-                        return true;
-                    } else if( client.getCustomerName().toLowerCase().contains(searchKeyword) ) {
-                        return true;                       
-                    } else if( client.getIdCard().toLowerCase().contains(searchKeyword) ) {
-                        return true;
-                    } else if( client.getPhone().toLowerCase().contains(searchKeyword) ) {
-                        return true;                       
-                    } else if( castCreditLimit.contains(searchKeyword) ) {
-                        return true;
-                    } else return castGetBirthDate.indexOf(searchKeyword) > -1; // contingut no trobat
-                    
-                });
-                
-            });
-            
-            // Ordenar els resultats coincidents (descarta els registres que no coincideixen amb les paraules cercades)
-            SortedList<Client> sortedData = new SortedList <>(filteredData);
-            
-            // Establir vincle de la SortedList amb la TableView
-            sortedData.comparatorProperty().bind(customersTableView.comparatorProperty());
-            
-            // Aplicar filtratge a la taula
-            customersTableView.setItems(sortedData);
-            
-            
         } catch (SQLException ex) {
             Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
-    
-    @FXML
-    private void goToCustomers() {
-    }
-
-    @FXML
-    private void goToProducts() throws IOException {
-        App.setRoot("productes");
-
-    }
-
-    @FXML
-    private void goToAbout() {
-    }
-
-    @FXML
-    private void goToOrders() throws IOException {
-        App.setRoot("comandes");
-    }
-
-    @FXML
-    private void goToNewClient() throws IOException {
-        App.setRoot("clientsForm");
-    }
-
     /**
-     * Neteja el camp de texte del cercador.
-     * @param event Acció que afecti al 'btnCleanContent' (ex: clicar)
+     * Mètode que filtra els registres segons el texte introduït al cercador.
+     * @author Txell Llanas
      */
-    @FXML
-    private void cleanContent(ActionEvent event) {
-        inputSearchCustomer.clear();
+    private void searchCustomersDataFilter(){
+        
+        FilteredList<Client> filteredData = new FilteredList<>(llistaObservableClient, b -> true);
+
+        inputSearchCustomer.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            filteredData.setPredicate(client -> {
+
+                // Si no s'escriu res al cercador, o no hi ha coincidències amb el texte introduït, mostra tots els registres
+                if( newValue.isEmpty()|| newValue.isBlank() || newValue == null ) {
+                    return true;
+                }
+
+                String searchKeyword = newValue.toLowerCase();
+
+                // Definir filtres de cerca: buscar a tots els camps
+                if( client.getCustomerEmail().toLowerCase().contains(searchKeyword) ) {
+                    return true;
+                } else if( client.getCustomerName().toLowerCase().contains(searchKeyword) ) {
+                    return true;                       
+                } else if( client.getIdCard().toLowerCase().contains(searchKeyword) ) {
+                    return true;
+                } else if( client.getBirthDate().toString().contains(searchKeyword) ) {
+                    return true;
+                } else if( client.getPhone().toLowerCase().contains(searchKeyword) ) {
+                    return true;                       
+                } else if( Float.toString(client.getCreditLimit()).contains(searchKeyword) ) {
+                    return true;
+                } else 
+                    return false; // Contingut no trobat
+
+            });
+
+        });
+
+        // Ordenar els resultats coincidents (descarta els registres que no coincideixen amb les paraules cercades)
+        SortedList<Client> sortedData = new SortedList<>(filteredData);
+
+        // Establir vincle de la SortedList amb la TableView
+        sortedData.comparatorProperty().bind(customersTableView.comparatorProperty());
+
+        // Aplicar filtratge a la taula
+        customersTableView.setItems(sortedData);
     }
 
 }

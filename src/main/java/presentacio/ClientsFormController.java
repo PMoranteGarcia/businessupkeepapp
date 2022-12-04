@@ -37,13 +37,14 @@ public class ClientsFormController implements Initializable {
             field_phone, field_creditLimit;
     @FXML
     private DatePicker field_birthDate;
-
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        Client defaults = new Client();
+        field_creditLimit.setText(String.format("%.2f", defaults.getCreditLimit()));
     }
 
     @FXML
@@ -83,10 +84,10 @@ public class ClientsFormController implements Initializable {
         
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("CONFIRMI UNA OPCIÓ");
-            alert.setHeaderText("Desitja descartar els canvis realitzats?");
+            alert.setHeaderText("Desitja descartar l'alta actual?"); //els canvis realitzats
 
             ButtonType yesButton = new ButtonType("Descartar");
-            ButtonType cancelButton = new ButtonType("Seguir editant");
+            ButtonType cancelButton = new ButtonType("Seguir Editant");
 
             alert.getButtonTypes().setAll(yesButton, cancelButton);
             

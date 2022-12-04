@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ClientsFormController">
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ClientsFormController">
      <children>
       <HBox alignment="CENTER_LEFT">
          <children>
@@ -20,8 +19,8 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Label id="title" text="Client # " />
-            <Label id="title" fx:id="customerId" text="001" />
+            <Label id="title" text="Detalls Nou Client" />
+            <Label id="label_id" fx:id="customerId" text="001" />
          </children>
          <VBox.margin>
             <Insets left="20.0" right="20.0" top="20.0" />
@@ -42,62 +41,62 @@
       </HBox>
       <VBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
          <children>
-            <HBox alignment="CENTER" prefHeight="31.0" prefWidth="287.0">
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="640.0">
                <children>
-                  <Label alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="60.0" text="Nom" />
+                  <Label id="label_customerName" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="60.0" text="Nom" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <TextField fx:id="field_customerName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="480.0" />
+                  <TextField id="field_customerName" fx:id="field_customerName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="480.0" stylesheets="@../css/styles.css" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="30.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>
             </HBox>
-            <HBox alignment="CENTER">
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="640.0">
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>
                <children>
-                  <Label alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="40.0" prefWidth="60.0" text="Email" />
+                  <Label id="label_customerEmail" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="40.0" prefWidth="60.0" text="Email" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <TextField fx:id="field_customerEmail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="480.0" />
+                  <TextField id="field_customerEmail" fx:id="field_customerEmail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="480.0" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="30.0" />
                </children>
             </HBox>
-            <HBox alignment="CENTER">
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="640.0">
                <children>
-                  <Label alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="56.0" text="Dni">
+                  <Label id="label_customerIdCard" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="60.0" text="Dni">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Label>
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <TextField fx:id="field_idCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
-                  <Separator opacity="0.0" orientation="VERTICAL" prefWidth="60.0" />
-                  <Label alignment="CENTER_RIGHT" prefHeight="40.0" text="Aniversari" />
+                  <TextField id="field_customerIdCard" fx:id="field_idCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+                  <Separator opacity="0.0" orientation="VERTICAL" prefWidth="50.0" />
+                  <Label id="label_customerBirthDate" alignment="CENTER_RIGHT" prefHeight="40.0" text="Aniversari" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <DatePicker fx:id="field_birthDate" prefWidth="150.0" />
+                  <DatePicker id="field_customerBirthDate" fx:id="field_birthDate" prefWidth="150.0" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="30.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" />
                </VBox.margin>
             </HBox>
-            <HBox alignment="CENTER">
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="640.0">
                <children>
-                  <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="58.0" text="Telèfon">
+                  <Label id="label_customerPhone" alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="60.0" text="Telèfon">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Label>
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <TextField fx:id="field_phone" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+                  <TextField id="field_customerPhone" fx:id="field_phone" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="30.0" />
-                  <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="85.0" text="Crèdit (Màx.)" />
+                  <Label id="label_customerCreditLimit" alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="85.0" text="Crèdit (Màx.)" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <TextField fx:id="field_creditLimit" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                  <TextField id="field_customerCreditLimit" fx:id="field_creditLimit" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                   <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-                  <Label alignment="CENTER_RIGHT" text="€">
+                  <Label id="label_customerCreditLimit" alignment="CENTER_RIGHT" text="€">
                      <font>
                         <Font size="20.0" />
                      </font>

@@ -55,18 +55,17 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
 
             ret.add(c);
         }
-        //System.out.println("ret: "+ret);
+        
         return ret;
     }
 
     @Override
     public void save(Client c) throws SQLException {
         
-        ClientsFormController fields = new ClientsFormController();
-        
         // Definir consulta SQL per llegir totes les dades de la taula 'clients'
         String consulta = "INSERT INTO customers () VALUES (?,?,?,?,?,?);"; 
         
+        // 
         PreparedStatement preparedStatement = con.prepareStatement(consulta);
         preparedStatement.setString(1, c.getCustomerEmail());
         preparedStatement.setString(2, c.getIdCard());
@@ -79,17 +78,27 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
     }
 
     @Override
-    public void update(Client t) throws SQLException {
+    public void update(Client c) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void delete(Client t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void delete(Client c) throws SQLException {
+        
+        // Definir consulta SQL per eliminar el registre actual de la taula 'clients'
+        String consulta = "DELETE FROM customers WHERE customerEmail = ?;"; 
+        PreparedStatement preparedStatement = con.prepareStatement(consulta);
+        preparedStatement.setString(1, c.getCustomerEmail());
+        
+        // Executar consulta
+        preparedStatement.executeUpdate();
+        
+        System.out.println(">> Eliminat client: "+c.toString());
+        
     }
 
     @Override
-    public Client getOne(Client t) throws SQLException {
+    public Client getOne(Client c) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -15,11 +16,16 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 
 /**
  * Controlador de la vista 'clients.fxml'. Permet a l'usuari gestionar el CRUD
@@ -39,7 +45,9 @@ public class ClientsController implements Initializable {
     private TableView<Client> customersTableView;
     @FXML
     private TableColumn columnCustomerEmail, columnCustomerName, columnIdCard,
-            columnBirthDate, columnPhone, columnCreditLimit, columnActions;
+            columnBirthDate, columnPhone, columnCreditLimit;
+    @FXML
+    private TableColumn<Client, Client> columnActions;
     @FXML
     private TextField inputSearchCustomer;
     
@@ -118,7 +126,7 @@ public class ClientsController implements Initializable {
 
     /**
      * Mètode que neteja el camp de texte del cercador (clear).
-     * @param event Acció que afecti al 'btnCleanContent' (ex: clicar)
+     * @param event Acció que afecti al 'btnClearContent' (ex: clicar)
      */
     @FXML
     private void clearContent(ActionEvent event) {
@@ -136,7 +144,7 @@ public class ClientsController implements Initializable {
             // Instància del ClientDAO per carregar els registres de la taula 'customers'
             ClientDAO data = new ClientDAO();
 
-            // Afegir els registres existents a la taula dins la llista
+            // Afegir els registres existents a la taula dins la ObservableList
             llistaObservableClient.addAll(data.getAll());
         
             // Establir vincle entre els atributs de l'objecte Client i cada columna
@@ -147,7 +155,11 @@ public class ClientsController implements Initializable {
             columnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
             columnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
             columnCreditLimit.setCellValueFactory(new PropertyValueFactory<>("creditLimit"));
-
+            
+            // Afegir botons per les accions de fila
+            columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+            addCellButtons();
+                        
             // Afegir els elements a la taula
             customersTableView.setItems(llistaObservableClient);
             
@@ -155,6 +167,69 @@ public class ClientsController implements Initializable {
             Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    private void addCellButtons(){
+        
+        columnActions.setCellFactory(param -> new TableCell<Client, Client>() {
+                
+            private final Button btnEdit = new Button("");
+            private final Button btnDelete = new Button("");
+            private final HBox container = new HBox(btnEdit, btnDelete);
+
+            @Override
+            protected void updateItem(Client c, boolean empty) {
+                super.updateItem(c, empty);
+
+                if (c == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                // Inserir container amb botons a dins
+                setGraphic(container); 
+                container.setId("container");
+                container.setAlignment(Pos.CENTER);
+                
+                // Redirigir usuari al formulari d'edició
+                btnEdit.setId("btnEdit");
+                btnEdit.setOnAction(event -> {
+                    try {
+                        goToNewClient();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+                
+                // Eliminar registre actual
+                btnDelete.setId("btnDelete");
+                btnDelete.setOnAction(event -> {
+                    try {
+                        
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("CONFIRMAR BAIXA");
+                        alert.setHeaderText("Desitja eliminar l'usuari \""+c.getCustomerName().toUpperCase()+"\"?");
+
+                        ButtonType yesButton = new ButtonType("Sí");
+                        ButtonType cancelButton = new ButtonType("No");
+
+                        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+                        if( alert.showAndWait().get() == yesButton ) {
+                            // Crido funció per eliminar el registre actual de la BD
+                            ClientDAO dadesClient = new ClientDAO();
+                            dadesClient.delete(c);
+                            // Elimino també del llistat
+                            llistaObservableClient.remove(c);
+                        } else
+                            alert.close();
+                        
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+            }
+        });
     }
     
     /**

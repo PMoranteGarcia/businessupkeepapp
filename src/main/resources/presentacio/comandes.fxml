@@ -1,84 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
+
 <?import javafx.scene.*?>
+
 <?import javafx.scene.image.*?>
+
 <?import java.lang.*?>
+
 <?import javafx.geometry.*?>
+
 <?import javafx.scene.control.*?>
+
 <?import javafx.scene.layout.*?>
+
 <?import javafx.scene.layout.VBox?>
+
 <?import javafx.scene.control.Label?>
+
 <?import javafx.scene.control.Button?>
+
 <?import javafx.geometry.Insets?>
 
+
+
 <VBox spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.ComandesController">
+
    <children>
+
       <HBox id="nav" alignment="TOP_CENTER" stylesheets="@../css/styles.css">
+
          <children>
+
             <Button fx:id="btnOrders" text="Comandes">
+
                <cursor>
+
                   <Cursor fx:constant="NONE" />
+
                </cursor>
+
                <styleClass>
+
                   <String fx:value="active" />
+
                   <String fx:value="hideCursor" />
+
                </styleClass></Button>
+
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+
             <Button fx:id="btnCustomers" layoutX="10.0" layoutY="10.0" onAction="#goToCustomers" text="Clients" />
+
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+
             <Button fx:id="btnProducts" layoutX="101.0" layoutY="10.0" onAction="#goToProducts" text="Productes" />
+
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+
             <Button fx:id="btnAbout" layoutX="166.0" layoutY="10.0" onAction="#goToAbout" text="Crèdits" />
+
          </children>
+
          <VBox.margin>
+
             <Insets top="20.0" />
+
          </VBox.margin>
+
       </HBox>
+
       <VBox spacing="20.0" VBox.vgrow="NEVER">
+
          <children>
+
             <Label id="title" text="Comandes" />
+
             <Button fx:id="btnNewOrder" mnemonicParsing="false" onAction="#goToNewOrder" styleClass="btn_primary" text="Nova Comanda" />
+
          </children>
+
          <VBox.margin>
+
             <Insets left="20.0" right="20.0" />
+
          </VBox.margin>
+
       </VBox>
+
       <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+
          <children>
+
             <VBox alignment="CENTER_LEFT">
+
                <children>
+
                   <Label text="Interval de dates" />
+
                   <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="35.0" VBox.vgrow="NEVER">
+
                      <children>
+
                         <DatePicker id="datePicker" fx:id="datePickerFrom" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" promptText="Data inicial" />
+
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
+
                         <DatePicker id="datePicker" fx:id="datePickerTo" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" promptText="Data final" />
+
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
+
                         <Button id="searchBtn" fx:id="btnSearchOrder" mnemonicParsing="false" onAction="#searchOrderBetweenDates" text="Cercar Comanda" />
+
                      </children>
+
                   </HBox>
+
                </children>
+
             </VBox>
+
          </children>
+
          <padding>
+
             <Insets left="20.0" right="20.0" />
+
          </padding>
+
       </HBox>
+
       <TableView id="llistat" fx:id="ordersList" VBox.vgrow="ALWAYS">
+
         <columns>
+
           <TableColumn id="orderNumber" fx:id="columnOrderNumber" editable="false" maxWidth="200.0" minWidth="75.0" prefWidth="75.0" text="Nº Ordre" />
+
           <TableColumn id="requiredDate" fx:id="columnRequiredDate" editable="false" maxWidth="500.0" minWidth="120.0" prefWidth="120.0" text="Entrega" />
+
             <TableColumn id="shippedDate" fx:id="columnShippedDate" editable="false" maxWidth="500.0" minWidth="120.0" prefWidth="120.0" text="Enviat" />
+
             <TableColumn id="customerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="200.0" prefWidth="200.0" text="Client" />
+
             <TableColumn id="orderAmount" fx:id="columnCustomerEmail1" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Import" />
+
             <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
+
         </columns>
+
          <VBox.margin>
+
             <Insets bottom="20.0" left="20.0" right="20.0" />
+
          </VBox.margin>
+
          <columnResizePolicy>
+
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+
          </columnResizePolicy>
+
       </TableView>
+
    </children>
+
 </VBox>

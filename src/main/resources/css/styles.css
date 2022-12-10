@@ -4,9 +4,22 @@
 */
 
 /** ESTILS GENÈRICS **/
-.root {-fx-focus-color: #666; -fx-faint-focus-color: transparent;}
-.text-field.required {-fx-focus-color: #ff0000; -fx-border-width:1px; -fx-border-radius: 2px; -fx-border-color:#ff0000;}
-.label.required {-fx-text-fill:#ff0000;}
+.root {-fx-focus-color: #666; -fx-faint-focus-color: transparent;}  /*glow inputs seleccionats*/
+
+/*validacions*/
+.text-field.required, .date-picker.required {-fx-border-color:#ff0000; -fx-border-radius: 2px; }
+.text-field.filled, .date-picker.filled {-fx-border-color:#ccc; -fx-border-radius: 2px;}
+.text-field.filled:focused, .date-picker > text-field.filled:focused {-fx-border-color:#666}
+.label.required {-fx-text-fill:#ff0000!important;}
+.label.filled   {-fx-text-fill:#000!important;}
+
+.non-editable {-fx-font-style: italic; -fx-font-weight: bold; -fx-text-fill: #000!important;}
+
+/*.changed, .table-cell:canviat {-fx-text-fill: #4894e7;}
+.netejar, .table-cell:resetejat {-fx-text-fill: #000000;}
+*/
+
+/** BOTONS **/
 .btn_primary, .btn_cancel {-fx-text-fill:#fff; -fx-border-width:0; -fx-padding:5 10px;}
 .btn_primary {-fx-background-color: #007bff;}
 .btn_primary:hover {-fx-background-color: #0062cc;}
@@ -24,7 +37,6 @@
 .btn_back {-fx-background-image:url("../imatges/icon-arrow-dark.png");}
 .btn_back:hover {-fx-background-image:url("../imatges/icon-arrow-light.png");}
 
-/** BOTONS **/
 Button, Button:hover, .btn_back:hover {-fx-padding:2 10px; -fx-cursor:hand;}
 Button {-fx-background-color:#eee; -fx-border-color:#aaa; -fx-border-width:1px; -fx-border-radius: 2px; -fx-text-fill:#000; -fx-font-size:16px;}
 Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa; -fx-text-fill:#fff; -fx-border-width:0;}
@@ -33,11 +45,10 @@ Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa
 #btnDelete, #btnEdit {-fx-border-width:0!important;
                       -fx-background-repeat: no-repeat;
                       -fx-background-position: center;
-                      -fx-background-size: 20px;
                       -fx-pref-width: 25px!important; 
                       -fx-pref-height: 25px!important;}
-#btnDelete {-fx-background-image:url("../imatges/icon-delete.png"); -fx-background-color: #f95464;}
-#btnEdit {-fx-background-image:url("../imatges/icon-edit.png"); -fx-background-color: #4894e7;}
+#btnDelete {-fx-background-size: 15px; -fx-background-image:url("../imatges/icon-delete.png"); -fx-background-color: #f95464;}
+#btnEdit {-fx-background-size: 20px; -fx-background-image:url("../imatges/icon-save.png"); -fx-background-color: #4894e7;}
 #btnDelete:hover, #btnDelete:pressed {-fx-background-color: #b80012;}
 #btnEdit:hover, #btnEdit:pressed {-fx-background-color: #004ea3;}
 
@@ -50,10 +61,11 @@ Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa
 
 /* TAULES */
 TableView {-fx-fixed-cell-size:40px;}
-#ordersTableView .table-column, #customersTableView .table-column {-fx-alignment: center;}
+#ordersTableView .table-column, #customersTableView .table-column {-fx-alignment: center; }
 
-.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected {-fx-background-color: #666!important;}
-.table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:hover {-fx-background-color: #aaa!important;}
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected {-fx-background-color: #d3d3d3!important;}
+.table-cell {-fx-text-fill:#000!important;}
 .table-view:row-selection .table-cell {-fx-border-color: transparent white transparent transparent;}
+/*blau clar: #b8d6f5*/
 
 

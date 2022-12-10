@@ -37,8 +37,8 @@ public class App extends Application {
             // Propietats de la finestra
             primaryStage.setScene(scene);
             primaryStage.setTitle("Manteniment empresa");
-            primaryStage.setMinWidth(900);
-            primaryStage.setWidth(900);
+            primaryStage.setMinWidth(1000);
+            primaryStage.setWidth(1000);
             primaryStage.setMinHeight(600);
             primaryStage.show();
         } catch (IOException ex) {

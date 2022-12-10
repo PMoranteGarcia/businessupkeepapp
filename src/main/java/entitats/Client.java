@@ -1,7 +1,6 @@
 package entitats;
 
 import java.sql.Date; 
-import javafx.scene.control.Button;
 
 /**
  * Classe que defineix l'objecte 'Client'.
@@ -54,7 +53,7 @@ public class Client {
     }
 
     public String getPhone() {
-        return phone;
+        return phone.replaceAll(" ", "");
     }
 
     public void setPhone(String phone) {
@@ -62,7 +61,7 @@ public class Client {
     }
 
     public float getCreditLimit() {
-        creditLimit = 500.00F;
+        //creditLimit = 500.00F;
         return creditLimit;
     }
 

@@ -114,8 +114,8 @@
       </TableView>
       <HBox id="subtotalRow" alignment="CENTER_RIGHT">
          <children>
-            <Label id="subtotal-txt" text="Subtotal" />
-            <Label id="total" fx:id="totalAmount" alignment="CENTER_RIGHT" maxWidth="500.0" minWidth="150.0" prefWidth="150.0" text="2000,00" textAlignment="RIGHT">
+            <Label id="subtotal-txt" text="Subtotal:" />
+            <Label id="total" fx:id="totalAmount" alignment="CENTER_RIGHT" maxWidth="500.0" minWidth="-Infinity" prefWidth="180.0" text="3.000,00" textAlignment="RIGHT">
                <padding>
                   <Insets right="20.0" />
                </padding></Label>

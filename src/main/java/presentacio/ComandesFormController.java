@@ -1,8 +1,12 @@
 package presentacio;
 
+import dades.ClientDAO;
+import dades.ComandaDAO;
 import entitats.Client;
+import entitats.ComandaLogic;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +18,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'.
@@ -23,7 +32,9 @@ import javafx.scene.control.TextField;
  * @author Pablo Morante - Creació/Implementació
  * @author Victor García - Creació/Implementació
  */
-public class ComandesFormController implements Initializable {
+public class ComandesFormController extends PresentationLayer implements Initializable {
+    
+    int idComanda; // comanda clicada per l'usuari
 
     @FXML
     private Button btnBack;
@@ -54,7 +65,7 @@ public class ComandesFormController implements Initializable {
     @FXML
     private Button btnaddProduct;
     @FXML
-    private ComboBox<Client> selectorClient;
+    private ComboBox<Client> selectorClient = new ComboBox<Client>();
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -73,11 +84,24 @@ public class ComandesFormController implements Initializable {
         String text1 = btnSave.getText();
         String text2 = btnCancel.getText();
         String text3 = btnaddProduct.getText();
+        // get all clients
+        try {
+            ClientDAO DAO = new ClientDAO();
+            ObservableList<Client> ol = (FXCollections.observableList(DAO.getAll()));
+            selectorClient.setItems(ol);
+        } catch (SQLException ex) {
+            this.alertInfo(ex.toString());
+        }
         
         // Passar el texte a MAJÚSCULES
         btnSave.setText(text1.toUpperCase());
         btnCancel.setText(text2.toUpperCase());
         btnaddProduct.setText(text3.toUpperCase());
+        
+        this.idComanda = Integer.parseInt(orderNumber.getText()); // obtenir id comanda actual
+        
+        // get all products (ProducteLogic)
+        
     }    
 
     /**

@@ -1,6 +1,7 @@
 package entitats;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Aquí anirà la classe/entitat de comandes
@@ -9,50 +10,89 @@ import java.sql.Date;
  * @author Victor García - Creació/Implementació
  */
 public class Comanda {
-    
-    private int orderNumber;
-    private Date orderDate, requiredDate, shippedDate;
+    private int numOrdre;           // PK de comanda
+    private Date dataOrdre;
+    private Date dataEntrega;
+    private Date dataEnviament;
+    private Client client;
+    private float total;
+    private List<ProductesComanda> productes;
     private String customers_customerEmail;
-
-    public Comanda() {
+    
+    public Comanda () {
+        
     }
 
-    public int getOrderNumber() {
-        return orderNumber;
+    public Comanda(int numOrdre, Date dataOrdre, Date dataEntrega, Date dataEnviament, Client client, float total, List<ProductesComanda> productes) {
+        this.numOrdre = numOrdre;
+        this.dataOrdre = dataOrdre;
+        this.dataEntrega = dataEntrega;
+        this.dataEnviament = dataEnviament;
+        this.client = client;
+        this.total = total;
+        this.productes = productes;
     }
 
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
+    public int getNumOrdre() {
+        return numOrdre;
+    }
+    
+    public Date getDataOrdre() {
+        return dataOrdre;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public Date getDataEntrega() {
+        return dataEntrega;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public Date getDataEnviament() {
+        return dataEnviament;
     }
 
-    public Date getRequiredDate() {
-        return requiredDate;
+    public Client getClient() {
+        return client;
     }
 
-    public void setRequiredDate(Date requiredDate) {
-        this.requiredDate = requiredDate;
+    public float getTotal() {
+        return total;
     }
 
-    public Date getShippedDate() {
-        return shippedDate;
+    public List<ProductesComanda> getProductes() {
+        return productes;
     }
-
-    public void setShippedDate(Date shippedDate) {
-        this.shippedDate = shippedDate;
-    }
-
+    
     public String getCustomers_customerEmail() {
         return customers_customerEmail;
     }
 
+    public void setNumOrdre(int numOrdre) {
+        this.numOrdre = numOrdre;
+    }
+    
+    public void setDataOrdre(Date dataEntrega) {
+        this.dataOrdre = dataOrdre;
+    }
+
+    public void setDataEntrega(Date dataEntrega) {
+        this.dataEntrega = dataEntrega;
+    }
+
+    public void setDataEnviament(Date dataEnviament) {
+        this.dataEnviament = dataEnviament;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public void setProductes(List<ProductesComanda> productes) {
+        this.productes = productes;
+    }
+    
     public void setCustomers_customerEmail(String customers_customerEmail) {
         this.customers_customerEmail = customers_customerEmail;
     }

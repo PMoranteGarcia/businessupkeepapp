@@ -8,4 +8,8 @@ package entitats;
  */
 public class ComandaLogic {
     
+    public ComandaLogic() {
+        super();
+    }
+    
 }

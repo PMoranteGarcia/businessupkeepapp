@@ -1,6 +1,8 @@
 package dades;
 
 import entitats.Comanda;
+import entitats.ProductesComanda;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -35,12 +37,13 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         while (resultats.next())
         {
             Comanda o = new Comanda();
-
-            o.setOrderNumber(resultats.getInt("orderNumber"));
-            o.setOrderDate(resultats.getDate("orderDate"));
-            o.setRequiredDate(resultats.getDate("requiredDate"));
-            o.setShippedDate(resultats.getDate("shippedDate"));
+            
+            o.setNumOrdre(resultats.getInt("orderNumber"));
+            o.setDataOrdre(resultats.getDate("orderDate"));
+            o.setDataEntrega(resultats.getDate("requiredDate"));
+            o.setDataEnviament(resultats.getDate("shippedDate"));
             o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
+
 
             ret.add(o);
         }
@@ -66,6 +69,31 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     @Override
     public Comanda getOne(Comanda t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    public List<ProductesComanda> getProductes(int id) throws SQLException {
+        List<ProductesComanda> ret = new ArrayList<>();
+        String consulta = "select productCode, quantityOrdered, priceEach, orderLineNumber from orderdetails where orderNumber = ?";
+        PreparedStatement sentencia = this.getCon().prepareStatement(consulta);
+        
+        sentencia.setInt(1, id);
+        
+        ResultSet resultats = sentencia.executeQuery();
+        
+        while (resultats.next()) {
+            ProductesComanda pc = new ProductesComanda();
+            
+            pc.setIdProducte(resultats.getInt("productCode"));
+            pc.setNom("prueba");
+            pc.setNumberLine(resultats.getInt("orderLineNumber"));
+            pc.setQuantitat(resultats.getInt("quantityOrdered"));
+            pc.setUnitaryPrice(resultats.getFloat("priceEach"));
+            
+            ret.add(pc);
+        }
+        
+        return ret;
+        
     }
     
 }

@@ -42,13 +42,14 @@ Button {-fx-background-color:#eee; -fx-border-color:#aaa; -fx-border-width:1px; 
 Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa; -fx-text-fill:#fff; -fx-border-width:0;}
 
 #container {-fx-spacing:10px}
-#btnDelete, #btnEdit {-fx-border-width:0!important;
+#btnDelete, #btnEdit, #btnDetail {-fx-border-width:0!important;
                       -fx-background-repeat: no-repeat;
                       -fx-background-position: center;
                       -fx-pref-width: 25px!important; 
                       -fx-pref-height: 25px!important;}
 #btnDelete {-fx-background-size: 15px; -fx-background-image:url("../imatges/icon-delete.png"); -fx-background-color: #f95464;}
 #btnEdit {-fx-background-size: 20px; -fx-background-image:url("../imatges/icon-save.png"); -fx-background-color: #4894e7;}
+#btnDetail {-fx-background-size: 21px; -fx-background-image:url("../imatges/icon-details.png"); -fx-background-color: #288a48;}
 #btnDelete:hover, #btnDelete:pressed {-fx-background-color: #b80012;}
 #btnEdit:hover, #btnEdit:pressed {-fx-background-color: #004ea3;}
 

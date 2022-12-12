@@ -24,6 +24,12 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         super();
     }
 
+    
+    /**
+     * Mostrar tots els clients de la taula 'orders'
+     * @author Víctor García
+     * @throws SQLException
+     */
     @Override
     public List<Comanda> getAll() throws SQLException {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -39,6 +45,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             Comanda o = new Comanda();
             
             o.setNumOrdre(resultats.getInt("orderNumber"));
+            System.out.println("orderNumber: "+resultats.getInt("orderNumber"));
             o.setDataOrdre(resultats.getDate("orderDate"));
             o.setDataEntrega(resultats.getDate("requiredDate"));
             o.setDataEnviament(resultats.getDate("shippedDate"));
@@ -63,7 +70,21 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     @Override
     public void delete(Comanda t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // Definir consulta SQL per eliminar el registre actual de la taula 'orders'
+        String consulta = "DELETE FROM orders WHERE orderNumber = ?;";
+        
+        PreparedStatement preparedStatement;
+        try {
+            
+            preparedStatement = con.prepareStatement(consulta);
+            
+            preparedStatement.setString(1, Integer.toString(t.getNumOrdre()));
+            preparedStatement.executeUpdate();
+            System.out.println(">> Eliminada ordre: "+ t.toString());
+                        
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }
 
     @Override

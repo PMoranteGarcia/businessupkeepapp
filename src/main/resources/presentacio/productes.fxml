@@ -59,7 +59,7 @@
                 <Insets left="20.0" right="20.0" top="20.0" />
             </VBox.margin>
         </HBox>
-        <TableView id="llistat" fx:id="ordersList">
+        <TableView id="llistat" fx:id="productList" editable="true">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>

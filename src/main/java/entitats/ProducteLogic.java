@@ -1,5 +1,6 @@
 package entitats;
 
+import dades.AppConfigDAO;
 import dades.ComandaDAO;
 import dades.ProducteDAO;
 import java.sql.SQLException;
@@ -18,10 +19,12 @@ import javafx.scene.control.TextField;
  */
 public class ProducteLogic {
 
-//    private AppConfigDAO dataDefaults;
+    private AppConfigDAO dataDefaults;
     private ProducteDAO dataProduct;
     private ComandaDAO dataOrder;
+    private final List<Producte> productList = new ArrayList<>();                 // Llistat amb clients (taula: customers)
     private final List<Comanda> ordersList = new ArrayList<>();
+    private final List<AppConfig> valuesList = new ArrayList<>();               // Llistat per desar valors per defecte (Regles de negoci, taula: appConfig)
 
     public ProducteLogic() {
     }
@@ -58,29 +61,27 @@ public class ProducteLogic {
         return numComandes;
     }
 
-    public Float getDefaultStock() {
+    public int getDefaultStock() {
 
-        Float credit = 1.0F;
+        int credit = 0;
 
-//        try {
-//            
-//            dataDefaults = new AppConfigDAO();
-//            valuesList.addAll(dataDefaults.getAll());
-//                
-//                credit = valuesList.get(0).getDefaultCreditLimit();
-//           
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+
+            dataDefaults = new AppConfigDAO();
+            valuesList.addAll(dataDefaults.getAll());
+
+            credit = valuesList.get(0).getDefaultStock();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //        
         return credit;
 
     }
-    
-    
-     public boolean checkStock(TextField f) {
-        
+
+    public boolean checkStock(TextField f) {
+
         boolean ret = false;
 //        Float userValue = Float.parseFloat(f.getText());
 //        Float maxValue = valuesList.get(0).getDefaultCreditLimit();
@@ -89,8 +90,46 @@ public class ProducteLogic {
 //
 //        if( (userValue > 0) && (userValue <= maxValue) )
 //            ret = true;
-        
+
         return ret;
     }
+
+    
+     /**
+     * Mètode per verificar que l'usuari no existeixi ja a la BD (email).
+     * 
+     * @param f Camp de texte del formulari on s'hi indica el mail del client
+     * @return boolean (True/False) si es troben coincidències o no amb la BD
+     * @author Txell Llanas - Implementació
+     */
+    public boolean checkProductExists(TextField f) {
+        
+        boolean res = false;
+//        String mail = f.getText().trim();
+//        int count = 0;
+//        
+//        try {
+//            
+//            dataClient = new ClientDAO();
+//            clientsList.addAll(dataClient.getAll());
+//            
+//            for(int i = 0; i < clientsList.size(); i++){
+//                
+//                if(mail.equals(clientsList.get(i).getCustomerEmail()))
+//                    count++;
+//                
+//            }            
+//            
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        if( count > 0 )
+//            res = true;
+//        
+        return res;
+    }
+    
+    
     
 }

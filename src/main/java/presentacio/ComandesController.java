@@ -24,6 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -79,6 +82,8 @@ public class ComandesController implements Initializable {
 
     // Instància de ComandaLogic per carregar els mètodes de validacions
     private ComandaLogic validate = new ComandaLogic();
+    
+    public static int idComanda = 0;
 
     /**
      * Inicialitza els components especificats.
@@ -126,6 +131,7 @@ public class ComandesController implements Initializable {
     /**
      * Mètode que recupera tots els registres de la taula 'orders'.
      *
+     * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
     private void fillOrdersTable() {
@@ -171,7 +177,7 @@ public class ComandesController implements Initializable {
     /**
      * Mètode que afegeix botons dins la cel·la d'accions de la TableView
      *
-     * @author Víctor García - Implementació
+     * @author Víctor García - Creació/Implementació
      */
     private void addCellButtons() {
 
@@ -198,164 +204,61 @@ public class ComandesController implements Initializable {
                 // Desar canvis registre actual
                 btnDetail.setId("btnDetail");
                 btnDetail.setTooltip(tooltipDetail);
-//                btnEdit.setOnAction(event -> {
-//
-//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                    alert.setTitle("CONFIRMAR CANVIS");
-//                    alert.setHeaderText("Desitja actualitzar l'usuari \""+c.getCustomerName().toUpperCase()+"\"?");
-//
-//                    ButtonType yesButton = new ButtonType("Sí");
-//                    ButtonType cancelButton = new ButtonType("No");
-//
-//                    alert.getButtonTypes().setAll(yesButton, cancelButton);
-//
-//                    if( alert.showAndWait().get() == yesButton ) {
-//
-//                        dataClient.update(c);                                   // Actualitzar el registre actual dins la BD, taula 'customers'
-//
-//                    } else {
-//                        dataClient.getOne(c);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
-//                        System.out.println("client no modificat: "
-//                                           + dataClient.getOne(c));
-//                        alert.close();
-//                    }
-//
-//                    columnCustomerName.getStyleClass().add("netejar");          // Netejar estils aplicats als camps modificats
-//                    customersTableView.refresh();                               // Refrescar llistat (NECESSARI)
-//
-//                });
-                btnDelete.setId("btnDelete");                                   // Botó per eliminar registre actual
+                btnDetail.setOnAction(event -> {
+                    try {
+                        goToOrderDetails(t);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+
+
+                // FALTA IF/ELSE PARA SI LA COMANDA TIENE PRODUCTOS DENTRO NO PODER BORRARLA
+                btnDelete.setId("btnDelete");
                 btnDelete.setTooltip(tooltipEliminar);
                 btnDelete.setOnAction(event -> {
 
-                    try {
-                        dataComanda.delete(t);                               // Crido funció per eliminar el registre actual de la BD
-                    } catch (SQLException ex) {
-                        Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("AVÍS");
+                    alert.setHeaderText("Estàs a punt d'eliminar la comanda \"" + t.getNumOrdre() + "\". Vols continuar?");
+
+                    ButtonType yesButton = new ButtonType("Sí");
+                    ButtonType cancelButton = new ButtonType("No");
+
+                    alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+                    if (alert.showAndWait().get() == yesButton) {
+                            dataComanda.delete(t);   
+                            llistaObservableComanda.remove(t);
+                    } else {
+                        alert.close();
                     }
-
-                    llistaObservableComanda.remove(t);
-
-//                    if( validate.clientHasOrders(t) > 0 ) {                     // Mostrar avís si el client té comandes actives
-//                        
-//                        Alert alert = new Alert(Alert.AlertType.ERROR);
-//                        alert.setTitle("CNO ES POT ELIMINAR EL CLIENT");
-//                        alert.setHeaderText("El client \""+c.getCustomerName().toUpperCase()+"\" té comandes pendents.\nNo es pot eliminar de la base de dades.");
-//                        alert.show();
-//                        
-//                    } else {                                                    // Demanar confirmació per eliminar el client
-//                        
-//                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                        alert.setTitle("CONFIRMAR BAIXA");
-//                        alert.setHeaderText("Desitja eliminar l'usuari \""+c.getCustomerName().toUpperCase()+"\"?");
-//
-//                        ButtonType yesButton = new ButtonType("Sí");
-//                        ButtonType cancelButton = new ButtonType("No");
-//
-//                        alert.getButtonTypes().setAll(yesButton, cancelButton);
-//
-//                        if( alert.showAndWait().get() == yesButton ) {                           
-//                            dataClient.delete(c);                               // Crido funció per eliminar el registre actual de la BD
-//                            llistaObservableClient.remove(c);                   // Elimino també del llistat al moment
-//                        } else
-//                            alert.close();
-//                    }
                 });
             }
-        });
+        }
+        );
     }
 
     /**
-     * Mètode que defineix com a editables les dades de tots els camps d'una
-     * mateixa columna.
+     * Mostra el detall de la comanda que hem seleccionat.
      *
-     * @author Txell Llanas - Creació/Implementació
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Víctor García - Creació
      */
-//    private void makeColsEditable() {
-//            
-//            // 1. Fer editables les cel·les de dins una mateixa columna
-//            columnCustomerName.setCellFactory(TextFieldTableCell.forTableColumn());
-//            //columnBirthDate.setCellFactory(TextFieldTableCell.forTableColumn());
-//            columnPhone.setCellFactory(TextFieldTableCell.forTableColumn());
-//            
-//            columnCreditLimit.setCellFactory(col -> new NumberCell());          // Crear Classe per editar la cel·la amb valors numèrics
-//           // columnBirthDate.setCellFactory(col -> new DatePickerCell());      // Crear Classe per editar la cel·la amb valors de calendari
-//            
-//           System.out.println("llistaObservableClient: "+llistaObservableClient.size());
-//            //LocalDate date = LocalDate.of(2020, 1, 8);
-//            Date date = Date.valueOf("2014-02-14");
-//            //Date.valueOf(field_birthDate.getValue()));
-//            
-//            columnBirthDate.setCellFactory(new Callback<TableColumn, TableCell>() {
-//                @Override
-//                public TableCell call(TableColumn p) {
-//                    DatePickerCell datePick = new DatePickerCell();
-//                    return datePick;
-//                }
-//            });
-//           
-//           
-//            // 2. Desar els registres editats
-//            columnCustomerName.setOnEditCommit(event -> {
-//                
-//                // Recuperar l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment (si ha estat editat...)
-//                TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;                
-//                
-//                // Desem els valors d'abans i després de la modificació
-//                String valorAntic = (String)e.getOldValue();
-//                String valorNou = (String)e.getNewValue();
-//                System.out.println("Valor antic:" + valorAntic);
-//                System.out.println("Valor nou:" + valorNou);
-//                
-//                
-//                //columnCustomerName.getStyleClass().clear();
-//                //columnCustomerName.getStyleClass().add("changed");
-//                //applyStyleToEditedCell(columnCustomerName, e);
-//                
-//                
-//                // ** ACCIÓ x DESAR (BOTÓ SAVE)
-//                // Recuperem l'objecte 'Client' de la fila afectada
-//                Client c = (Client)e.getRowValue();
-//                
-//                // Detectar canvis
-//                //if(valorNou.equalsIgnoreCase(valorAntic) || valorNou.isBlank() || valorNou.isEmpty()) {
-//                if( valorNou.isBlank() || valorNou.isEmpty() ) {
-//                    //valorNou = valorAntic; // mostra valor original al llistat
-//                    //li assignem el nou valor (necessari x actualitzar nou valor editat)
-//                    c.setCustomerName(valorAntic);
-//                } else                    
-//                    c.setCustomerName((String)e.getNewValue());//li assignem el nou valor (necessari x actualitzar nou valor editat)             
-//                
-//                System.out.println("Cond. 1: "+valorNou.equalsIgnoreCase(valorAntic));
-//                System.out.println("Cond. 2: "+valorNou.isBlank());
-//                System.out.println("Cond. 3: "+valorNou.isEmpty());
-//            });
-//            
-//            // Modificar telèfon
-//            columnPhone.setOnEditCommit(event -> {
-//                
-//                //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
-//                TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;                
-//                
-//                //valor antic abans de la modificació
-//                String valorAntic = (String)e.getOldValue();
-//                System.out.println("Valor antic:" + valorAntic);
-//
-//                //valor nou
-//                String valorNou = (String)e.getNewValue();
-//                System.out.println("Valor nou:" + valorNou);
-//
-//                // ** ACCIÓ x DESAR (BOTÓ SAVE)
-//                //recuperem l'objecte Client de la fila afectada
-//                Client c = (Client)e.getRowValue();
-//                
-//                //li assignem el nou valor (necessari x actualitzar nou valor editat)
-//                c.setPhone(valorNou);
-//                
-//                //applyStyleToEditedCell(columnPhone, e);
-//                
-//            });
-//    }
+    @FXML
+    private void goToOrderDetails(Comanda t) throws IOException {
+        setIdComanda(t.getNumOrdre());
+        
+        App.setRoot("comandesForm");
+    }
+    
+    private void setIdComanda(int i) {
+        idComanda = i;
+    }
+    
+    public static int getIdComanda() {
+        return idComanda;
+    }
     
     /**
      * Mostra l'apartat 'Clients' i al llistat que conté tots els registres de

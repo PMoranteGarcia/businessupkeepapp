@@ -39,7 +39,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     @FXML
     private Button btnBack;
     @FXML
-    private Label orderNumber;
+    public Label orderNumber;
     @FXML
     private TableColumn columnActions;
     @FXML
@@ -97,6 +97,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
         btnSave.setText(text1.toUpperCase());
         btnCancel.setText(text2.toUpperCase());
         btnaddProduct.setText(text3.toUpperCase());
+        orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
         
         this.idComanda = Integer.parseInt(orderNumber.getText()); // obtenir id comanda actual
         

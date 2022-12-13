@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * CRUD de Comandes a la BBDD.
@@ -69,7 +71,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     @Override
-    public void delete(Comanda t) throws SQLException {
+    public void delete(Comanda t) {
         // Definir consulta SQL per eliminar el registre actual de la taula 'orders'
         String consulta = "DELETE FROM orders WHERE orderNumber = ?;";
         
@@ -83,7 +85,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             System.out.println(">> Eliminada ordre: "+ t.toString());
                         
         } catch (SQLException ex) {
-            System.out.println(ex);
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

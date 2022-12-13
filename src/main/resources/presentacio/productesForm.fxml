@@ -44,11 +44,11 @@
         </HBox>
         <HBox nodeOrientation="LEFT_TO_RIGHT">
             <children>
-                <Label minWidth="50.0" prefWidth="50.0" text="Preu" />
+                <Label fx:id="lblPreu" minWidth="50.0" prefWidth="50.0" text="Preu" />
                 <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
                 <TextField fx:id="textFieldPreu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" />
                 <Separator minWidth="18.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="18.0" />
-                <Label minWidth="50.0" prefWidth="50.0" text="Stock" />
+                <Label fx:id="lblStock" minWidth="50.0" prefWidth="50.0" text="Stock" />
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
                 <TextField fx:id="textFieldStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" />
             </children>
@@ -58,11 +58,11 @@
         </HBox>
         <VBox>
             <children>
-                <Label minWidth="50.0" prefWidth="50.0" text="Nom" />
+                <Label fx:id="lblNom" minWidth="50.0" prefWidth="50.0" text="Nom" />
                 <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
                 <TextField fx:id="textFieldNom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                 <Separator minHeight="20.0" opacity="0.0" prefHeight="20.0" />
-                <Label text="Descripció" />
+                <Label fx:id="lblDescripcio" text="Descripció" />
                 <TextArea fx:id="textAreaDescripcio" wrapText="true" />
             </children>
             <VBox.margin>

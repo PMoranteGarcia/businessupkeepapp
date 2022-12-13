@@ -125,6 +125,7 @@ public class ComandesController implements Initializable {
     private void goToNewOrder() throws IOException {
 
         // Carregar la vista del formulari "COMANDES (Detalls)" in-situ
+        setIdComanda(0);
         App.setRoot("comandesForm");
     }
 

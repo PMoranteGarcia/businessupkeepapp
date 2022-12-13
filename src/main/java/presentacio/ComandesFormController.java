@@ -262,8 +262,10 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Víctor García - Implementació
      */
     @FXML
-    private void addProduct() {
+    private void addProduct() throws SQLException {
+        DAOComanda = new ComandaDAO();
         
+        DAOComanda.saveProduct(true, selectorProduct.getValue(), this.idComanda);
     }
 
 }

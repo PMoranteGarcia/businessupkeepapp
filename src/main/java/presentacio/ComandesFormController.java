@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'.
@@ -89,6 +90,21 @@ public class ComandesFormController extends PresentationLayer implements Initial
             ClientDAO DAO = new ClientDAO();
             ObservableList<Client> ol = (FXCollections.observableList(DAO.getAll()));
             selectorClient.setItems(ol);
+            selectorClient.setConverter(new StringConverter<Client>() {
+              @Override
+              public String toString(Client client) {
+                if (client== null){
+                  return null;
+                } else {
+                  return client.getCustomerName();
+                }
+              }
+
+            @Override
+            public Client fromString(String id) {
+                return null;
+            }
+        });
         } catch (SQLException ex) {
             this.alertInfo(ex.toString());
         }

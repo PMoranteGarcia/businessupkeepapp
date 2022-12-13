@@ -12,7 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -34,7 +38,7 @@ public class ProductesFormController implements Initializable {
     @FXML
     private TextField textFieldStock;
     @FXML
-    private TextField textFieldDescripcio;
+    private TextArea textAreaDescripcio;
     @FXML
     private Button btnDesarProducte;
     @FXML
@@ -46,21 +50,41 @@ public class ProductesFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        textFieldNom.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
+        textAreaDescripcio.setPrefHeight(Screen.getPrimary().getBounds().getHeight());
+        textAreaDescripcio.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
+
     }
 
+    /**
+     * *Torna a la vista de cercar productes
+     *
+     * @throws IOException
+     */
     @FXML
-    private void goToProducts(ActionEvent event) throws IOException {
+    private void goToProducts() throws IOException {
         App.setRoot("productes");
     }
 
+    /**
+     * *Guarda a la BBDD el producte a la taula productes amb les dades
+     * introduides
+     *
+     * @throws IOException
+     */
     @FXML
-    private void saveProducte(ActionEvent event) throws IOException {
+    private void saveProducte() throws IOException {
         App.setRoot("productes");
 
     }
 
+    /**
+     * *Cancela la creacio del nou producte i torna a la vista de productes
+     *
+     * @throws IOException
+     */
     @FXML
-    private void cancelProducte(ActionEvent event) throws IOException {
+    private void cancelProducte() throws IOException {
         App.setRoot("productes");
 
     }

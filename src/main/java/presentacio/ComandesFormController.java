@@ -4,10 +4,13 @@ import dades.ClientDAO;
 import dades.ComandaDAO;
 import dades.ProducteDAO;
 import entitats.Client;
+import entitats.Comanda;
 import entitats.ComandaLogic;
 import entitats.Producte;
+import entitats.ProductesComanda;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -23,9 +26,13 @@ import javafx.scene.control.TextField;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
+import java.util.Comparator;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -50,7 +57,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     @FXML
     private Button btnCancel;
     @FXML
-    private TableView orderLinesList;
+    private TableView<ProductesComanda> orderLinesList;
     @FXML
     private TableColumn columnProductCode;
     @FXML
@@ -75,11 +82,21 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldHour;
     @FXML
     private TextField fieldMinutes;
+    
+    private ComandaDAO DAOComanda;
+    
+    private ClientDAO DAOClient;
+    
+    private ProducteDAO DAOProducte;
+    
+    private ObservableList<ProductesComanda> llistaObservableProductes = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class.
      *
      * @author Txell Llanas - Creació/Implementació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -87,18 +104,82 @@ public class ComandesFormController extends PresentationLayer implements Initial
         String text1 = btnSave.getText();
         String text2 = btnCancel.getText();
         String text3 = btnaddProduct.getText();
-        // get all clients
+
+        // Passar el texte a MAJÚSCULES
+        btnSave.setText(text1.toUpperCase());
+        btnCancel.setText(text2.toUpperCase());
+        btnaddProduct.setText(text3.toUpperCase());
+
+        this.idComanda = Integer.parseInt(orderNumber.getText()); // obtenir id comanda actual
+        
+        fillDropDownList();
+        fillProductsTable();
+    }
+    
+    /**
+     * Omplir la taula dels productes que té la comanda
+     * 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
+    private void fillProductsTable() {
         try {
-            ClientDAO cDAO = new ClientDAO();
-            ObservableList<Client> olc = (FXCollections.observableList(cDAO.getAll()));
+
+            DAOComanda = new ComandaDAO();
+
+            llistaObservableProductes.addAll(DAOComanda.getProductes(this.idComanda));
+
+            // Vincular els atributs de Comanda amb cada columna de la taula per mostrar les dades recuperades dins el tableview:
+            columnProductCode.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Integer>("idProducte"));
+            columnProductName.setCellValueFactory(new PropertyValueFactory<>("nom"));
+            columnQuantityOrdered.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Integer>("quantitat"));
+            columnPriceEach.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("unitaryPrice"));
+            columnAmount.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("total"));
+
+            // Aplicar estils pels camps NO EDITABLES
+            columnProductCode.setCellFactory(tc -> new TableCell<Comanda, Integer>() {
+                @Override
+                protected void updateItem(Integer value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        getStyleClass().add("non-editable");
+                        setText(Integer.toString(value));
+                    }
+                }
+            });
+
+            Comparator<ProductesComanda> comparator = Comparator.comparingInt(ProductesComanda::getNumberLine);
+            llistaObservableProductes.sort(comparator);
+            
+            // Afegir els registres a la taula
+            orderLinesList.setItems(llistaObservableProductes);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Omple amb dades les dues dropdown lists de clients i productes
+     * 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
+    private void fillDropDownList() {
+        try {
+            DAOClient = new ClientDAO();
+            ObservableList<Client> olc = (FXCollections.observableList(DAOClient.getAll()));
             selectorClient.setItems(olc);
+            // conversor per pasar d'objecte a string per la dropdownlist
             selectorClient.setConverter(new StringConverter<Client>() {
                 @Override
                 public String toString(Client client) {
                     if (client == null) {
                         return null;
                     } else {
-                        return client.getCustomerName();
+                        return client.getCustomerName(); // retorna el nom del client si no és null
                     }
                 }
 
@@ -107,22 +188,22 @@ public class ComandesFormController extends PresentationLayer implements Initial
                     return null;
                 }
             });
-            ProducteDAO pDAO = new ProducteDAO();
-            ObservableList<Producte> olp = (FXCollections.observableList(pDAO.getAll()));
+            DAOProducte = new ProducteDAO();
+            ObservableList<Producte> olp = (FXCollections.observableList(DAOProducte.getAll()));
             selectorProduct.setItems(olp);
+            // conversor per pasar d'objecte a string per la dropdownlist
             selectorProduct.setConverter(new StringConverter<Producte>() {
                 @Override
                 public String toString(Producte p) {
                     if (p == null) {
                         return null;
                     } else {
-                        //return p.getCustomerName();
-                        return null;
+                        return p.getProductName(); // retorna el nom del producte si no és null
                     }
                 }
 
                 @Override
-                public Producte fromString(String id) {
+                public Producte fromString(String id) { // per passar de string a objecte si és necessari
                     return null;
                 }
             });
@@ -130,15 +211,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         } catch (SQLException ex) {
             this.alertInfo(ex.toString());
         }
-
-        // Passar el texte a MAJÚSCULES
-        btnSave.setText(text1.toUpperCase());
-        btnCancel.setText(text2.toUpperCase());
-        btnaddProduct.setText(text3.toUpperCase());
-
-        this.idComanda = Integer.parseInt(orderNumber.getText()); // obtenir id comanda actual
-
-        // get all products (ProducteLogic)
     }
 
     /**
@@ -185,9 +257,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * Mètode per afegir un producte al llistat.
      *
      * @author Txell Llanas - Creació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @FXML
     private void addProduct() {
+        
     }
 
 }

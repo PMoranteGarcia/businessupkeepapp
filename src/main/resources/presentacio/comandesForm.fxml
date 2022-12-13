@@ -19,7 +19,7 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Label id="title" text="Detall Comanda #" />
+            <Label id="title" fx:id="TitolComanda" text="Detall Comanda #" />
             <Label id="title" fx:id="orderNumber" text="001" />
          </children>
          <VBox.margin>

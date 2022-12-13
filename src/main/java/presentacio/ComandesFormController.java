@@ -33,6 +33,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import java.util.Comparator;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -50,6 +52,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private Button btnBack;
     @FXML
     public Label orderNumber;
+    @FXML
+    private Label TitolComanda;
     @FXML
     private TableColumn columnActions;
     @FXML
@@ -109,9 +113,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
         btnSave.setText(text1.toUpperCase());
         btnCancel.setText(text2.toUpperCase());
         btnaddProduct.setText(text3.toUpperCase());
-        orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
         
-        this.idComanda = Integer.parseInt(orderNumber.getText()); // obtenir id comanda actual
+        this.idComanda = ComandesController.getIdComanda(); // obtenir id comanda actual
+        
+        if (idComanda == 0) { // si és 0 és que la comanda és nova
+            orderNumber.setText("");
+            TitolComanda.setText("Crear Comanda");
+        } else { // si no, estableix el número de comanda
+            orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
+            TitolComanda.setText("Detall Comanda ");
+        }
         
         fillDropDownList();
         fillProductsTable();
@@ -233,9 +244,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
      *
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @FXML
     private void saveOrder() throws IOException {
+        // if per saber si és update o create
         App.setRoot("comandes");
     }
 
@@ -248,10 +262,23 @@ public class ComandesFormController extends PresentationLayer implements Initial
      *
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @FXML
     private void cancelOrder() throws IOException {
-        App.setRoot("comandes");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            alert.setTitle("CONFIRMI UNA OPCIÓ");
+            alert.setHeaderText("Desitja descartar l'alta actual?");
+
+            ButtonType cancelButton = new ButtonType("Sortir");
+            ButtonType yesButton = new ButtonType("Seguir Editant");
+
+            alert.getButtonTypes().setAll(yesButton, cancelButton);
+            if( alert.showAndWait().get() == cancelButton )
+                App.setRoot("comandes");                                         // Redirigir a l'usuari al llistat de clients
+            else
+                alert.close();
     }
 
     /**

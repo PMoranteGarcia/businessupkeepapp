@@ -120,11 +120,14 @@ public class ComandesController implements Initializable {
      *
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @FXML
     private void goToNewOrder() throws IOException {
 
         // Carregar la vista del formulari "COMANDES (Detalls)" in-situ
+        setIdComanda(0); // si la comanda és nova, id 0
         App.setRoot("comandesForm");
     }
 
@@ -252,10 +255,21 @@ public class ComandesController implements Initializable {
         App.setRoot("comandesForm");
     }
     
+    /** Estableix la id de la comanda seleccionada
+     * 
+     * @param i 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
     private void setIdComanda(int i) {
         idComanda = i;
     }
     
+    /** Mètode per saber quina comanda ha estat seleccionada
+     * 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
     public static int getIdComanda() {
         return idComanda;
     }

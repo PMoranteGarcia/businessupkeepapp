@@ -1,8 +1,6 @@
 package dades;
 
 import entitats.AppConfig;
-import entitats.Client;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,6 +27,10 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
         super();
     }
 
+    /**
+     * Mètode que permet recuperar els valors especificats a la taula 'appConfig'
+     * @return List amb tots els valors definits per defecte de l'aplicació
+     */
     @Override
     public List<AppConfig> getAll() {
         
@@ -78,9 +80,14 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     * 
+     * @param defaults
+     * @return 
+     */
     @Override
     public AppConfig getOne(AppConfig defaults) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
         // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
         String consulta = "SELECT * FROM appConfig";
         try {
@@ -93,19 +100,16 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
             {
                 defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));
                 defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));
-            }
-            
+            }            
             
         } catch (SQLException ex) {
             Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Defaults: "+ defaults);
         return defaults;
     }
     
     public AppConfig getDefaults() {
         
-        System.out.println(">> inici SQL");
         // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
         String consulta = "SELECT * FROM appConfig";
         try {

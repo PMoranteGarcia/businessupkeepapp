@@ -13,6 +13,8 @@ public class AppConfig {
     //private AppConfigDAO defaults;
     private float defaultCreditLimit;
     private int minCustomerAge;
+    private int defaultStock;
+
 
 
     public AppConfig() {
@@ -34,5 +36,12 @@ public class AppConfig {
     public void setMinCustomerAge(int minCustomerAge) {
         this.minCustomerAge = minCustomerAge;
     }
-    
+        public int getDefaultStock() {
+        return defaultStock;
+    }
+
+    public void setDefaultStock(int defaultStock) {
+        this.defaultStock = defaultStock;
+    }
+
 }

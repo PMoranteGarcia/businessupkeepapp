@@ -1,45 +1,252 @@
 package dades;
 
 import entitats.Producte;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * CRUD de Productes a la BBDD.
- * 
+ *
  * @author Pablo Morante - Creació
  * @author Victor García - Creació
- * @author Izan Jimenez  - Creació/Implementació
+ * @author Izan Jimenez - Creació/Implementació
  */
 public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
-    
+
+    //comandes SQL
+    final String INSERT = "INSERT INTO products(productName, productDescription, quantityInStock, buyPrice) VALUES (?, ?, ?, ?)";
+    final String UPDATE = "UPDATE products SET productName = ?, productDescription = ?, quantityInStock = ?, buyPrice = ? WHERE productCode = ?";
+    final String DELETE = "DELETE FROM products WHERE productCode = ?";
+    final String GETALL = "SELECT * FROM products";
+    final String GETONE = "SELECT * FROM products WHERE productCode = ?";
+
+    //al crear un ProducteDAO crea una conexió 
     public ProducteDAO() throws SQLException {
         super();
     }
 
     @Override
-    public List<Producte> getAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void save(Producte t) {
+        //es prepara el Statement
+        System.out.println("Guardant producte");
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+
+        try {
+            //es carrega el statement amb la conexió i la comanda
+            stat = super.getCon().prepareStatement(INSERT);
+            //inserim els camps del producte al statement
+            stat.setString(1, t.getProductName());
+            stat.setString(2, t.getProductDescription());
+            stat.setInt(3, t.getQuantityInStock());
+            stat.setFloat(4, t.getBuyPrice());
+
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
+            if (stat.executeUpdate() == 0) {
+                System.out.println("potser no s'hagi guardat");
+                throw new SQLException();
+            }
+            //AUTOINCREMENT?
+//            rs = stat.getGeneratedKeys();
+//            if (rs.next()) {
+//                t.setProductCode(rs.getInt(1));
+//            } else {
+//                throw new SQLException();
+//            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR AL GUARDAR PRODUCTO: " + e);
+        } finally {
+            //tanquem el statement
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR STAT EN GUARDAR PRODUCTO: " + e);
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR RS EN GUARDAR PRODUCTO: " + e);
+                }
+            }
+        }
     }
 
     @Override
-    public void save(Producte t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void update(Producte t) {
+        System.out.println("Modificant producte");
+        PreparedStatement stat = null;
+        try {
+            //es carrega el statement amb la conexió i la comanda
+            stat = super.getCon().prepareStatement(UPDATE);
+            //inserim els camps del producte al statement
+            stat.setString(1, t.getProductName());
+            stat.setString(2, t.getProductDescription());
+            stat.setInt(3, t.getQuantityInStock());
+            stat.setFloat(4, t.getBuyPrice());
+            stat.setInt(5, t.getProductCode());
+
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
+            if (stat.executeUpdate() == 0) {
+                System.out.println("potser no s'hagi modificat el producte");
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR AL GUARDAR PRODUCTO: " + e);
+        } finally {
+            //tanquem el statement
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR STAT EN GUARDAR PRODUCTO: " + e);
+                }
+
+            }
+        }
     }
 
     @Override
-    public void update(Producte t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void delete(Producte t) {
+        PreparedStatement stat = null;
+        System.out.println("Eliminat producte producte: " + t.getProductCode());
+
+        try {
+            stat = super.getCon().prepareStatement(DELETE);
+            stat.setInt(1, t.getProductCode());
+            if (stat.executeUpdate() == 0) {
+                System.out.println("Puede que el producto no se haya eliminado");
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR EN ELIMINAR PRODUCTE: " + e);
+        } finally {
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STAT EN ELIMINAR PRODUCTE: " + e);
+                }
+            }
+        }
     }
 
     @Override
-    public void delete(Producte t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Producte getOne(Producte t) {
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        Producte p = null;
+
+        try {
+            stat = super.getCon().prepareStatement(GETONE);
+            stat.setInt(1, t.getProductCode());
+            rs = stat.executeQuery();
+
+            if (rs.next()) {
+                p = convertir(rs);
+            } else {
+                System.out.println("No se ha trobat aquest registre");
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtenir un producte: " + e);
+        } finally {
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR STAT EN OBTENIR PRODUCTE: " + e);
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR RS EN OBTENIR PRODUCTE: " + e);
+                }
+
+            }
+        }
+        return p;
+
     }
 
     @Override
-    public Producte getOne(Producte t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<Producte> getAll() {
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        List<Producte> p = new ArrayList<>();
+
+        try {
+            stat = super.getCon().prepareStatement(GETALL);
+            rs = stat.executeQuery();
+            while (rs.next()) {
+                p.add(convertir(rs));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtenir un producte: " + e);
+        } finally {
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR STAT EN OBTENIR PRODUCTE: " + e);
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL CERRAR RS EN OBTENIR PRODUCTE: " + e);
+                }
+
+            }
+        }
+        return p;
     }
-    
+
+    private Producte convertir(ResultSet rs) throws SQLException {
+        String nomProducte = rs.getString("productName");
+        String descProducte = rs.getString("productDescription");
+        int stock = rs.getInt("quantityInStock");
+        float preu = rs.getFloat("buyPrice");
+
+        Producte p = new Producte(nomProducte, descProducte, stock, preu);
+        p.setProductCode(rs.getInt("productCode"));
+
+        return p;
+    }
+
+//    public static void main(String[] args) {
+//        try {
+//            ProducteDAO pd = new ProducteDAO();
+//
+//            //SAVE
+////            Producte p = new Producte("Gafas", "Gafas2", 2, (float) 5.99);
+////            pd.save(p);
+//            //GetOne
+//            Producte p = new Producte("GAFITAS", "GAFITAS MODIFICADAS", 0, 0);
+//            p.setProductCode(3);
+//            System.out.println("---" + pd.getOne(p));
+//            //UPDATE
+////            pd.update(p);
+//            //DELETE
+////            pd.delete(p);
+//            //GETALL
+//            List<Producte> productes = pd.getAll();
+//            for (Producte producte : productes) {
+//                System.out.println(producte.toString());
+//            }
+//        } catch (Exception e) {
+//        } finally {
+//        }
+//    }
 }

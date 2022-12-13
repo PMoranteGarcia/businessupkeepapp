@@ -33,7 +33,7 @@ import javafx.scene.control.ButtonType;
 public class ClientsFormController implements Initializable {
 
     @FXML
-    private Button btnBack, btnSave, btnCancel;   
+    private Button btnBack, btnSave, btnCancel;
     @FXML
     private Label label_customerEmail, label_customerName, label_idCard, label_phone, label_birthDate, label_creditLimit, label_euro;
     @FXML
@@ -42,9 +42,9 @@ public class ClientsFormController implements Initializable {
     private DatePicker  field_birthDate;
     
     
-    private ClientLogic validate = new ClientLogic();                           // Instància del ClientLogic per carregar els mètodes de validacions    
+    private final ClientLogic validate = new ClientLogic();                     // Instància del ClientLogic per carregar els mètodes de validacions    
     List<String> errors = new ArrayList<>();                                    // Llistat per recollir errors de validació del formulari    
-    String defaultCredit = Float.toString(validate.getDefaultCreditLimit());    // String amb el valor per defecte pel Crèdit per assignar aun client
+    String defaultCredit = Float.toString(validate.getDefaultCreditLimit());    // String amb el valor per defecte pel Crèdit per assignar a un client
     
     /**
      * Inicialitza el controlador.
@@ -56,7 +56,7 @@ public class ClientsFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        field_creditLimit.setText(defaultCredit); // Inserir valor per defecte del crèdit màxim d'un client
+        field_creditLimit.setText(defaultCredit);                               // Inserir valor per defecte del crèdit màxim d'un client al formulari de creació
     }
 
     /**
@@ -84,8 +84,6 @@ public class ClientsFormController implements Initializable {
         validacions();                                                          // Validar camps formulari        
         if( !errors.isEmpty() ){
 
-            System.out.println(">> Hi ha errors al formulari!");
-
             String errorLines = "";
             for(int i = 0; i < errors.size(); i++)                              // Llistar els errors provinents de les validacions             
                 errorLines += errors.get(i) + "\n";
@@ -98,7 +96,6 @@ public class ClientsFormController implements Initializable {
             
         } else {
             
-            System.out.println(">> Client validat");
             Client c = new Client(field_customerEmail.getText(),
                                   field_idCard.getText(), 
                                   field_customerName.getText(), 
@@ -108,7 +105,6 @@ public class ClientsFormController implements Initializable {
         
             ClientDAO dadesClient = new ClientDAO();                            // Si tot ok, crear nou client amb les dades introduïdes al formulari
             dadesClient.save(c);
-            System.out.println(">> Client desat satisfactòriament!");
 
             App.setRoot("clients");                                             // Redirigir a l'usuari al llistat de clients
         }
@@ -197,6 +193,7 @@ public class ClientsFormController implements Initializable {
             label_customerName.getStyleClass().add("filled");
         }
         
+        
         if( field_customerEmail.getText().isEmpty() || field_customerEmail.getText().isBlank() ) {            
             errors.add("El camp 'Email' és obligatori.");
             field_customerEmail.getStyleClass().add("required");
@@ -214,6 +211,7 @@ public class ClientsFormController implements Initializable {
             
         }
         
+        
         if( field_idCard.getText().isEmpty() || field_idCard.getText().isBlank() ) {
             errors.add("El camp 'Dni' és obligatori.");
             field_idCard.getStyleClass().add("required");
@@ -230,6 +228,7 @@ public class ClientsFormController implements Initializable {
             }
         }
         
+        
         if( field_phone.getText().isEmpty() || field_phone.getText().isBlank() ) {
             errors.add("El camp 'Telèfon' és obligatori.");            
             field_phone.getStyleClass().add("required");
@@ -239,6 +238,7 @@ public class ClientsFormController implements Initializable {
             field_phone.getStyleClass().addAll("filled");
             label_phone.getStyleClass().add("filled");           
         }
+        
         
         if( field_birthDate.getValue() == null || field_birthDate.getValue().toString().isBlank() ) {
             errors.add("El camp 'Aniversari' és obligatori.");
@@ -255,6 +255,7 @@ public class ClientsFormController implements Initializable {
                 label_birthDate.getStyleClass().add("required");
             }
         }
+        
         
         if( field_creditLimit.getText().isEmpty() || field_creditLimit.getText().isBlank() ) {
             errors.add("El camp 'Crèdit Màxim' és obligatori.");

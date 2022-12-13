@@ -25,8 +25,8 @@ public class ClientLogic {
     private AppConfig values = new AppConfig();
     
     private AppConfigDAO dataDefaults;                                          // Instància d'AppConfigDAO per carregar els registres de la taula 'appConfig'
-    private ClientDAO dataClient;
-    private ComandaDAO dataOrder;
+    private ClientDAO dataClient;                                               // Instància de ClientDAO per carregar els registres de la taula 'customers'
+    private ComandaDAO dataOrder;                                               // Instància de ComandaDAO per carregar els registres de la taula 'orders'
     
     private final List<Client> clientsList = new ArrayList<>();                 // Llistat amb clients (taula: customers)
     private final List<Comanda> ordersList = new ArrayList<>();                 // Llistat amb comandes (taula: orders)
@@ -35,6 +35,13 @@ public class ClientLogic {
     public ClientLogic() {
     }
     
+    /**
+     * Mètode per recuperar el valor per defecte de 'limitació de crèdit' d'un client
+     * indicat a la taula 'appConfig' de la BD.
+     * 
+     * @return Float amb el valor del crèdit màxim permès a un client
+     * @author Txell Llanas - Implementació
+     */
     public Float getDefaultCreditLimit() {
         
         Float credit = 0.0F;
@@ -44,10 +51,14 @@ public class ClientLogic {
             dataDefaults = new AppConfigDAO();
             valuesList.addAll(dataDefaults.getAll());
                 
-                credit = valuesList.get(0).getDefaultCreditLimit();
+            credit = valuesList.get(0).getDefaultCreditLimit();
            
             
         } catch (SQLException ex) {
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -55,6 +66,13 @@ public class ClientLogic {
         
     }
     
+    /**
+     * Mètode per recuperar el valor per defecte de l'edat mínima per donar 
+     * d'alta un client indicat a la taula 'appConfig' de la BD.
+     * 
+     * @return int amb el valor de l'edat mínima per poder donar d'alta a un client
+     * @author Txell Llanas - Implementació
+     */
     public int getDefaultMinCustomerAge() {
         
         int edat = 0;
@@ -67,6 +85,10 @@ public class ClientLogic {
             edat = valuesList.get(0).getMinCustomerAge();
             
         } catch (SQLException ex) {
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -100,6 +122,10 @@ public class ClientLogic {
             }            
             
         } catch (SQLException ex) {
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -112,7 +138,7 @@ public class ClientLogic {
     /**
      * Mètode per verificar que l'usuari no existeixi ja a la BD (Dni).
      * 
-     * @param f Camp de texte del formulari on s'hi indica el mail del client
+     * @param f Camp de texte del formulari on s'hi indica el dni del client
      * @return boolean (True/False) si es troben coincidències o no amb la BD
      * @author Txell Llanas - Implementació
      */
@@ -135,6 +161,10 @@ public class ClientLogic {
             }            
             
         } catch (SQLException ex) {
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -145,7 +175,7 @@ public class ClientLogic {
     }
     
     /**
-     * Mètode per comprovar que el client no té cap comanda en curs.
+     * Mètode per comprovar si  el client té alguna comanda en curs.
      * 
      * @param c Instància de la classe Client
      * @return boolean (True/False) si es troben coincidències o no amb la BD
@@ -169,12 +199,24 @@ public class ClientLogic {
             }            
             
         } catch (SQLException ex) {
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return numComandes;
     }
     
+    /**
+     * Mètode per comprovar que el crèdit especificat per un client estigui dins 
+     * dels paràmetres per defecte especificats a la taula 'appConfig' (RF34).
+     * 
+     * @param f Camp de texte del formulari on s'hi indica el crèdit màxim assignat al client
+     * @return boolean (True/False) si el valor passat es troba dins els límits permesos
+     * @author Txell Llanas - Implementació
+     */
     public boolean checkCreditLimit(TextField f) {
         
         boolean ret = false;
@@ -189,14 +231,19 @@ public class ClientLogic {
         return ret;
     }
     
-    public boolean checkMinCustomerAge(DatePicker d) {                          // Validar edat mínima  
-        
-        int minCustomerAge = valuesList.get(0).getMinCustomerAge();
+    /**
+     * Mètode per comprovar que l'edat d'un client estigui dins dels paràmetres 
+     * per defecte especificats a la taula 'appConfig' (RF44).
+     * 
+     * @param d Camp de tipus DatePicker del formulari on s'hi indica la data de naixement assignada al client
+     * @return boolean (True/False) si el valor passat es troba dins els límits permesos
+     */
+    public boolean checkMinCustomerAge(DatePicker d) {
+
         LocalDate birthday = d.getValue();                             
         LocalDate today = LocalDate.now();
         Period period = Period.between(birthday, today);
             
-        System.out.println("És major d'edat? (mín. "+minCustomerAge+" anys) -> anys: "+period.getYears()+", "+ (period.getYears() >= minCustomerAge));
         return (period.getYears() >= valuesList.get(0).getMinCustomerAge());
     }
 }

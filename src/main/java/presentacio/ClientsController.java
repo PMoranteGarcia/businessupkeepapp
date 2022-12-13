@@ -1,36 +1,25 @@
 package presentacio;
 
-import dades.AppConfigDAO;
 import dades.ClientDAO;
 import entitats.Client;
 import entitats.ClientLogic;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.*;
-import java.util.Locale;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import javafx.util.Callback;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -43,18 +32,10 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import static javafx.scene.layout.BorderStroke.MEDIUM;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.util.Callback;
 
 /**
  * Controlador de la vista 'clients.fxml'. Permet a l'usuari gestionar el CRUD
@@ -82,20 +63,17 @@ public class ClientsController implements Initializable {
     @FXML
     private TextField inputSearchCustomer;
     
-    private Tooltip tooltipDesar = new Tooltip ("Desar Canvis");
-    private Tooltip tooltipEliminar = new Tooltip ("Eliminar Client");    
+    private final Tooltip tooltipDesar = new Tooltip ("Desar Canvis");
+    private final Tooltip tooltipEliminar = new Tooltip ("Eliminar Client");    
 
     // Definir una llista observable d'objectes de tipus Client
-    private ObservableList<Client> llistaObservableClient = FXCollections.observableArrayList();
+    private final ObservableList<Client> llistaObservableClient = FXCollections.observableArrayList();
     
     // Instància del ClientDAO per carregar els registres de la taula 'customers'
     private ClientDAO dataClient;
     
-    // Instància del AppConfigDAO per accedir als valors per defecte (Regles de negoci)
-    private AppConfigDAO dataDefaults;
-    
     // Instància del ClientLogic per carregar els mètodes de validacions
-    private ClientLogic validate = new ClientLogic();
+    private final ClientLogic validate = new ClientLogic();
     
    
             
@@ -198,10 +176,11 @@ public class ClientsController implements Initializable {
             columnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));            
             columnCreditLimit.setCellValueFactory(new PropertyValueFactory<>("creditLimit"));
             
+            // Afegir BOTONS ACCIONS
             columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-            addCellButtons(); // Afegir BOTONS ACCIONS
+            addCellButtons();                                                   
             
-            // 3.1. Aplicar estils pels camps NO EDITABLES
+            // 4. Aplicar estils pels camps NO EDITABLES
             columnCustomerEmail.setCellFactory(tc -> new TableCell<Client, String>() {
                 @Override
                 protected void updateItem(String value, boolean empty) {
@@ -227,23 +206,8 @@ public class ClientsController implements Initializable {
                 }
             });
             
-            // 3.2. Establir format numèric de 2 decimals + símbol de moneda (€) a mostrar al camp 'creditLimit'
-//            columnCreditLimit.setCellValueFactory(cellData -> 
-//                new ReadOnlyDoubleWrapper(cellData.getValue().getCreditLimit()));
-//            columnCreditLimit.setCellFactory(tc -> new TableCell<Client, Number>() {
-//                @Override
-//                protected void updateItem(Number value, boolean empty) {
-//                    super.updateItem(value, empty) ;
-//                    if (empty) {
-//                        setText(null);
-//                    } else {
-//                        setText(String.format("%.2f", value.doubleValue()) + " €");
-//                    }
-//                }
-//            });
-            
+            // 5. Fer editable algunes columnes
             makeColsEditable();
-            //customersTableView.refresh();
             
             // 6. Afegir els registres a la taula
             customersTableView.setItems(llistaObservableClient);
@@ -299,10 +263,10 @@ public class ClientsController implements Initializable {
                         dataClient.update(c);                                   // Actualitzar el registre actual dins la BD, taula 'customers'
 
                     } else {
+                        
                         dataClient.getOne(c);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
-                        System.out.println("client no modificat: "
-                                           + dataClient.getOne(c));
                         alert.close();
+                        
                     }
 
                     columnCustomerName.getStyleClass().add("netejar");          // Netejar estils aplicats als camps modificats
@@ -317,7 +281,7 @@ public class ClientsController implements Initializable {
                     if( validate.clientHasOrders(c) > 0 ) {                     // Mostrar avís si el client té comandes actives
                         
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("CNO ES POT ELIMINAR EL CLIENT");
+                        alert.setTitle("NO ES POT ELIMINAR EL CLIENT");
                         alert.setHeaderText("El client \""+c.getCustomerName().toUpperCase()+"\" té comandes pendents.\nNo es pot eliminar de la base de dades.");
                         alert.show();
                         
@@ -339,12 +303,6 @@ public class ClientsController implements Initializable {
                             alert.close();
                     }
                 });
-                
-                //customersTableView.setStyle("-fx-text-fill: #000!important;");
-                        //columnCustomerName.setStyle("-fx-text-fill: #000;");
-                        //
-                
-                
             }
         });
     }
@@ -358,27 +316,18 @@ public class ClientsController implements Initializable {
             
             // 1. Fer editables les cel·les de dins una mateixa columna
             columnCustomerName.setCellFactory(TextFieldTableCell.forTableColumn());
-            //columnBirthDate.setCellFactory(TextFieldTableCell.forTableColumn());
-            columnPhone.setCellFactory(TextFieldTableCell.forTableColumn());
-            
+            columnPhone.setCellFactory(TextFieldTableCell.forTableColumn());            
             columnCreditLimit.setCellFactory(col -> new NumberCell());          // Crear Classe per editar la cel·la amb valors numèrics
-           // columnBirthDate.setCellFactory(col -> new DatePickerCell());      // Crear Classe per editar la cel·la amb valors de calendari
-            
-           System.out.println("llistaObservableClient: "+llistaObservableClient.size());
-            //LocalDate date = LocalDate.of(2020, 1, 8);
-            Date date = Date.valueOf("2014-02-14");
-            //Date.valueOf(field_birthDate.getValue()));
-            
-            columnBirthDate.setCellFactory(new Callback<TableColumn, TableCell>() {
+            columnBirthDate.setCellFactory(new Callback<TableColumn, TableCell>() { // Crear Classe per editar la cel·la amb valors de calendari
                 @Override
                 public TableCell call(TableColumn p) {
                     DatePickerCell datePick = new DatePickerCell();
                     return datePick;
                 }
-            });
-           
+            }); 
            
             // 2. Desar els registres editats
+            // Nom
             columnCustomerName.setOnEditCommit(event -> {
                 
                 // Recuperar l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment (si ha estat editat...)
@@ -387,125 +336,41 @@ public class ClientsController implements Initializable {
                 // Desem els valors d'abans i després de la modificació
                 String valorAntic = (String)e.getOldValue();
                 String valorNou = (String)e.getNewValue();
-                System.out.println("Valor antic:" + valorAntic);
-                System.out.println("Valor nou:" + valorNou);
                 
-                
-                //columnCustomerName.getStyleClass().clear();
-                //columnCustomerName.getStyleClass().add("changed");
-                //applyStyleToEditedCell(columnCustomerName, e);
-                
-                
-                // ** ACCIÓ x DESAR (BOTÓ SAVE)
                 // Recuperem l'objecte 'Client' de la fila afectada
                 Client c = (Client)e.getRowValue();
                 
-                // Detectar canvis
-                //if(valorNou.equalsIgnoreCase(valorAntic) || valorNou.isBlank() || valorNou.isEmpty()) {
+                // Detectar canvis aplicats
                 if( valorNou.isBlank() || valorNou.isEmpty() ) {
-                    //valorNou = valorAntic; // mostra valor original al llistat
-                    //li assignem el nou valor (necessari x actualitzar nou valor editat)
-                    c.setCustomerName(valorAntic);
-                } else                    
-                    c.setCustomerName((String)e.getNewValue());//li assignem el nou valor (necessari x actualitzar nou valor editat)
-                
-                
-                System.out.println("Cond. 1: "+valorNou.equalsIgnoreCase(valorAntic));
-                System.out.println("Cond. 2: "+valorNou.isBlank());
-                System.out.println("Cond. 3: "+valorNou.isEmpty());
-                
-                
-                
-                // detectar canvis aplicats
-//                columnCustomerName.setCellFactory(tc -> new TextFieldTableCell<Client, String>(TextFormatter.IDENTITY_STRING_CONVERTER) {
-//                    
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        
-//                        super.updateItem(item, empty);
-//                        System.out.println("Item original: "+item);
-//                        
-//                        if (empty)                            
-//                            setText(null);
-//                            
-//                        if(e.getRowValue().equals(valorAntic) || item.isEmpty() || item.equalsIgnoreCase(valorAntic)) { // this.isEditing() && si es deixa buit o no canvia el contingut, deixar info anterior
-//                                setText(valorAntic);
-//                                c.setCustomerName(valorAntic);
-//                        } else {                                                  // si es canvia, mostrar info nova i aplicar estil nou
-//                            
-//                            setText(valorNou);
-//                            c.setCustomerName(valorNou);
-//                            applyStyleToEditedCell(columnCustomerName, e);
-//                        }
-//                        
-//                        System.out.println("Item editat: "+item);
-//                    }
                     
-//                });
-                
-                
+                    c.setCustomerName(valorAntic);                              // li assignem el nou valor (necessari x actualitzar nou valor editat)
+                } else                    
+                    c.setCustomerName(valorNou);                                // li assignem el nou valor (necessari x actualitzar nou valor editat)               
                 
             });
             
-            // Modificar telèfon
+            // Telèfon
             columnPhone.setOnEditCommit(event -> {
                 
-                //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
+                // Recuperem l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment
                 TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;                
                 
-                //valor antic abans de la modificació
+                // Desem els valors d'abans i després de la modificació
                 String valorAntic = (String)e.getOldValue();
-                System.out.println("Valor antic:" + valorAntic);
-
-                //valor nou
                 String valorNou = (String)e.getNewValue();
-                System.out.println("Valor nou:" + valorNou);
 
-                // ** ACCIÓ x DESAR (BOTÓ SAVE)
-                //recuperem l'objecte Client de la fila afectada
+                // Recuperem l'objecte 'Client' de la fila afectada
                 Client c = (Client)e.getRowValue();
                 
-                //li assignem el nou valor (necessari x actualitzar nou valor editat)
-                c.setPhone(valorNou);
-                
-                //applyStyleToEditedCell(columnPhone, e);
+                // Detectar canvis aplicats
+                if( valorNou.isBlank() || valorNou.isEmpty() ) {
+                    
+                    c.setPhone(valorAntic);                                     // li assignem el nou valor (necessari x actualitzar nou valor editat)
+                } else                    
+                    c.setPhone(valorNou);                                       // li assignem el nou valor (necessari x actualitzar nou valor editat)
                 
             });
             
-            // Modificar aniversari no va...
-//            columnBirthDate.setOnEditCommit(event -> {
-//                
-//                //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
-//                TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;                
-//                
-//                //valor antic abans de la modificació
-//                String valorAntic = (String)e.getOldValue();
-//                System.out.println("Valor antic:" + valorAntic);
-//
-//                //valor nou
-//                String valorNou = (String)e.getNewValue();
-//                System.out.println("Valor nou:" + valorNou);
-//
-//                // ** ACCIÓ x DESAR (BOTÓ SAVE)
-//                //recuperem l'objecte Client de la fila afectada
-//                Client c = (Client)e.getRowValue();
-//                
-//                // casting
-//                SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
-//                java.util.Date date = null;
-//                try {
-//                    date = sdf1.parse(valorNou);
-//                } catch (ParseException ex) {
-//                    Logger.getLogger(ClientsController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
-//
-//                //li assignem el nou valor (necessari x actualitzar nou valor editat)
-//                c.setBirthDate(sqlDate);
-//                
-//                //applyStyleToEditedCell(columnPhone, e);
-//                
-//            });
     }
     
     /***
@@ -517,15 +382,11 @@ public class ClientsController implements Initializable {
     public class NumberCell extends TableCell<Client, Number> {
 
         private final TextField textField = new TextField();        
-        private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");    // Regex per limitar introducció de dades numèriques amb decimals  
-        String defaultCredit = Float.toString(validate.getDefaultCreditLimit());    // String amb el valor per defecte pel Crèdit per assignar aun client
+        private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");      // Regex per limitar introducció de dades numèriques amb decimals  
+        String defaultCredit = Float.toString(validate.getDefaultCreditLimit()); // String amb el valor per defecte pel Crèdit per assignar aun client
         
         public NumberCell() {
-//            textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-//                if (! isNowFocused) {
-//                    processEdit();
-//                }
-//            });
+
             textField.setOnAction(event -> processEdit());
         }
 
@@ -610,7 +471,7 @@ public class ClientsController implements Initializable {
         private DatePicker datePicker;
         private final TextField textField = new TextField();
         private final SimpleDateFormat dateOutput = new SimpleDateFormat("dd/MM/yyyy");   // Especificar format per la data 
-        int defaultMinAge = validate.getDefaultMinCustomerAge();    // Valor per defecte d'edat mínima d'un client
+        int defaultMinAge = validate.getDefaultMinCustomerAge();                // Valor per defecte d'edat mínima d'un client
         
         public DatePickerCell() {
             
@@ -643,11 +504,7 @@ public class ClientsController implements Initializable {
 
             super.updateItem(item, empty);
 
-            if (null == this.datePicker) {
-                System.out.println("datePicker és NULL");
-            }
-
-            if (empty) { // no editar
+            if (empty) {
                 setText(null);
                 setGraphic(null);
             } else {
@@ -669,20 +526,20 @@ public class ClientsController implements Initializable {
             setContentDisplay(ContentDisplay.TEXT_ONLY);
         }
     
+        /**
+         * Mètode que renderitza un calendari a la cel·la actual per poder definir 
+         * la data de naixement del client.
+         * 
+         * @author Txell Llanas - Creació/Implementació
+         */
         private void createDatePicker() {
                     
             // Variables inicials
             this.datePicker = new DatePicker();                                 // Crear UI calendari           
             Date aniversari = this.getTableRow().getItem().getBirthDate();      // Mostrar valor actual del client en format 'Date' (DatePicker només accepta aquest format)
             
-            // dia/mes/any a mostrar i format específic quan s'edita a dins el calendari
-            String clientBirthday = aniversari.toString(); //this.getTableRow().getItem().getBirthDate().toString();
-            //DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            //DateTimeFormatter isoPattern = DateTimeFormatter.ISO_DATE;            
-            //LocalDate localDate = java.time.LocalDate.parse(clientBirthday, datePattern); // Data naixement client actual
-            
-            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy",Locale.forLanguageTag("es-ES"));
-            //datePicker.setValue(java.time.LocalDate.parse(localDate.format(formatter))); //, DateTimeFormatter.ISO_DATE)); //.ISO_DATE
+            // (dia/mes/any) a mostrar i format específic quan s'edita a dins el calendari
+            String clientBirthday = aniversari.toString();
             
             // Recuperar data naixement desada a la BD
             datePicker.setValue(java.time.LocalDate.parse(clientBirthday));            
@@ -696,7 +553,7 @@ public class ClientsController implements Initializable {
             this.datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if(isEditing()) {
                     
-                    if (validate.checkMinCustomerAge(datePicker)) {             // Validar dades introduïdes (valors mínim-màxim)
+                    if (validate.checkMinCustomerAge(datePicker)) {             // Validar dades introduïdes
                         // 1. Desar valor a la cel·la de la TableView
                         commitEdit(Date.valueOf(newValue));
                         // 2. Desar el nou valor a la instància Client actual
@@ -724,6 +581,7 @@ public class ClientsController implements Initializable {
     
     /**
      * Mètode que filtra els registres segons el texte introduït al cercador.
+     * 
      * @author Txell Llanas - Creació/Implementació
      */
     private void searchCustomersDataFilter(){
@@ -755,7 +613,7 @@ public class ClientsController implements Initializable {
                 } else if( Float.toString(client.getCreditLimit()).contains(searchKeyword) ) {
                     return true;
                 } else 
-                    return false; // Contingut no trobat
+                    return false;                                               // Contingut no trobat
 
             });
 
@@ -769,88 +627,6 @@ public class ClientsController implements Initializable {
 
         // Aplicar filtratge a la taula
         customersTableView.setItems(sortedData);
-    }
-
-    private void applyStyleToEditedCell(TableColumn col, TableColumn.CellEditEvent e) {
-        
-        // Canviar color camps editats
-//                System.out.println("c.getCustomerName():"+c.getCustomerName());
-//                if(!c.getCustomerName().equals(valorAntic)){
-//                    columnCustomerName.getStyleClass().add("changed");
-//                    
-//                }
-
-                //if(!e.getNewValue().equals(e.getOldValue())) {  // si ha canviat la dada
-                
-                
-                    PseudoClass specialClass = PseudoClass.getPseudoClass("canviat");
-                    //dadesClient.getOne(c);
-                    
-                    col.setCellFactory(tc -> new TextFieldTableCell<Client, String>(TextFormatter.IDENTITY_STRING_CONVERTER) {
-                        
-                        @Override
-                        public void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            //System.out.println("e valor nou styles: "+e.getNewValue());
-                            //System.out.println("old styles: "+e.getRowValue());
-                            boolean condition = e.getNewValue().equals(item); //e.getNewValue().equals(e.getOldValue()); // //!c.getCustomerName().equalsIgnoreCase(item); //  // Domini: especifica que afecti al valor actualment editat
-                            pseudoClassStateChanged(specialClass, condition);
-                        }
-                    });
-                    
-                    
-                //}
-
-                // Canviar color camp editat
-//                columnPhone.setCellFactory(tc -> new TextFieldTableCell<Client, String>(TextFormatter.IDENTITY_STRING_CONVERTER) {
-//                    
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty) ;
-//                        if (empty) {
-//                            setText(null);
-//                        } else {
-//                                                       
-//                            if(this.isEmpty())
-//                                setText(valorAntic); 
-//                            else {
-//                                if(item.equals(valorNou))
-//                                    getTableRow().getStyleClass().add("changed");
-//                                setText(valorAntic);
-//                            }
-//                        }
-//                    }
-//                });
-
-//                // Canviar color camps editats
-//                PseudoClass specialClass = PseudoClass.getPseudoClass("canviat");
-//                    
-//                columnCustomerName.setCellFactory(tc -> new TextFieldTableCell<Client, String>(TextFormatter.IDENTITY_STRING_CONVERTER) {
-//                    
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        boolean condition = e.getNewValue().equals(item); //!c.getCustomerName().equals(valorAntic);
-//                        pseudoClassStateChanged(specialClass, condition);
-//                    }
-//                });
-       
-    }
-    
-    private void clearStyleToEditedCell(TableColumn col, TableColumn.CellEditEvent e) {
-
-                    PseudoClass specialClass = PseudoClass.getPseudoClass("resetejat");
-
-                    col.setCellFactory(tc -> new TextFieldTableCell<Client, String>(TextFormatter.IDENTITY_STRING_CONVERTER) {
-
-                        @Override
-                        public void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            boolean condition = e.getNewValue().equals(item); //!c.getCustomerName().equals(valorAntic);
-                            pseudoClassStateChanged(specialClass, condition);
-                        }
-                    });
-       
     }
 
 }

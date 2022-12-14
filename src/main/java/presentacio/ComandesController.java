@@ -292,8 +292,8 @@ public class ComandesController implements Initializable {
      * @author Txell Llanas - Creació
      */
     @FXML
-    private void goToAbout(ActionEvent event) throws IOException {
-        //App.setRoot("about");  <-- descomentar quan ho editeu
+    private void goToAbout() throws IOException {
+        App.setRoot("credits");
     }
 
     /**

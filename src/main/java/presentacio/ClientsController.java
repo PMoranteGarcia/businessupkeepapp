@@ -137,7 +137,8 @@ public class ClientsController implements Initializable {
      * @author Txell Llanas - Creació/Implementació
      */
     @FXML
-    private void goToAbout() {
+    private void goToAbout() throws IOException {
+        App.setRoot("credits");
     }
 
     @FXML
@@ -163,6 +164,7 @@ public class ClientsController implements Initializable {
         
         try {
             
+            // 1. Instància del ClientDAO per carregar els registres de la taula 'customers'
             dataClient = new ClientDAO();
 
             // 2. Afegir els registres existents a la taula dins la 'ObservableList'
@@ -399,14 +401,14 @@ public class ClientsController implements Initializable {
             
             if ( pattern.matcher(value).matches() ) {                           // Si són nombres i/o amb decimals
             
-                if (validate.checkCreditLimit(textField)) {                         // Validar dades introduïdes (valors mínim-màxim)
-                    commitEdit(Float.parseFloat(value));                             // Desar canvis
+                if (validate.checkCreditLimit(textField)) {                     // Validar dades introduïdes (valors mínim-màxim)
+                    commitEdit(Float.parseFloat(value));                        // Desar canvis
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("QUANTITAT ERRÒNIA");
                     alert.setHeaderText("ERROR: 'Crèdit Màxim' incorrecte, indicar "
                                       + "un valor entre 0 i "+ defaultCredit);
-                    alert.show();                                                   // Mostrar error
+                    alert.show();                                               // Mostrar error
 
                     cancelEdit();
                 }
@@ -456,7 +458,7 @@ public class ClientsController implements Initializable {
         @Override
         public void commitEdit(Number value) {
             super.commitEdit(value);
-            ((Client)this.getTableRow().getItem()).setCreditLimit(value.intValue());
+            ((Client)this.getTableRow().getItem()).setCreditLimit(value.floatValue());
         }
     }
     

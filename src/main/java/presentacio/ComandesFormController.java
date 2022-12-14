@@ -86,13 +86,13 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldHour;
     @FXML
     private TextField fieldMinutes;
-    
+
     private ComandaDAO DAOComanda;
-    
+
     private ClientDAO DAOClient;
-    
+
     private ProducteDAO DAOProducte;
-    
+
     private ObservableList<ProductesComanda> llistaObservableProductes = FXCollections.observableArrayList();
 
     /**
@@ -113,9 +113,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
         btnSave.setText(text1.toUpperCase());
         btnCancel.setText(text2.toUpperCase());
         btnaddProduct.setText(text3.toUpperCase());
-        
+
         this.idComanda = ComandesController.getIdComanda(); // obtenir id comanda actual
-        
+
         if (idComanda == 0) { // si és 0 és que la comanda és nova
             orderNumber.setText("");
             TitolComanda.setText("Crear Comanda");
@@ -123,14 +123,14 @@ public class ComandesFormController extends PresentationLayer implements Initial
             orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
             TitolComanda.setText("Detall Comanda ");
         }
-        
+
         fillDropDownList();
         fillProductsTable();
     }
-    
+
     /**
      * Omplir la taula dels productes que té la comanda
-     * 
+     *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
@@ -164,7 +164,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
             Comparator<ProductesComanda> comparator = Comparator.comparingInt(ProductesComanda::getNumberLine);
             llistaObservableProductes.sort(comparator);
-            
+
             // Afegir els registres a la taula
             orderLinesList.setItems(llistaObservableProductes);
 
@@ -172,10 +172,10 @@ public class ComandesFormController extends PresentationLayer implements Initial
             Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Omple amb dades les dues dropdown lists de clients i productes
-     * 
+     *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
@@ -249,8 +249,25 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void saveOrder() throws IOException {
-        // if per saber si és update o create
-        App.setRoot("comandes");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+        alert.setTitle("CONFIRMI UNA OPCIÓ");
+        alert.setHeaderText("Vols confirmar la comanda actual?");
+
+        ButtonType cancelButton = new ButtonType("Seguir Editant");
+        ButtonType yesButton = new ButtonType("Confirmar");
+
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+        if (alert.showAndWait().get() == yesButton) {
+            // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
+            if (this.idComanda == 0) {
+                createNewCommand();
+            } else {
+                updateCommand();
+            }
+            App.setRoot("comandes");  
+        } else {
+            alert.close();
+        }
     }
 
     /**
@@ -268,17 +285,18 @@ public class ComandesFormController extends PresentationLayer implements Initial
     @FXML
     private void cancelOrder() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
-            alert.setTitle("CONFIRMI UNA OPCIÓ");
-            alert.setHeaderText("Desitja descartar l'alta actual?");
+        alert.setTitle("CONFIRMI UNA OPCIÓ");
+        alert.setHeaderText("Desitja descartar l'alta actual?");
 
-            ButtonType cancelButton = new ButtonType("Sortir");
-            ButtonType yesButton = new ButtonType("Seguir Editant");
+        ButtonType cancelButton = new ButtonType("Sortir");
+        ButtonType yesButton = new ButtonType("Seguir Editant");
 
-            alert.getButtonTypes().setAll(yesButton, cancelButton);
-            if( alert.showAndWait().get() == cancelButton )
-                App.setRoot("comandes");                                         // Redirigir a l'usuari al llistat de clients
-            else
-                alert.close();
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+        if (alert.showAndWait().get() == cancelButton) {
+            App.setRoot("comandes");                                         // Redirigir a l'usuari al llistat de comandes
+        } else {
+            alert.close();
+        }
     }
 
     /**
@@ -290,7 +308,55 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void addProduct() {
+        Boolean producteRepetit = false;
+        Producte temp = selectorProduct.getValue();
+        for (int i = 0; i < llistaObservableProductes.size(); i++) {
+            ProductesComanda llistTemp = llistaObservableProductes.get(i);
+            if (llistTemp.getIdProducte() == temp.getProductCode()) {
+                llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
+                llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
+                llistaObservableProductes.set(i, llistTemp);
+                producteRepetit = true;
+            }
+        }
+        if (!producteRepetit) {
+            ProductesComanda newProduct = new ProductesComanda();
+            newProduct.setIdProducte(temp.getProductCode());
+            newProduct.setNumberLine(llistaObservableProductes.size() + 1);
+            newProduct.setOrderNummber(this.idComanda);
+            newProduct.setQuantitat(1);
+            newProduct.setUnitaryPrice(temp.getBuyPrice());
+            newProduct.setNom(temp.getProductName());
+            newProduct.setTotal(temp.getBuyPrice() * 1);
+            llistaObservableProductes.add(newProduct);
+        }
+        float total = 0;
+
+        for (int i = 0; i < llistaObservableProductes.size(); i++) {
+            total = total + llistaObservableProductes.get(i).getTotal();
+        }
+
+        totalAmount.setText("" + total);
+    }
+    
+    /**
+     * Mètode per crear una nova comanda
+     * 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
+    private void createNewCommand() {
         
+    }
+    
+    /**
+     * Mètode per fer update a una comanda ja existent
+     * 
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
+    private void updateCommand() {
+    
     }
 
 }

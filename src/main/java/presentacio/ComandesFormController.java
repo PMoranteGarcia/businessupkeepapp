@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -39,8 +40,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import java.time.LocalDateTime;  
-import java.time.format.DateTimeFormatter; 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -103,7 +105,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
     private final Tooltip tooltipDesar = new Tooltip("Desar Canvis");
     private final Tooltip tooltipEliminar = new Tooltip("Eliminar Producte");
-    
+
     /**
      * Initializes the controller class.
      *
@@ -156,7 +158,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             columnQuantityOrdered.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Integer>("quantitat"));
             columnPriceEach.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("unitaryPrice"));
             columnAmount.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("total"));
-            
+
             columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
             addCellButtons();
 
@@ -237,13 +239,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         }
     }
 
-    
-    
-    
-    
-    
-    
-    
     /**
      * Mètode que afegeix botons dins la cel·la d'accions de la TableView
      *
@@ -336,17 +331,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
 //        }
 //        );
 //    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     /**
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
@@ -382,11 +366,15 @@ public class ComandesFormController extends PresentationLayer implements Initial
         if (alert.showAndWait().get() == yesButton) {
             // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
             if (this.idComanda == 0) {
-                createNewCommand();
+                try {
+                    createNewCommand();
+                } catch (ParseException ex) {
+                    Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
                 updateCommand();
             }
-            App.setRoot("comandes");  
+            App.setRoot("comandes");
         } else {
             alert.close();
         }
@@ -435,9 +423,22 @@ public class ComandesFormController extends PresentationLayer implements Initial
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda llistTemp = llistaObservableProductes.get(i);
             if (llistTemp.getIdProducte() == temp.getProductCode()) {
-                llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
-                llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
-                llistaObservableProductes.set(i, llistTemp);
+                if (llistTemp.getQuantitat() == 20) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                    alert.setTitle("ALERTA");
+                    alert.setHeaderText("La quantitat d'un producte no pot superar 20.");
+
+                    ButtonType yesButton = new ButtonType("Acceptar");
+
+                    alert.getButtonTypes().setAll(yesButton);
+                    if (alert.showAndWait().get() == yesButton) {
+                        alert.close();
+                    }
+                } else {
+                    llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
+                    llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
+                    llistaObservableProductes.set(i, llistTemp);
+                }
                 producteRepetit = true;
             }
         }
@@ -452,6 +453,10 @@ public class ComandesFormController extends PresentationLayer implements Initial
             newProduct.setTotal(temp.getBuyPrice() * 1);
             llistaObservableProductes.add(newProduct);
         }
+        calculateTotalAmount();
+    }
+
+    private void calculateTotalAmount() {
         float total = 0;
 
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
@@ -460,37 +465,42 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         totalAmount.setText("" + total);
     }
-    
+
     /**
      * Mètode per crear una nova comanda
-     * 
+     *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void createNewCommand() throws SQLException {
+    private void createNewCommand() throws SQLException, ParseException {
         LocalDate today = java.time.LocalDate.now();
-        LocalDate oneWeekFromNow = (java.time.LocalDate.now()).plusDays(7);
-        System.out.println("Hoy --> " + today);
-        System.out.println("Semana vista --> " + oneWeekFromNow);
+        LocalDate requiredDay = datePicker.getValue();
+        String temp = requiredDay.toString() + " " + fieldHour.getText() + ":" + fieldMinutes.getText() + ":" + "00";
+        System.out.println("hora temp " + temp);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println("formatter " + formatter.parse(temp));
+        Date requiredDayG = new java.sql.Date((formatter.parse(temp)).getTime());
+        System.out.println("required day " + requiredDayG);
+
         String cus = selectorClient.getValue().getCustomerEmail();
         System.out.println(cus);
-        
-        Comanda c = new Comanda(java.sql.Date.valueOf(today), java.sql.Date.valueOf(oneWeekFromNow), cus);        
-        
+
+        Comanda c = new Comanda(java.sql.Date.valueOf(today), requiredDayG, cus);
+
         DAOComanda = new ComandaDAO();
         DAOComanda.save(c);
     }
-    
+
     /**
      * Mètode per fer update a una comanda ja existent
-     * 
+     *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
     private void updateCommand() {
-    
+
     }
-    
+
     /**
      * Mètode que afegeix botons dins la cel·la d'accions de la TableView
      *
@@ -518,7 +528,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 container.setId("container");
                 container.setAlignment(Pos.CENTER);
 
-
                 // FALTA IF/ELSE PARA SI LA COMANDA TIENE PRODUCTOS DENTRO NO PODER BORRARLA
                 btnDelete.setId("btnDelete");
                 btnDelete.setTooltip(new Tooltip("Eliminar comanda"));
@@ -526,7 +535,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("AVÍS");
-                    alert.setHeaderText("Estàs a punt d'eliminar el producte \"" + t.getNom()+ "\" de la comanda. Vols continuar?");
+                    alert.setHeaderText("Estàs a punt d'eliminar el producte \"" + t.getNom() + "\" de la comanda. Vols continuar?");
 
                     ButtonType yesButton = new ButtonType("Sí");
                     ButtonType cancelButton = new ButtonType("No");
@@ -534,10 +543,11 @@ public class ComandesFormController extends PresentationLayer implements Initial
                     alert.getButtonTypes().setAll(yesButton, cancelButton);
 
                     if (alert.showAndWait().get() == yesButton) {
-                            if (ComandesController.getIdComanda() != 0) {
-                                DAOComanda.deleteProductFromComanda(t, ComandesController.getIdComanda());  
-                            } 
-                            llistaObservableProductes.remove(t);
+                        if (ComandesController.getIdComanda() != 0) {
+                            DAOComanda.deleteProductFromComanda(t, ComandesController.getIdComanda());
+                        }
+                        llistaObservableProductes.remove(t);
+                        calculateTotalAmount();
                     } else {
                         alert.close();
                     }

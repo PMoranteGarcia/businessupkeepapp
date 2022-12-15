@@ -60,8 +60,28 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     @Override
-    public void save(Comanda t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void save(Comanda c) throws SQLException {
+        String consulta = "INSERT INTO orders (orderDate, requiredDate, customers_customerEmail) VALUES (?,?,?);";
+        
+        PreparedStatement preparedStatement;
+        try {
+            
+            preparedStatement = con.prepareStatement(consulta);
+            
+            preparedStatement.setDate(1, c.getDataOrdre());
+            preparedStatement.setDate(2, c.getDataEntrega());
+            preparedStatement.setString(3, c.getCustomers_customerEmail());
+            
+            preparedStatement.executeUpdate();
+            
+        } catch (SQLException ex) {
+            System.out.println("ERROR amb la connexió a SQL");
+            System.out.println("SQLExceptionq: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     @Override
@@ -140,6 +160,10 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         } else {
             ResultSet resultats = stmt.executeQuery("insert into orderdetails where orderNumber = ?");
         }
+    }
+    
+    public void deleteProductFromComanda(ProductesComanda pc, int idComanda){
+        
     }
 
 }

@@ -81,55 +81,76 @@ public class ProducteLogic {
     }
 
     public boolean checkStock(TextField f) {
-
         boolean ret = false;
-//        Float userValue = Float.parseFloat(f.getText());
-//        Float maxValue = valuesList.get(0).getDefaultCreditLimit();
-//        System.out.println("userValue: " + userValue);
-//        System.out.println("maxValue: " + maxValue);
-//
-//        if( (userValue > 0) && (userValue <= maxValue) )
-//            ret = true;
+        try {
+
+            int stock = Integer.parseInt(f.getText());
+            System.out.println("stock" + stock);
+            int minStock = valuesList.get(0).getDefaultStock();
+            System.out.println("stock: " + stock);
+            System.out.println("minStock: " + minStock);
+
+            if (stock >= minStock) {
+                ret = true;
+            }
+        } catch (NumberFormatException e) {
+
+        }
 
         return ret;
     }
 
-    
-     /**
+    /**
      * Mètode per verificar que l'usuari no existeixi ja a la BD (email).
-     * 
+     *
      * @param f Camp de texte del formulari on s'hi indica el mail del client
      * @return boolean (True/False) si es troben coincidències o no amb la BD
      * @author Txell Llanas - Implementació
      */
     public boolean checkProductExists(TextField f) {
-        
+
         boolean res = false;
-//        String mail = f.getText().trim();
-//        int count = 0;
-//        
-//        try {
-//            
-//            dataClient = new ClientDAO();
-//            clientsList.addAll(dataClient.getAll());
-//            
-//            for(int i = 0; i < clientsList.size(); i++){
-//                
-//                if(mail.equals(clientsList.get(i).getCustomerEmail()))
-//                    count++;
-//                
-//            }            
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        if( count > 0 )
-//            res = true;
+        String nom = f.getText().trim();
+        int count = 0;
+
+        try {
+
+            dataProduct = new ProducteDAO();
+            productList.addAll(dataProduct.getAll());
+
+            for (int i = 0; i < productList.size(); i++) {
+                if (nom.equals(productList.get(i).getProductName())) {
+                    count++;
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (count > 0) {
+            res = true;
+        }
 //        
         return res;
     }
-    
-    
-    
+
+    public boolean checkPreu(TextField f) {
+        System.out.println(f.getText());
+        boolean ret = false;
+        try {
+
+            float preu = Float.parseFloat(f.getText());
+
+            if (preu > 0.0) {
+                ret = true;
+            }
+        } catch (NumberFormatException e) {
+
+        }
+
+        return ret;
+    }
+
 }

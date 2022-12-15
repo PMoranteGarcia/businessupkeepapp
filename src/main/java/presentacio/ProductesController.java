@@ -101,7 +101,8 @@ public class ProductesController implements Initializable {
     }
 
     @FXML
-    private void goToAbout(ActionEvent event) {
+    private void goToAbout() throws IOException {
+        App.setRoot("credits");
     }
 
     @FXML

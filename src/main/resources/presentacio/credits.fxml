@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentacio.CreditsController">
+   <children>
+      <HBox id="nav" alignment="TOP_CENTER" stylesheets="@../css/styles.css">
+         <children>
+            <Button fx:id="btnOrders" onAction="#goToOrders" text="COMANDES">
+               <cursor>
+                  <Cursor fx:constant="NONE" />
+               </cursor></Button>
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+            <Button fx:id="btnCustomers" layoutX="10.0" layoutY="10.0" onAction="#gotoCustomers" text="CLIENTS" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+            <Button fx:id="btnProducts" layoutX="101.0" layoutY="10.0" onAction="#goToProducts" text="PRODUCTES" />
+            <Separator opacity="0.0" orientation="VERTICAL" prefWidth="10.0" />
+            <Button fx:id="btnAbout" layoutX="166.0" layoutY="10.0" text="CRÈDITS">
+               <styleClass>
+                  <String fx:value="active" />
+                  <String fx:value="hideCursor" />
+               </styleClass></Button>
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </HBox>
+      <BorderPane VBox.vgrow="ALWAYS">
+         <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                  <Label id="title" alignment="CENTER" text="Gestor de Comandes">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label id="title" alignment="CENTER" text="(Versió 1.0)">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" text="Víctor García Pulpón">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label alignment="CENTER" text="Izan Jimenez Moreno">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" text="Txell Llanas Gironès">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" text="Pablo Morante García">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</VBox>

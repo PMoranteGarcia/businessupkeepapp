@@ -42,7 +42,7 @@ public class ProductesFormController implements Initializable {
     private Label lblPreu, lblStock, lblNom, lblDescripcio;
 
     @FXML
-    private TextField textFieldNom, textFieldCodi, textFieldPreu, textFieldStock;
+    private TextField textFieldNom, textFieldPreu, textFieldStock;
     @FXML
     private TextArea textAreaDescripcio;
 
@@ -84,6 +84,7 @@ public class ProductesFormController implements Initializable {
     @FXML
     private void saveProducte() throws IOException, SQLException {
         validacions();
+        System.out.println(errors.isEmpty());
 
         if (!errors.isEmpty()) {
 
@@ -177,21 +178,25 @@ public class ProductesFormController implements Initializable {
         }
 
         if (textAreaDescripcio.getText().isEmpty() || textAreaDescripcio.getText().isBlank()) {
-            errors.add("El camp 'descripció' és obligatori.");
-            textAreaDescripcio.getStyleClass().add("required");
-            lblDescripcio.getStyleClass().add("required");
-        } else {
-            textAreaDescripcio.getStyleClass().add("filled");
-            lblDescripcio.getStyleClass().add("filled");
+            textAreaDescripcio.setText("");
         }
+        textAreaDescripcio.getStyleClass().add("filled");
+        lblDescripcio.getStyleClass().add("filled");
 
         if (textFieldPreu.getText().isEmpty() || textFieldPreu.getText().isBlank()) {
             errors.add("El camp 'Preu' és obligatori.");
             textFieldPreu.getStyleClass().add("required");
             lblPreu.getStyleClass().add("required");
         } else {
-            textFieldPreu.getStyleClass().add("filled");
-            lblPreu.getStyleClass().add("filled");
+            System.out.println(textFieldPreu.getText());
+            if (validate.checkPreu(textFieldPreu)) {
+                textFieldPreu.getStyleClass().add("filled");
+                lblPreu.getStyleClass().add("filled");
+            } else {
+                errors.add("ERROR: No es pot donar d'alta el producte: El preu ha de ser un numero positiu");
+                textFieldPreu.getStyleClass().add("required");
+                lblPreu.getStyleClass().add("required");
+            }
         }
 
         if (textFieldStock.getText().isEmpty() || textFieldStock.getText().isBlank()) {
@@ -199,7 +204,7 @@ public class ProductesFormController implements Initializable {
             textFieldStock.getStyleClass().add("required");
             lblStock.getStyleClass().add("required");
         } else {
-            if (!validate.checkStock(textFieldStock)) {
+            if (validate.checkStock(textFieldStock)) {
                 textFieldStock.getStyleClass().add("filled");
                 lblStock.getStyleClass().add("filled");
             } else {
@@ -208,6 +213,7 @@ public class ProductesFormController implements Initializable {
                 lblStock.getStyleClass().add("required");
             }
         }
+        System.out.println("errors:" + errors);
     }
 
 }

@@ -141,5 +141,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             ResultSet resultats = stmt.executeQuery("insert into orderdetails where orderNumber = ?");
         }
     }
+    
+    public void deleteProductFromComanda(ProductesComanda pc, int idComanda){
+        
+    }
 
 }

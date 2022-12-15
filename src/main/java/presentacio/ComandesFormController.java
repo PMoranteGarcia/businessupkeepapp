@@ -33,8 +33,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import java.util.Comparator;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -55,7 +58,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     @FXML
     private Label TitolComanda;
     @FXML
-    private TableColumn columnActions;
+    private TableColumn<ProductesComanda,ProductesComanda> columnActions;
     @FXML
     private Button btnSave;
     @FXML
@@ -147,6 +150,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
             columnQuantityOrdered.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Integer>("quantitat"));
             columnPriceEach.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("unitaryPrice"));
             columnAmount.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("total"));
+            
+            columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+            addCellButtons();
 
             // Aplicar estils pels camps NO EDITABLES
             columnProductCode.setCellFactory(tc -> new TableCell<Comanda, Integer>() {
@@ -357,6 +363,62 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     private void updateCommand() {
     
+    }
+    
+    /**
+     * Mètode que afegeix botons dins la cel·la d'accions de la TableView
+     *
+     * @author Víctor García - Creació/Implementació
+     * @author Pablo Morante - Implementació
+     */
+    private void addCellButtons() {
+
+        columnActions.setCellFactory(param -> new TableCell<ProductesComanda, ProductesComanda>() {
+
+            private final Button btnDelete = new Button("");
+            private final HBox container = new HBox(btnDelete);
+
+            @Override
+            protected void updateItem(ProductesComanda t, boolean empty) {
+                super.updateItem(t, empty);
+
+                if (t == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                // Inserir container amb botons a dins
+                setGraphic(container);
+                container.setId("container");
+                container.setAlignment(Pos.CENTER);
+
+
+                // FALTA IF/ELSE PARA SI LA COMANDA TIENE PRODUCTOS DENTRO NO PODER BORRARLA
+                btnDelete.setId("btnDelete");
+                btnDelete.setTooltip(new Tooltip("Eliminar comanda"));
+                btnDelete.setOnAction(event -> {
+
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("AVÍS");
+                    alert.setHeaderText("Estàs a punt d'eliminar el producte \"" + t.getNom()+ "\" de la comanda. Vols continuar?");
+
+                    ButtonType yesButton = new ButtonType("Sí");
+                    ButtonType cancelButton = new ButtonType("No");
+
+                    alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+                    if (alert.showAndWait().get() == yesButton) {
+                            if (ComandesController.getIdComanda() != 0) {
+                                DAOComanda.deleteProductFromComanda(t, ComandesController.getIdComanda());  
+                            } 
+                            llistaObservableProductes.remove(t);
+                    } else {
+                        alert.close();
+                    }
+                });
+            }
+        }
+        );
     }
 
 }

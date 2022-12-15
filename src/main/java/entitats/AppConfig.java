@@ -3,25 +3,24 @@ package entitats;
 import dades.AppConfigDAO;
 
 /**
- * Aquí anirà la classe/entitat pel manager (appconfig), connexió entre controladors
+ * Aquí anirà la classe/entitat pel manager (appconfig), connexió entre
+ * controladors
  *
  * @author Pablo Morante - Creació
  * @author Victor García - Creació
  */
 public class AppConfig {
-    
+
     //private AppConfigDAO defaults;
     private float defaultCreditLimit;
     private int minCustomerAge;
     private int defaultStock;
 
-
-
     public AppConfig() {
 
     }
 
-    public float getDefaultCreditLimit() {        
+    public float getDefaultCreditLimit() {
         return defaultCreditLimit;
     }
 
@@ -36,7 +35,8 @@ public class AppConfig {
     public void setMinCustomerAge(int minCustomerAge) {
         this.minCustomerAge = minCustomerAge;
     }
-        public int getDefaultStock() {
+
+    public int getDefaultStock() {
         return defaultStock;
     }
 

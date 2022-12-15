@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 /**
  * FXML Controller class
@@ -46,9 +47,9 @@ public class ProductesFormController implements Initializable {
     @FXML
     private TextArea textAreaDescripcio;
 
-    private ProducteLogic validate = new ProducteLogic();                       // Instància del ClientLogic per carregar els mètodes de validacions    
+    private ProducteLogic validate = new ProducteLogic();                       // Instància del ProducteLogic per carregar els mètodes de validacions    
     List<String> errors = new ArrayList<>();                                    // Llistat per recollir errors de validació del formulari    
-    String defaultStock = Integer.toString(validate.getDefaultStock());           // String amb el valor per defecte pel Crèdit per assignar aun client
+    String defaultStock = Integer.toString(validate.getDefaultStock());
 
     /**
      * Initializes the controller class.
@@ -61,7 +62,7 @@ public class ProductesFormController implements Initializable {
         textAreaDescripcio.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
 
         System.out.println("DefaultStock = " + defaultStock);
-        textFieldStock.setText(defaultStock); // Inserir valor per defecte del crèdit màxim d'un client
+        textFieldStock.setText(defaultStock); // Inserir valor per defecte
 
     }
 
@@ -72,7 +73,7 @@ public class ProductesFormController implements Initializable {
      */
     @FXML
     private void goToProducts() throws IOException {
-        App.setRoot("productes");
+        cancel();
     }
 
     /**
@@ -110,11 +111,11 @@ public class ProductesFormController implements Initializable {
                     Integer.parseInt(textFieldStock.getText()),
                     Float.parseFloat(textFieldPreu.getText()));
 
-            ProducteDAO dadesProducte = new ProducteDAO();                            // Si tot ok, crear nou client amb les dades introduïdes al formulari
+            ProducteDAO dadesProducte = new ProducteDAO();                      // Si tot ok, crear nou producte amb les dades introduïdes al formulari
             dadesProducte.save(c);
             System.out.println(">> Producte desat satisfactòriament!");
 
-            App.setRoot("productes");                                             // Redirigir a l'usuari al llistat de clients
+            App.setRoot("productes");                                           // Redirigir a l'usuari al llistat de productes
         }
     }
 
@@ -122,26 +123,54 @@ public class ProductesFormController implements Initializable {
      * *Cancela la creacio del nou producte i torna a la vista de productes
      *
      * @throws IOException
+     * @author Izan Jimenez - Implementació
      */
     @FXML
     private void cancelProducte() throws IOException {
-        App.setRoot("productes");
+        cancel();
 
     }
 
     /**
-     * Mètode per validar el formulari d'alta d'un nou client. Validacions: -
-     * Que no hi hagi camps buits - Que el client no sigui un menor (RF44) - Que
-     * no se sobrepassi el crèdit màxim preestablert a la BD - Que no existeixi
-     * un usuari amb el mateix email i dni (dades úniques)
+     * Mètode que mostra una alerta per confirmar que es volen descartar els
+     * canvis realitzats al formulari actual.
      *
-     * @author Txell Llanas - Creació / Implementació
+     * @throws IOException Mostra un error si no troba la vista FXML cap a on es
+     * dirigeix
+     * @author Izan Jimenez - Implementació
+     */
+    @FXML
+    private void cancel() throws IOException {
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+        alert.setTitle("CONFIRMI UNA OPCIÓ");
+        alert.setHeaderText("Desitja descartar l'alta actual?");
+
+        ButtonType yesButton = new ButtonType("Descartar");
+        ButtonType cancelButton = new ButtonType("Seguir Editant");
+
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+        if (alert.showAndWait().get() == yesButton) {
+            App.setRoot("productes");                                         // Redirigir a l'usuari al llistat de productes
+        } else {
+            alert.close();
+        }
+
+    }
+
+    /**
+     * Mètode per validar el formulari d'alta d'un nou producte. Validacions: -
+     * Que no hi hagi camps buits - Que no existeixi un producte a la BBDD - 
+     * Que el preu sigui un numero positiu
+     *
+     * @author Izan JImenez - Implementació
      */
     public void validacions() {
 
         errors.clear();                                                         // Buidar llistat d'errors
 
-        textFieldNom.getStyleClass().remove("filled");                    // Netejar estils (camps requerits en vermell)
+        textFieldNom.getStyleClass().remove("filled");                          // Netejar estils (camps requerits en vermell)
         lblNom.getStyleClass().remove("filled");
         textFieldNom.applyCss();
         lblNom.applyCss();

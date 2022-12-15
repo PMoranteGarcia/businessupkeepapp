@@ -27,30 +27,15 @@
                 <Insets left="20.0" right="20.0" top="20.0" />
             </VBox.margin>
         </HBox>
-        <HBox>
-            <VBox.margin>
-                <Insets left="20.0" right="20.0" />
-            </VBox.margin>
-            <children>
-                <Label minWidth="50.0" prefWidth="50.0" text="Codi">
-                    <HBox.margin>
-                        <Insets />
-                    </HBox.margin>
-                </Label>
-                <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
-                <TextField fx:id="textFieldCodi" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" />
-                <Separator minWidth="40.0" opacity="0.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="40.0" />
-            </children>
-        </HBox>
         <HBox nodeOrientation="LEFT_TO_RIGHT">
             <children>
                 <Label fx:id="lblPreu" minWidth="50.0" prefWidth="50.0" text="Preu" />
                 <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
-                <TextField fx:id="textFieldPreu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" />
+                <TextField fx:id="textFieldPreu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" stylesheets="@../css/styles.css" />
                 <Separator minWidth="18.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="18.0" />
                 <Label fx:id="lblStock" minWidth="50.0" prefWidth="50.0" text="Stock" />
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
-                <TextField fx:id="textFieldStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" />
+                <TextField fx:id="textFieldStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="190.0" prefWidth="190.0" stylesheets="@../css/styles.css" />
             </children>
             <VBox.margin>
                 <Insets left="20.0" right="20.0" />
@@ -59,11 +44,10 @@
         <VBox>
             <children>
                 <Label fx:id="lblNom" minWidth="50.0" prefWidth="50.0" text="Nom" />
-                <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL" prefHeight="31.0" prefWidth="20.0" />
-                <TextField fx:id="textFieldNom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                <TextField fx:id="textFieldNom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../css/styles.css" />
                 <Separator minHeight="20.0" opacity="0.0" prefHeight="20.0" />
                 <Label fx:id="lblDescripcio" text="Descripció" />
-                <TextArea fx:id="textAreaDescripcio" wrapText="true" />
+                <TextArea fx:id="textAreaDescripcio" stylesheets="@../css/styles.css" wrapText="true" />
             </children>
             <VBox.margin>
                 <Insets left="20.0" right="20.0" />

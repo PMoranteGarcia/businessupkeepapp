@@ -139,7 +139,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     }
 
-    public void saveProduct(boolean novaComanda, Producte p, int idComanda) throws SQLException {
+    public void saveProduct(boolean novaComanda, ProductesComanda p, int idComanda) throws SQLException {
         if (novaComanda) {
             String insert = "insert into orderdetails values ((select orderNumber from orders where orderNumber = ?), (select productCode from products where productCode = ?), ?, ?, ?)";
 
@@ -147,18 +147,29 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             try {
                 preparedStatement = con.prepareStatement(insert);
 
-                preparedStatement.setInt(1, 4);
-                preparedStatement.setInt(2, p.getProductCode());
-                preparedStatement.setInt(3, 1);
-                preparedStatement.setFloat(4, p.getBuyPrice());
-                preparedStatement.setInt(5, 1);
+                preparedStatement.setInt(1, idComanda);
+                preparedStatement.setInt(2, p.getIdProducte());
+                preparedStatement.setInt(3, p.getQuantitat());
+                preparedStatement.setFloat(4, p.getUnitaryPrice());
+                preparedStatement.setInt(5, p.getOrderNumber());
                 preparedStatement.executeUpdate();
                 System.out.println(">> Producte insertat: " + p.toString());
             } catch (SQLException ex) {
                 Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            ResultSet resultats = stmt.executeQuery("insert into orderdetails where orderNumber = ?");
+            String update = "update orderdetails set quantityOrdered = ? where orderNumber = ? and productCode = ?;";
+            PreparedStatement preparedStatement;
+            try {
+                preparedStatement = con.prepareStatement(update);
+                
+                preparedStatement.setInt(1, idComanda);
+                preparedStatement.setInt(2, p.getIdProducte());
+                preparedStatement.setInt(3, p.getQuantitat());
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     

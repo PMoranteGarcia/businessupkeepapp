@@ -29,6 +29,12 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         super();
     }
 
+    /**
+     * Desar un producte a la taula 'products' (RF58)
+     *
+     * @param t Instància de tipus Producte a desar
+     * @author Izan Jimenez - Implementació
+     */
     @Override
     public void save(Producte t) {
         //es prepara el Statement
@@ -47,38 +53,35 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
 
             //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
             if (stat.executeUpdate() == 0) {
-                System.out.println("potser no s'hagi guardat");
                 throw new SQLException();
             }
-            //AUTOINCREMENT?
-//            rs = stat.getGeneratedKeys();
-//            if (rs.next()) {
-//                t.setProductCode(rs.getInt(1));
-//            } else {
-//                throw new SQLException();
-//            }
-
         } catch (SQLException e) {
-            System.out.println("ERROR AL GUARDAR PRODUCTO: " + e);
+            System.out.println("ERROR AL GUARDAR PRODUCTE: " + e);
         } finally {
             //tanquem el statement
             if (stat != null) {
                 try {
                     stat.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR STAT EN GUARDAR PRODUCTO: " + e);
+                    System.out.println("ERROR AL TANCAR STAT " + e);
                 }
             }
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR RS EN GUARDAR PRODUCTO: " + e);
+                    System.out.println("ERROR AL TANCAR RS: " + e);
                 }
             }
         }
     }
 
+    /**
+     * Modifica un producte a la taula 'products' (RF62)
+     *
+     * @param t Instància de tipus Producte a modificar
+     * @author Izan Jimenez - Implementació
+     */
     @Override
     public void update(Producte t) {
         System.out.println("Modificant producte");
@@ -95,24 +98,29 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
 
             //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
             if (stat.executeUpdate() == 0) {
-                System.out.println("potser no s'hagi modificat el producte");
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            System.out.println("ERROR AL GUARDAR PRODUCTO: " + e);
+            System.out.println("ERROR AL GUARDAR PRODUCTE: " + e);
         } finally {
             //tanquem el statement
             if (stat != null) {
                 try {
                     stat.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR STAT EN GUARDAR PRODUCTO: " + e);
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
                 }
 
             }
         }
     }
 
+    /**
+     * Elimina un producte a la taula 'products' (RF60)
+     *
+     * @param t Instància de tipus Producte a eliminar
+     * @author Izan Jimenez - Implementació
+     */
     @Override
     public void delete(Producte t) {
         PreparedStatement stat = null;
@@ -122,7 +130,6 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             stat = super.getCon().prepareStatement(DELETE);
             stat.setInt(1, t.getProductCode());
             if (stat.executeUpdate() == 0) {
-                System.out.println("Puede que el producto no se haya eliminado");
                 throw new SQLException();
             }
         } catch (SQLException e) {
@@ -138,6 +145,14 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         }
     }
 
+    /**
+     * Recupera un producte de la taula 'products'
+     *
+     * @param t Instància de tipus Producte a recuperar
+     * @return Instància de tipus Producte amb totes les dades recuperades de la
+     * BD
+     * @author Izan Jimenez - Implementació
+     */
     @Override
     public Producte getOne(Producte t) {
         PreparedStatement stat = null;
@@ -145,14 +160,15 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         Producte p = null;
 
         try {
+
             stat = super.getCon().prepareStatement(GETONE);
             stat.setInt(1, t.getProductCode());
             rs = stat.executeQuery();
-
+//          si rep algun parametre el transformem a Porducte
             if (rs.next()) {
                 p = convertir(rs);
             } else {
-                System.out.println("No se ha trobat aquest registre");
+                System.out.println("No s'ha trobat aquest registre");
                 throw new SQLException();
             }
         } catch (SQLException e) {
@@ -162,14 +178,14 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
                 try {
                     stat.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR STAT EN OBTENIR PRODUCTE: " + e);
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
                 }
             }
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR RS EN OBTENIR PRODUCTE: " + e);
+                    System.out.println("ERROR AL TANCAR RS: " + e);
                 }
 
             }
@@ -178,6 +194,12 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
 
     }
 
+    /**
+     * Mostrar tots els productes de la taula 'productes' (RF64)
+     *
+     * @return List de tipus Producte amb tots els registres de la BD
+     * @author Izan Jimenez - Implementació
+     */
     @Override
     public List<Producte> getAll() {
         PreparedStatement stat = null;
@@ -198,14 +220,14 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
                 try {
                     stat.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR STAT EN OBTENIR PRODUCTE: " + e);
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
                 }
             }
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    System.out.println("ERROR AL CERRAR RS EN OBTENIR PRODUCTE: " + e);
+                    System.out.println("ERROR AL TANCAR RS: " + e);
                 }
 
             }
@@ -213,18 +235,29 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         return p;
     }
 
+    /**
+     * *Transforma un Resulset no null a un instancia Producte
+     *
+     * @param rs
+     * @return Retorna una instancia Producte del ResulSet
+     * @throws SQLException
+     * @author Izan JImenez - Implementació
+     */
     private Producte convertir(ResultSet rs) throws SQLException {
+//      agafem els atributs
         String nomProducte = rs.getString("productName");
         String descProducte = rs.getString("productDescription");
         int stock = rs.getInt("quantityInStock");
         float preu = rs.getFloat("buyPrice");
-
+//      retornem una instanci aproducte
         Producte p = new Producte(nomProducte, descProducte, stock, preu);
         p.setProductCode(rs.getInt("productCode"));
 
         return p;
     }
 
+    
+    
 //    public static void main(String[] args) {
 //        try {
 //            ProducteDAO pd = new ProducteDAO();

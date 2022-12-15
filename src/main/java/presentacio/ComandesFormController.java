@@ -489,6 +489,10 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         DAOComanda = new ComandaDAO();
         DAOComanda.save(c);
+        for (int i = 0; i < llistaObservableProductes.size(); i++) {
+            ProductesComanda p = llistaObservableProductes.get(i);
+            DAOComanda.saveProduct(true, p, idComanda);
+        }
     }
 
     /**
@@ -497,8 +501,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void updateCommand() {
-
+    private void updateCommand() throws SQLException {
+        DAOComanda = new ComandaDAO();
+        for (int i = 0; i < llistaObservableProductes.size(); i++) {
+            ProductesComanda p = llistaObservableProductes.get(i);
+            DAOComanda.saveProduct(true, p, idComanda);
+        }
     }
 
     /**

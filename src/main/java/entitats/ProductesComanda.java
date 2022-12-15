@@ -15,6 +15,7 @@ public class ProductesComanda {
     private float unitaryPrice;
     private float total;
     private int numberLine;
+    private int orderNumber;
 
     public ProductesComanda() {
     }
@@ -53,6 +54,10 @@ public class ProductesComanda {
     public void setNumberLine(int numberLine) {
         this.numberLine = numberLine;
     }
+    
+    public void setOrderNummber(int orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 
     public int getIdProducte() {
         return idProducte;
@@ -78,5 +83,7 @@ public class ProductesComanda {
         return numberLine;
     }
     
-    
+    public int getOrderNumber() {
+        return orderNumber;
+    }
 }

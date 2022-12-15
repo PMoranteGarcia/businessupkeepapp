@@ -23,6 +23,13 @@ public class Comanda {
         
     }
 
+    //TEMPORAL NOVA COMANDA
+    public Comanda(Date dataOrdre, Date dataEntrega, String customers_customerEmail) {
+        this.dataOrdre = dataOrdre;
+        this.dataEntrega = dataEntrega;
+        this.customers_customerEmail = customers_customerEmail;
+    }
+    
     public Comanda(int numOrdre, Date dataOrdre, Date dataEntrega, Date dataEnviament, Client client, float total, List<ProductesComanda> productes) {
         this.numOrdre = numOrdre;
         this.dataOrdre = dataOrdre;

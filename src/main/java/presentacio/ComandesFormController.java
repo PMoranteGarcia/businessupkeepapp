@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,8 +34,13 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import java.util.Comparator;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import java.time.LocalDateTime;  
+import java.time.format.DateTimeFormatter; 
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -55,7 +61,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     @FXML
     private Label TitolComanda;
     @FXML
-    private TableColumn columnActions;
+    private TableColumn<ProductesComanda, ProductesComanda> columnActions;
     @FXML
     private Button btnSave;
     @FXML
@@ -95,6 +101,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
     private ObservableList<ProductesComanda> llistaObservableProductes = FXCollections.observableArrayList();
 
+    private final Tooltip tooltipDesar = new Tooltip("Desar Canvis");
+    private final Tooltip tooltipEliminar = new Tooltip("Eliminar Producte");
+    
     /**
      * Initializes the controller class.
      *
@@ -147,7 +156,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
             columnQuantityOrdered.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Integer>("quantitat"));
             columnPriceEach.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("unitaryPrice"));
             columnAmount.setCellValueFactory(new PropertyValueFactory<ProductesComanda, Float>("total"));
-
+            columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+            //addCellButtons();     
+            
             // Aplicar estils pels camps NO EDITABLES
             columnProductCode.setCellFactory(tc -> new TableCell<Comanda, Integer>() {
                 @Override
@@ -225,6 +236,116 @@ public class ComandesFormController extends PresentationLayer implements Initial
         }
     }
 
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * Mètode que afegeix botons dins la cel·la d'accions de la TableView
+     *
+     * @author Víctor García - Creació/Implementació
+     */
+//    private void addCellButtons() {
+//
+//        columnActions.setCellFactory(param -> new TableCell<ProductesComanda, ProductesComanda>() {
+//
+//            private final Button btnEdit = new Button("");
+//            private final Button btnDelete = new Button("");
+//            private final HBox container = new HBox(btnEdit, btnDelete);
+//
+//            @Override
+//            protected void updateItem(ProductesComanda p, boolean empty) {
+//                super.updateItem(p, empty);
+//
+//                if (p == null) {
+//                    setGraphic(null);
+//                    return;
+//                }
+//
+//                // Inserir container amb botons a dins
+//                setGraphic(container);
+//                container.setId("container");
+//                container.setAlignment(Pos.CENTER);
+//
+//                // Desar canvis registre actual
+//                btnEdit.setId("btnEdit");
+//                btnEdit.setTooltip(tooltipDesar);
+//                btnEdit.setOnAction(event -> {
+//
+//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//                    alert.setTitle("CONFIRMAR CANVIS");
+//                    alert.setHeaderText("Desitja actualitzar el Producte \"" + p.getNom().toUpperCase() + "\"?");
+//
+//                    ButtonType yesButton = new ButtonType("Sí");
+//                    ButtonType cancelButton = new ButtonType("No");
+//
+//                    alert.getButtonTypes().setAll(yesButton, cancelButton);
+//
+//                    if (alert.showAndWait().get() == yesButton) {
+//
+//                        DAOComanda.update(p);                                   // Actualitzar el registre actual dins la BD, taula 'products'
+//
+//                    } else {
+//                        DAOComanda.getOne(p);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
+//                        System.out.println("producte no modificat: "
+//                                + DAOComanda.getOne(p));
+//                        alert.close();
+//                    }
+//
+//                    columnProductName.getStyleClass().add("netejar");           // Netejar estils aplicats als camps modificats
+//                    orderLinesList.refresh();                                       // Refrescar llistat (NECESSARI)
+//
+//                });
+//
+//                btnDelete.setId("btnDelete");                                   // Botó per eliminar registre actual
+//                btnDelete.setTooltip(tooltipEliminar);
+//                btnDelete.setOnAction(event -> {
+////
+////                    if (validate.productIsInOrders(p) > 0) {                     // Mostrar avís si el client té comandes actives
+////
+////                        Alert alert = new Alert(Alert.AlertType.ERROR);
+////                        alert.setTitle("NO ES POT ELIMINAR EL Producte");
+////                        alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
+////                        alert.show();
+////
+////                    } else {                                                    // Demanar confirmació per eliminar el client
+////
+////                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+////                        alert.setTitle("CONFIRMAR BAIXA");
+////                        alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
+////
+////                        ButtonType yesButton = new ButtonType("Sí");
+////                        ButtonType cancelButton = new ButtonType("No");
+////
+////                        alert.getButtonTypes().setAll(yesButton, cancelButton);
+////
+////                        if (alert.showAndWait().get() == yesButton) {
+//                    dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
+//                    llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
+////                        } else {
+////                            alert.close();
+////                        }
+////                    }
+//                });
+//
+//            }
+//        }
+//        );
+//    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
@@ -248,7 +369,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Víctor García - Implementació
      */
     @FXML
-    private void saveOrder() throws IOException {
+    private void saveOrder() throws IOException, SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
         alert.setTitle("CONFIRMI UNA OPCIÓ");
         alert.setHeaderText("Vols confirmar la comanda actual?");
@@ -345,8 +466,18 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void createNewCommand() {
+    private void createNewCommand() throws SQLException {
+        LocalDate today = java.time.LocalDate.now();
+        LocalDate oneWeekFromNow = (java.time.LocalDate.now()).plusDays(7);
+        System.out.println("Hoy --> " + today);
+        System.out.println("Semana vista --> " + oneWeekFromNow);
+        String cus = selectorClient.getValue().getCustomerEmail();
+        System.out.println(cus);
         
+        Comanda c = new Comanda(java.sql.Date.valueOf(today), java.sql.Date.valueOf(oneWeekFromNow), cus);        
+        
+        DAOComanda = new ComandaDAO();
+        DAOComanda.save(c);
     }
     
     /**

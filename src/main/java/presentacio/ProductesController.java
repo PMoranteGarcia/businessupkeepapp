@@ -74,8 +74,6 @@ public class ProductesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println("inicializado");
-
         try {
             emplenarTaula();
             searchCustomersDataFilter();
@@ -113,36 +111,33 @@ public class ProductesController implements Initializable {
         App.setRoot("productesForm");
     }
 
-    private void handleOnMouseClicked(MouseEvent ev) {
-        Producte prod = (Producte) productList.getSelectionModel().getSelectedItem();
-
-        if (prod != null) {
-            System.out.println(prod.toString());
-        }
-    }
-
+    /**
+     * *
+     * EMplena la taula
+     *
+     * @throws SQLException
+     * @author
+     */
     private void emplenarTaula() throws SQLException {
 
         dataProducte = new ProducteDAO();
+
         //afegim els elements
         llistaObservableProducte.addAll(dataProducte.getAll());
         System.out.println(dataProducte.getAll());
 
-        /**
-         * *
-         * Establim un vincle entre els atributs de l'objecte Producte i cada
-         * columna del tableview.
-         */
+        //Establim un vincle entre els atributs de l'objecte Producte i cada columna del tableview.
         columnProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         columnProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         columnProductDescription.setCellValueFactory(new PropertyValueFactory<>("ProductDescription"));
         columnProductStock.setCellValueFactory(new PropertyValueFactory<>("QuantityInStock"));
         columnProductBuyPice.setCellValueFactory(new PropertyValueFactory<>("BuyPrice"));
 
+        //Afegir BOTONS ACCIONS
         columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-        addCellButtons(); // Afegir BOTONS ACCIONS
+        addCellButtons();
 
-        // 3.1 Aplicar estils pels camps NO EDITABLES
+        //Aplicar estils pels camps NO EDITABLES
         columnProductCode.setCellFactory(tc -> new TableCell<Producte, Integer>() {
             @Override
             protected void updateItem(Integer value, boolean empty) {
@@ -155,101 +150,17 @@ public class ProductesController implements Initializable {
                 }
             }
         });
-        columnProductName.setCellFactory(tc -> new TableCell<Producte, Integer>() {
+        columnProductName.setCellFactory(tc -> new TableCell<Producte, String>() {
             @Override
-            protected void updateItem(Integer value, boolean empty) {
-                super.updateItem(value, empty);
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
                 if (empty) {
                     setText(null);
                 } else {
                     getStyleClass().add("non-editable");
-                    setText(Integer.toString(value));
+                    setText(item);
                 }
             }
-        });
-//      2. Desar els registres editats
-        //nom
-        columnProductName.setOnEditCommit(event -> {
-
-            // Recuperar l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment (si ha estat editat...)
-            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
-
-            // Desem els valors d'abans i després de la modificació
-            String valorAntic = (String) e.getOldValue();
-            String valorNou = (String) e.getNewValue();
-            System.out.println("Valor antic:" + valorAntic);
-            System.out.println("Valor nou:" + valorNou);
-
-            // ** ACCIÓ x DESAR (BOTÓ SAVE)
-            // Recuperem l'objecte 'Client' de la fila afectada
-            Producte c = (Producte) e.getRowValue();
-
-            // Detectar canvis
-            if (valorNou.isBlank() || valorNou.isEmpty()) {
-                //valorNou = valorAntic; // mostra valor original al llistat
-                //li assignem el nou valor (necessari x actualitzar nou valor editat)
-                c.setProductName(valorAntic);
-            } else {
-                c.setProductName((String) e.getNewValue());//li assignem el nou valor (necessari x actualitzar nou valor editat)
-            }
-
-            System.out.println("Cond. 1: " + valorNou.equalsIgnoreCase(valorAntic));
-            System.out.println("Cond. 2: " + valorNou.isBlank());
-            System.out.println("Cond. 3: " + valorNou.isEmpty());
-
-        });
-        //descripcio
-        columnProductDescription.setOnEditCommit(event -> {
-
-            // Recuperar l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment (si ha estat editat...)
-            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
-
-            // Desem els valors d'abans i després de la modificació
-            String valorAntic = (String) e.getOldValue();
-            String valorNou = (String) e.getNewValue();
-            System.out.println("Valor antic:" + valorAntic);
-            System.out.println("Valor nou:" + valorNou);
-
-            // ** ACCIÓ x DESAR (BOTÓ SAVE)
-            // Recuperem l'objecte 'Client' de la fila afectada
-            Producte c = (Producte) e.getRowValue();
-
-            // Detectar canvis
-            if (valorNou.isBlank() || valorNou.isEmpty()) {
-                //valorNou = valorAntic; // mostra valor original al llistat
-                //li assignem el nou valor (necessari x actualitzar nou valor editat)
-                c.setProductDescription(valorAntic);
-            } else {
-                c.setProductName((String) e.getNewValue());//li assignem el nou valor (necessari x actualitzar nou valor editat)
-            }
-
-            System.out.println("Cond. 1: " + valorNou.equalsIgnoreCase(valorAntic));
-            System.out.println("Cond. 2: " + valorNou.isBlank());
-            System.out.println("Cond. 3: " + valorNou.isEmpty());
-
-        });
-
-        // Preu
-        columnProductBuyPice.setOnEditCommit(event -> {
-
-            //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
-            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
-
-            //valor antic abans de la modificació
-            String valorAntic = (String) e.getOldValue();
-            System.out.println("Valor antic:" + valorAntic);
-
-            //valor nou
-            String valorNou = (String) e.getNewValue();
-            System.out.println("Valor nou:" + valorNou);
-
-            // ** ACCIÓ x DESAR (BOTÓ SAVE)
-            //recuperem l'objecte Client de la fila afectada
-            Producte c = (Producte) e.getRowValue();
-
-            //li assignem el nou valor (necessari x actualitzar nou valor editat)
-            c.setBuyPrice(Float.valueOf(valorNou));
-
         });
 
         makeColsEditable();
@@ -266,43 +177,12 @@ public class ProductesController implements Initializable {
     private void makeColsEditable() {
 
         // 1. Fer editables les cel·les de dins una mateixa columna
-        columnProductName.setCellFactory(TextFieldTableCell.forTableColumn());
-        columnProductDescription.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        //columnProductStock.setCellFactory(col -> new NumberCell());          // Crear Classe per editar la cel·la amb valors numèrics
+       columnProductDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+        columnProductBuyPice.setCellFactory(col -> new NumberCellFloat());          // Crear Classe per editar la cel·la amb valors numèrics
+        columnProductStock.setCellFactory(col -> new NumberCellInt());          // Crear Classe per editar la cel·la amb valors numèrics
         System.out.println("llistaObservableProducte: " + llistaObservableProducte.size());
 
         // 2. Desar els registres editats
-        columnProductName.setOnEditCommit(event -> {
-
-            // Recuperar l'objecte 'CellEditEvent' que ens dona informació de l'esdeveniment (si ha estat editat...)
-            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
-
-            // Desem els valors d'abans i després de la modificació
-            String valorAntic = (String) e.getOldValue();
-            String valorNou = (String) e.getNewValue();
-            System.out.println("Valor antic:" + valorAntic);
-            System.out.println("Valor nou:" + valorNou);
-
-            // ** ACCIÓ x DESAR (BOTÓ SAVE)
-            // Recuperem l'objecte 'Producte' de la fila afectada
-            Producte p = (Producte) e.getRowValue();
-
-            // Detectar canvis
-            if (valorNou.isBlank() || valorNou.isEmpty()) {
-//          li assignem el nou valor (necessari x actualitzar nou valor editat)
-                p.setProductName(valorAntic);
-            } else {
-                p.setProductName((String) e.getNewValue());//li assignem el nou valor (necessari x actualitzar nou valor editat)
-            }
-
-            System.out.println("Cond. 1: " + valorNou.equalsIgnoreCase(valorAntic));
-            System.out.println("Cond. 2: " + valorNou.isBlank());
-            System.out.println("Cond. 3: " + valorNou.isEmpty());
-
-        });
-
-        // Modificar telèfon
         columnProductDescription.setOnEditCommit(event -> {
 
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
@@ -324,12 +204,56 @@ public class ProductesController implements Initializable {
             p.setProductDescription(valorNou);
 
         });
+
+        columnProductStock.setOnEditCommit(event -> {
+
+            //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
+            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
+
+            //valor antic abans de la modificació
+            int valorAntic = (int) e.getOldValue();
+            System.out.println("Valor antic:" + valorAntic);
+
+            //valor nou
+            int valorNou = (int) e.getNewValue();
+            System.out.println("Valor nou:" + valorNou);
+
+            // ** ACCIÓ x DESAR (BOTÓ SAVE)
+            //recuperem l'objecte Producte de la fila afectada
+            Producte p = (Producte) e.getRowValue();
+
+            //li assignem el nou valor (necessari x actualitzar nou valor editat)
+            p.setQuantityInStock(valorNou);
+
+        });
+
+        columnProductBuyPice.setOnEditCommit(event -> {
+
+            //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
+            TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
+
+            //valor antic abans de la modificació
+            float valorAntic = (float) e.getOldValue();
+            System.out.println("Valor antic:" + valorAntic);
+
+            //valor nou
+            float valorNou = (float) e.getNewValue();
+            System.out.println("Valor nou:" + valorNou);
+
+            // ** ACCIÓ x DESAR (BOTÓ SAVE)
+            //recuperem l'objecte Producte de la fila afectada
+            Producte p = (Producte) e.getRowValue();
+
+            //li assignem el nou valor (necessari x actualitzar nou valor editat)
+            p.setBuyPrice(valorNou);
+
+        });
     }
 
     /**
      * Mètode que afegeix botons dins la cel·la d'accions de la TableView
      *
-     * @author Txell Llanas - Creació/Implementació
+     * @author Izan Jimenez - Creació/Implementació
      */
     private void addCellButtons() {
 
@@ -421,24 +345,17 @@ public class ProductesController implements Initializable {
     /**
      * *
      * Classe que extén de TableCell i permet a la cel·la actual contenir dades
-     * numèriques. Conté una validació per evitar entrades incorrectes de
+     * numèriques no decimals. Conté una validació per evitar entrades incorrectes de
      * l'usuari.
      *
-     * @author Txell Llanas - Creació/Implementació
+     * @author Izan Jimenez - Implementació / Creació
      */
-    public class NumberCell extends TableCell<Producte, Number> {
+    public class NumberCellInt extends TableCell<Producte, Number> {
 
         private final TextField textField = new TextField();
-        private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");    // Regex per limitar introducció de dades numèriques amb decimals  
-//        String defaultCredit = Float.toString(validate.getDefaultCreditLimit());      // String amb el valor per defecte pel Crèdit per assignar aun client
-        String defaultStock = Float.toString(validate.getDefaultStock());               // String amb el valor per defecte pel Crèdit per assignar aun client
+        private final Pattern pattern = Pattern.compile("[0-9]+");
 
-        public NumberCell() {
-//            textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-//                if (! isNowFocused) {
-//                    processEdit();
-//                }
-//            });
+        public NumberCellInt() {
             textField.setOnAction(event -> processEdit());
         }
 
@@ -454,12 +371,101 @@ public class ProductesController implements Initializable {
             if (pattern.matcher(value).matches()) {                           // Si són nombres i/o amb decimals
 
                 if (validate.checkStock(textField)) {                         // Validar dades introduïdes (valors mínim-màxim)
+                    commitEdit(Integer.parseInt(value));                             // Desar canvis
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("STOCK ERRÒNI");
+                    alert.setHeaderText("ERROR: Stock incorrecte, indicar "
+                            + "un valor major a 1");
+                    alert.show();                                                   // Mostrar error
+
+                    cancelEdit();
+                }
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("REVISI LES DADES INTRODUÏDES");
+                alert.setHeaderText("ERROR: Només valors numèrics");
+                alert.show();
+            }
+        }
+
+        @Override
+        public void updateItem(Number value, boolean empty) {
+            super.updateItem(value, empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else if (isEditing()) {
+                setText(null);
+                textField.setText(value.toString());
+                setGraphic(textField);
+            } else {
+                setText(String.format(String.valueOf(value.intValue())));
+                setGraphic(null);
+            }
+        }
+
+        @Override
+        public void startEdit() {
+            super.startEdit();
+            Number value = getItem();
+            if (value != null) {
+                textField.setText(value.toString());
+                setGraphic(textField);
+                setText(null);
+            }
+        }
+
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+            setText(getItem().toString());
+            setGraphic(null);
+        }
+
+        @Override
+        public void commitEdit(Number value) {
+            super.commitEdit(value);
+            ((Producte) this.getTableRow().getItem()).setQuantityInStock(value.intValue());
+        }
+    }
+
+    /**
+     * *
+     * Classe que extén de TableCell i permet a la cel·la actual contenir dades
+     * numèriques. Conté una validació per evitar entrades incorrectes de
+     * l'usuari.
+     *
+     * @author Izan Jimenez - Implementació
+     */
+    public class NumberCellFloat extends TableCell<Producte, Number> {
+
+        private final TextField textField = new TextField();
+        private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");
+
+        public NumberCellFloat() {
+            textField.setOnAction(event -> processEdit());
+        }
+
+        private void processEdit() {
+
+            String value = textField.getText();
+
+            if (value.isEmpty()) // Evitar valors buits
+            {
+                textField.setText("0");
+            }
+
+            if (pattern.matcher(value).matches()) {                           // Si són nombres i/o amb decimals
+
+                if (validate.checkPreu(textField)) {                         // Validar dades introduïdes (valors mínim-màxim)
                     commitEdit(Float.parseFloat(value));                             // Desar canvis
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("QUANTITAT ERRÒNIA");
-                    alert.setHeaderText("ERROR: 'Crèdit Màxim' incorrecte, indicar "
-                            + "un valor entre 0 i " + defaultStock);
+                    alert.setTitle("PREU ERRÒNIA");
+                    alert.setHeaderText("ERROR: Preu  incorrecte, indicar "
+                            + "un valor major a 0");
                     alert.show();                                                   // Mostrar error
 
                     cancelEdit();
@@ -510,57 +516,56 @@ public class ProductesController implements Initializable {
         @Override
         public void commitEdit(Number value) {
             super.commitEdit(value);
-            ((Producte) this.getTableRow().getItem()).setBuyPrice(value.intValue());
+            ((Producte) this.getTableRow().getItem()).setBuyPrice(value.floatValue());
         }
     }
-    
-        /**
+
+    /**
      * Mètode que filtra els registres segons el texte introduït al cercador.
-     * @author Txell Llanas - Creació/Implementació
+     *
+     * @author Izan Jimenez - Creació/Implementació
      */
-    private void searchCustomersDataFilter(){
-        
+    private void searchCustomersDataFilter() {
+
         FilteredList<Producte> filteredData = new FilteredList<>(llistaObservableProducte, b -> true);
 
         textFieldCercarProducte.textProperty().addListener((observable, oldValue, newValue) -> {
 
-//            filteredData.setPredicate(client -> {
-//
-//                // Si no s'escriu res al cercador, o no hi ha coincidències amb el texte introduït, mostra tots els registres
-//                if( newValue.isEmpty()|| newValue.isBlank() || newValue == null ) {
-//                    return true;
-//                }
-//
-//                String searchKeyword = newValue.toLowerCase();
-//
-//                // Definir filtres de cerca: buscar a tots els camps
-//                if( client.getCustomerEmail().toLowerCase().contains(searchKeyword) ) {
-//                    return true;
-//                } else if( client.getCustomerName().toLowerCase().contains(searchKeyword) ) {
-//                    return true;                       
-//                } else if( client.getIdCard().toLowerCase().contains(searchKeyword) ) {
-//                    return true;
-//                } else if( client.getBirthDate().toString().contains(searchKeyword) ) {
-//                    return true;
-//                } else if( client.getPhone().toLowerCase().contains(searchKeyword) ) {
-//                    return true;                       
-//                } else if( Float.toString(client.getCreditLimit()).contains(searchKeyword) ) {
-//                    return true;
-//                } else 
-//                    return false; // Contingut no trobat
-//
-//            });
+            filteredData.setPredicate(producte -> {
+
+                // Si no s'escriu res al cercador, o no hi ha coincidències amb el texte introduït, mostra tots els registres
+                if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
+                    return true;
+                }
+
+                String searchKeyword = newValue.toLowerCase();
+
+                // Definir filtres de cerca: buscar a tots els camps
+                if (Integer.toString(producte.getProductCode()).toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else if (producte.getProductName().toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else if (producte.getProductDescription().toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else if (Integer.toString(producte.getQuantityInStock()).toString().contains(searchKeyword)) {
+                    return true;
+                } else if (Float.toString(producte.getBuyPrice()).toLowerCase().contains(searchKeyword)) {
+                    return true;
+                } else {
+                    return false; // Contingut no trobat
+                }
+            });
 
         });
 
-//        // Ordenar els resultats coincidents (descarta els registres que no coincideixen amb les paraules cercades)
-//        SortedList<Client> sortedData = new SortedList<>(filteredData);
-//
-//        // Establir vincle de la SortedList amb la TableView
-//        sortedData.comparatorProperty().bind(customersTableView.comparatorProperty());
-//
-//        // Aplicar filtratge a la taula
-//        customersTableView.setItems(sortedData);
+        // Ordenar els resultats coincidents (descarta els registres que no coincideixen amb les paraules cercades)
+        SortedList<Producte> sortedData = new SortedList<>(filteredData);
+
+        // Establir vincle de la SortedList amb la TableView
+        sortedData.comparatorProperty().bind(productList.comparatorProperty());
+
+        // Aplicar filtratge a la taula
+        productList.setItems(sortedData);
     }
 
 }

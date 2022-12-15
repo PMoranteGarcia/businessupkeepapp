@@ -21,7 +21,6 @@ public class Producte {
         this.quantityInStock = quantityInStock;
         this.buyPrice = buyPrice;
     }
-   
 
     public int getProductCode() {
         return productCode;

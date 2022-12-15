@@ -62,8 +62,7 @@ Button:hover, .btn_back:hover {-fx-background-color: #666; -fx-border-color:#aaa
 
 /* TAULES */
 TableView {-fx-fixed-cell-size:40px;}
-#ordersTableView .table-column, #customersTableView .table-column {-fx-alignment: center; }
-
+#ordersTableView .table-column, #customersTableView .table-column #productsTableView .table-column {-fx-alignment: center; }
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected {-fx-background-color: #d3d3d3!important;}
 .table-cell {-fx-text-fill:#000!important;}
 .table-view:row-selection .table-cell {-fx-border-color: transparent white transparent transparent;}

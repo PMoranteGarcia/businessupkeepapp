@@ -49,7 +49,7 @@
                             <children>
                                 <TextField fx:id="textFieldCercarProducte" />
                                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="35.0" prefWidth="33.0" />
-                                <Button id="searchBtn" fx:id="btnSearchCustomer" mnemonicParsing="false" onAction="#searchCustomer" text="Cercar" />
+                                <Button id="searchBtn" fx:id="btnSearchCustomer" mnemonicParsing="false" onAction="#searchCustomer" text="Netejar" />
                             </children>
                         </HBox>
                     </children>
@@ -59,16 +59,16 @@
                 <Insets left="20.0" right="20.0" top="20.0" />
             </VBox.margin>
         </HBox>
-        <TableView id="llistat" fx:id="productList" editable="true">
+        <TableView id="productsTableView" fx:id="productList" editable="true" VBox.vgrow="ALWAYS">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <columns>
-                <TableColumn id="columnProductCode" fx:id="columnProductCode" editable="false" maxWidth="202.0" minWidth="75.0" prefWidth="88.0" text="Codi" />
-                <TableColumn id="columnProductName" fx:id="columnProductName" editable="false" maxWidth="500.0" minWidth="48.0" prefWidth="166.0" text="Nom" />
-                <TableColumn id="columnProductDescription" fx:id="columnProductDescription" editable="false" maxWidth="500.0" minWidth="65.0" prefWidth="261.0" text="Descripció" />
-                <TableColumn id="columnProductStock" fx:id="columnProductStock" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Stock" />
-                <TableColumn id="columnProductBuyPice" fx:id="columnProductBuyPice" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Preu" />
+                <TableColumn id="columnProductCode" fx:id="columnProductCode" maxWidth="202.0" minWidth="75.0" prefWidth="88.0" text="Codi" />
+                <TableColumn id="columnProductName" fx:id="columnProductName" maxWidth="500.0" minWidth="48.0" prefWidth="166.0" text="Nom" />
+                <TableColumn id="columnProductDescription" fx:id="columnProductDescription" maxWidth="500.0" minWidth="65.0" prefWidth="261.0" text="Descripció" />
+                <TableColumn id="columnProductStock" fx:id="columnProductStock" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Stock" />
+                <TableColumn id="columnProductBuyPice" fx:id="columnProductBuyPice" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Preu" />
                 <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
             </columns>
             <VBox.margin>

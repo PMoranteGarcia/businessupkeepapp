@@ -32,9 +32,9 @@ public class ProducteLogic {
     /**
      * Mètode per comprovar que el producte no existeix en cap comanda.
      *
-     * @param p Instància de la classe Client
+     * @param p Instància de la classe Porducte
      * @return boolean (True/False) si es troben coincidències o no amb la BD
-     * @author Txell Llanas - Implementació
+     * @author Izan Jimenez - Implementació
      */
     public int productIsInOrders(Producte p) {
 
@@ -61,60 +61,60 @@ public class ProducteLogic {
         return numComandes;
     }
 
+    /**
+     * Mètode per retornar la quantitat minima d'stock (RF32).
+     *
+     * @author Izan Jimenez - Implementació
+     */
     public int getDefaultStock() {
 
-        int credit = 0;
-
+        int stock = 0;
         try {
-
             dataDefaults = new AppConfigDAO();
             valuesList.addAll(dataDefaults.getAll());
-
-            credit = valuesList.get(0).getDefaultStock();
-
+            stock = valuesList.get(0).getDefaultStock();
         } catch (SQLException ex) {
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        
-        return credit;
-
+        return stock;
     }
 
+    /**
+     * *
+     * Métode per comprovar si el parametre introduit es major al minim Stock
+     *
+     * @param f Camp de texte del formulari
+     * @return boolean (True/False) si el valor es valid
+     * @author Izan Jimenez - Implementació
+     */
     public boolean checkStock(TextField f) {
         boolean ret = false;
         try {
 
             int stock = Integer.parseInt(f.getText());
-            System.out.println("stock" + stock);
-            int minStock = valuesList.get(0).getDefaultStock();
-            System.out.println("stock: " + stock);
-            System.out.println("minStock: " + minStock);
+            int minStock = getDefaultStock();
 
             if (stock >= minStock) {
                 ret = true;
             }
         } catch (NumberFormatException e) {
-
         }
-
         return ret;
     }
 
     /**
-     * Mètode per verificar que l'usuari no existeixi ja a la BD (email).
+     * Mètode per verificar que el prodcute no existeixi ja a la BD (nom).
      *
-     * @param f Camp de texte del formulari on s'hi indica el mail del client
+     * @param f Camp de texte del formulari
      * @return boolean (True/False) si es troben coincidències o no amb la BD
-     * @author Txell Llanas - Implementació
+     * @author Izan Jimenez - Implementació
      */
     public boolean checkProductExists(TextField f) {
 
         boolean res = false;
         String nom = f.getText().trim();
         int count = 0;
-
         try {
-
             dataProduct = new ProducteDAO();
             productList.addAll(dataProduct.getAll());
 
@@ -122,22 +122,25 @@ public class ProducteLogic {
                 if (nom.equals(productList.get(i).getProductName())) {
                     count++;
                 }
-
             }
-
         } catch (SQLException ex) {
-            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (count > 0) {
             res = true;
         }
-//        
+
         return res;
     }
 
+    /**
+     * Mètode per verificar que el preu sigui valid.
+     *
+     * @param f Camp de texte del formulari
+     * @return boolean (True/False) si es valid
+     * @author Izan Jimenez - Implementació
+     */
     public boolean checkPreu(TextField f) {
-        System.out.println(f.getText());
         boolean ret = false;
         try {
 

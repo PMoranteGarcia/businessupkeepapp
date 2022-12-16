@@ -97,8 +97,6 @@
 
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
 
-                        <Button id="searchBtn" fx:id="btnSearchOrder" mnemonicParsing="false" onAction="#searchOrderBetweenDates" text="Cercar Comanda" />
-
                      </children>
 
                   </HBox>

@@ -56,8 +56,6 @@ public class ComandesController implements Initializable {
     @FXML
     private DatePicker datePickerTo;
     @FXML
-    private Button btnSearchOrder;
-    @FXML
     private TableView<Comanda> ordersList;
     @FXML
     private TableColumn columnOrderNumber;
@@ -101,7 +99,6 @@ public class ComandesController implements Initializable {
         String text3 = btnProducts.getText();
         String text4 = btnAbout.getText();
         String text5 = btnNewOrder.getText();
-        String text6 = btnSearchOrder.getText();
 
         // Passar el texte a MAJÚSCULES
         btnOrders.setText(text1.toUpperCase());
@@ -109,10 +106,12 @@ public class ComandesController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewOrder.setText(text5.toUpperCase());
-        btnSearchOrder.setText(text6.toUpperCase());
 
         // Recuperar registres taula 'orders'
         fillOrdersTable();
+
+        //Recuperar registres entre dues dates
+        filteredTable();
     }
 
     /**
@@ -320,4 +319,24 @@ public class ComandesController implements Initializable {
     private void searchOrderBetweenDates() {
     }
 
+    private void filteredTable() {
+        ObservableList<Comanda> allItems = llistaObservableComanda;
+        FilteredList<Comanda> filteredItems = new FilteredList<>(allItems);
+        // bind predicate based on datepicker choices
+        filteredItems.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+            LocalDate minDate = datePickerFrom.getValue();
+            LocalDate maxDate = datePickerTo.getValue();
+
+            // get final values != null
+            final LocalDate finalMin = minDate == null ? LocalDate.MIN : minDate;
+            final LocalDate finalMax = maxDate == null ? LocalDate.MAX : maxDate;
+
+            // values for openDate need to be in the interval [finalMin, finalMax]
+            return ti -> !finalMin.isAfter( ti.getDataEntrega().toLocalDate() ) && !finalMax.isBefore( ti.getDataEntrega().toLocalDate() );
+        },
+                datePickerFrom.valueProperty(),
+                datePickerTo.valueProperty()));
+
+        ordersList.setItems(filteredItems);
+    }
 }

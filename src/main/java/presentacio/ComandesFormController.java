@@ -125,8 +125,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         btnCancel.setText(text2.toUpperCase());
         btnaddProduct.setText(text3.toUpperCase());
 
-        this.idComanda = ComandesController.getIdComanda(); // obtenir id comanda actual
-        
+        this.idComanda = ComandesController.getComanda().getNumOrdre(); // obtenir id comanda actual
+
         fillDropDownList();
         fillProductsTable();
 
@@ -135,10 +135,18 @@ public class ComandesFormController extends PresentationLayer implements Initial
             TitolComanda.setText("Crear Comanda");
             totalAmount.setText("0");
         } else { // si no, estableix el número de comanda
-            orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
+            Comanda comandaActual = DAOComanda.getOne(ComandesController.getComanda());
+            orderNumber.setText(Integer.toString(comandaActual.getNumOrdre()));
+            System.out.println("client " + comandaActual.getClient());
+            selectorClient.setValue(comandaActual.getClient());
+            selectorClient.setDisable(true);
             TitolComanda.setText("Detall Comanda ");
             calculateTotalAmount();
         }
+
+        selectorProduct.setOnMouseClicked(event -> {
+            btnaddProduct.setDisable(false);
+        });
 
     }
 
@@ -200,6 +208,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         try {
             DAOClient = new ClientDAO();
             ObservableList<Client> olc = (FXCollections.observableList(DAOClient.getAll()));
+            selectorClient.setDisable(false);
+            selectorClient.setPromptText("Selecciona un client");
             selectorClient.setItems(olc);
             // conversor per pasar d'objecte a string per la dropdownlist
             selectorClient.setConverter(new StringConverter<Client>() {
@@ -219,6 +229,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             });
             DAOProducte = new ProducteDAO();
             ObservableList<Producte> olp = (FXCollections.observableList(DAOProducte.getAll()));
+            selectorProduct.setPromptText("Selecciona un producte");
             selectorProduct.setItems(olp);
             // conversor per pasar d'objecte a string per la dropdownlist
             selectorProduct.setConverter(new StringConverter<Producte>() {
@@ -421,42 +432,46 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void addProduct() {
-        Boolean producteRepetit = false;
-        Producte temp = selectorProduct.getValue();
-        for (int i = 0; i < llistaObservableProductes.size(); i++) {
-            ProductesComanda llistTemp = llistaObservableProductes.get(i);
-            if (llistTemp.getIdProducte() == temp.getProductCode()) {
-                if (llistTemp.getQuantitat() == 20) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
-                    alert.setTitle("ALERTA");
-                    alert.setHeaderText("La quantitat d'un producte no pot superar 20.");
+        try {
+            Boolean producteRepetit = false;
+            Producte temp = selectorProduct.getValue();
+            for (int i = 0; i < llistaObservableProductes.size(); i++) {
+                ProductesComanda llistTemp = llistaObservableProductes.get(i);
+                if (llistTemp.getIdProducte() == temp.getProductCode()) {
+                    if (llistTemp.getQuantitat() == 20) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                        alert.setTitle("ALERTA");
+                        alert.setHeaderText("La quantitat d'un producte no pot superar 20.");
 
-                    ButtonType yesButton = new ButtonType("Acceptar");
+                        ButtonType yesButton = new ButtonType("Acceptar");
 
-                    alert.getButtonTypes().setAll(yesButton);
-                    if (alert.showAndWait().get() == yesButton) {
-                        alert.close();
+                        alert.getButtonTypes().setAll(yesButton);
+                        if (alert.showAndWait().get() == yesButton) {
+                            alert.close();
+                        }
+                    } else {
+                        llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
+                        llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
+                        llistaObservableProductes.set(i, llistTemp);
                     }
-                } else {
-                    llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
-                    llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
-                    llistaObservableProductes.set(i, llistTemp);
+                    producteRepetit = true;
                 }
-                producteRepetit = true;
             }
+            if (!producteRepetit) {
+                ProductesComanda newProduct = new ProductesComanda();
+                newProduct.setIdProducte(temp.getProductCode());
+                newProduct.setNumberLine(llistaObservableProductes.size() + 1);
+                newProduct.setOrderNummber(this.idComanda);
+                newProduct.setQuantitat(1);
+                newProduct.setUnitaryPrice(temp.getBuyPrice());
+                newProduct.setNom(temp.getProductName());
+                newProduct.setTotal(temp.getBuyPrice() * 1);
+                llistaObservableProductes.add(newProduct);
+            }
+            calculateTotalAmount();
+        } catch (NullPointerException ex) {
+            System.out.println("No s'ha seleccionat producte.");
         }
-        if (!producteRepetit) {
-            ProductesComanda newProduct = new ProductesComanda();
-            newProduct.setIdProducte(temp.getProductCode());
-            newProduct.setNumberLine(llistaObservableProductes.size() + 1);
-            newProduct.setOrderNummber(this.idComanda);
-            newProduct.setQuantitat(1);
-            newProduct.setUnitaryPrice(temp.getBuyPrice());
-            newProduct.setNom(temp.getProductName());
-            newProduct.setTotal(temp.getBuyPrice() * 1);
-            llistaObservableProductes.add(newProduct);
-        }
-        calculateTotalAmount();
     }
 
     private void calculateTotalAmount() {
@@ -491,10 +506,14 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Comanda c = new Comanda(java.sql.Date.valueOf(today), requiredDayG, cus);
 
         DAOComanda = new ComandaDAO();
-        DAOComanda.save(c);
-        for (int i = 0; i < llistaObservableProductes.size(); i++) {
-            ProductesComanda p = llistaObservableProductes.get(i);
-            DAOComanda.saveProduct(true, p, idComanda);
+        this.idComanda = DAOComanda.saveCommand(c);
+        if (idComanda != 0) {
+            for (int i = 0; i < llistaObservableProductes.size(); i++) {
+                ProductesComanda p = llistaObservableProductes.get(i);
+                DAOComanda.saveProduct(true, p, idComanda);
+            }
+        } else {
+            System.out.println("Error al generar nova comanda a base de dades.");
         }
     }
 
@@ -555,8 +574,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
                     alert.getButtonTypes().setAll(yesButton, cancelButton);
 
                     if (alert.showAndWait().get() == yesButton) {
-                        if (ComandesController.getIdComanda() != 0) {
-                            DAOComanda.deleteProductFromComanda(t, ComandesController.getIdComanda());
+                        if (ComandesController.getComanda().getNumOrdre() != 0) {
+                            DAOComanda.deleteProductFromComanda(t, ComandesController.getComanda().getNumOrdre());
                         }
                         llistaObservableProductes.remove(t);
                         calculateTotalAmount();

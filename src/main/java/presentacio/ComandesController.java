@@ -83,7 +83,7 @@ public class ComandesController implements Initializable {
     // Instància de ComandaLogic per carregar els mètodes de validacions
     private ComandaLogic validate = new ComandaLogic();
     
-    public static int idComanda = 0;
+    public static Comanda comandaActual;
 
     /**
      * Inicialitza els components especificats.
@@ -127,7 +127,7 @@ public class ComandesController implements Initializable {
     private void goToNewOrder() throws IOException {
 
         // Carregar la vista del formulari "COMANDES (Detalls)" in-situ
-        setIdComanda(0); // si la comanda és nova, id 0
+        setComandaActual(new Comanda(0)); // si la comanda és nova, comanda nova amb id 0
         App.setRoot("comandesForm");
     }
 
@@ -250,19 +250,19 @@ public class ComandesController implements Initializable {
      */
     @FXML
     private void goToOrderDetails(Comanda t) throws IOException {
-        setIdComanda(t.getNumOrdre());
+        setComandaActual(t);
         
         App.setRoot("comandesForm");
     }
     
-    /** Estableix la id de la comanda seleccionada
+    /** Estableix la comanda seleccionada
      * 
-     * @param i 
+     * @param c
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void setIdComanda(int i) {
-        idComanda = i;
+    private void setComandaActual(Comanda c) {
+        comandaActual = c;
     }
     
     /** Mètode per saber quina comanda ha estat seleccionada
@@ -270,8 +270,8 @@ public class ComandesController implements Initializable {
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    public static int getIdComanda() {
-        return idComanda;
+    public static Comanda getComanda() {
+        return comandaActual;
     }
     
     /**

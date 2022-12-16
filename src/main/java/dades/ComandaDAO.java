@@ -1,5 +1,6 @@
 package dades;
 
+import entitats.Client;
 import entitats.Comanda;
 import entitats.Producte;
 import entitats.ProductesComanda;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,22 +60,30 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
         return ret;
     }
-
+    
     @Override
     public void save(Comanda c) throws SQLException {
+        
+    }
+
+    public int saveCommand(Comanda c) throws SQLException {
         String consulta = "INSERT INTO orders (orderDate, requiredDate, customers_customerEmail) VALUES (?,?,?);";
+        int newId = 0;
 
         PreparedStatement preparedStatement;
         try {
 
-            preparedStatement = con.prepareStatement(consulta);
+            preparedStatement = con.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setDate(1, c.getDataOrdre());
             preparedStatement.setDate(2, c.getDataEntrega());
             preparedStatement.setString(3, c.getCustomers_customerEmail());
 
             preparedStatement.executeUpdate();
-
+            ResultSet temp = preparedStatement.getGeneratedKeys();
+            if (temp.next()) {
+                newId = Integer.parseInt(temp.getString(1));
+            }
         } catch (SQLException ex) {
             System.out.println("ERROR amb la connexió a SQL");
             System.out.println("SQLExceptionq: " + ex.getMessage());
@@ -81,6 +91,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return newId;
 
     }
 
@@ -109,8 +121,27 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     @Override
-    public Comanda getOne(Comanda t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Comanda getOne(Comanda t){
+        Comanda ret = new Comanda();
+        String consulta = "SELECT * FROM orders WHERE orderNumber = ?;";
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(consulta);
+            
+            preparedStatement.setInt(1, t.getNumOrdre());
+            
+            ResultSet resultats = preparedStatement.executeQuery();
+           
+            while (resultats.next()) {
+                ret.setNumOrdre(resultats.getInt("orderNumber"));
+                ret.setDataOrdre(resultats.getDate("orderDate"));
+                ret.setDataEnviament(resultats.getDate("shippedDate"));
+                ret.setDataEntrega(resultats.getDate("requiredDate"));
+                ret.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ret;
     }
 
     public List<ProductesComanda> getProductes(int id) throws SQLException {
@@ -141,7 +172,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     public void saveProduct(boolean novaComanda, ProductesComanda p, int idComanda) throws SQLException {
         PreparedStatement preparedStatement;
-        System.out.println("comandadao " + p.getQuantitat() + " " + idComanda);
         if (novaComanda) {
             String insert = "insert into orderdetails values ((select orderNumber from orders where orderNumber = ?), (select productCode from products where productCode = ?), ?, ?, ?)";
             try {
@@ -167,17 +197,24 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
                 preparedStatement.setInt(3, p.getIdProducte());
                 preparedStatement.executeUpdate();
             } catch (SQLException ex) {
-                System.out.println("Error gestionant la connexió a MySQL !!!");
-                System.out.println("SQLException: " + ex.getMessage());
-                System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
                 Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    public void deleteProductFromComanda(ProductesComanda pc, int idComanda) {
-
+    public void deleteProductFromComanda(ProductesComanda p, int idComanda) {
+        PreparedStatement preparedStatement;
+        String delete = "DELETE FROM orderdetails WHERE orderNumber = ? AND productCode = ?;";
+                
+        try {
+            preparedStatement = con.prepareStatement(delete);
+            
+            preparedStatement.setInt(1, idComanda);
+            preparedStatement.setInt(2, p.getIdProducte());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

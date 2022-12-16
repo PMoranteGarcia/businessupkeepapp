@@ -90,7 +90,7 @@
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-            <Button id="searchBtn" fx:id="btnaddProduct" mnemonicParsing="false" onAction="#addProduct" text="Afegir" />
+            <Button id="searchBtn" fx:id="btnaddProduct" mnemonicParsing="false" onAction="#addProduct" text="Afegir" disable="true" />
          </children>
          <padding>
             <Insets left="20.0" right="20.0" />

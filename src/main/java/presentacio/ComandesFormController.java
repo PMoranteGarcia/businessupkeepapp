@@ -126,17 +126,20 @@ public class ComandesFormController extends PresentationLayer implements Initial
         btnaddProduct.setText(text3.toUpperCase());
 
         this.idComanda = ComandesController.getIdComanda(); // obtenir id comanda actual
+        
+        fillDropDownList();
+        fillProductsTable();
 
         if (idComanda == 0) { // si és 0 és que la comanda és nova
             orderNumber.setText("");
             TitolComanda.setText("Crear Comanda");
+            totalAmount.setText("0");
         } else { // si no, estableix el número de comanda
             orderNumber.setText(Integer.toString(ComandesController.getIdComanda()));
             TitolComanda.setText("Detall Comanda ");
+            calculateTotalAmount();
         }
 
-        fillDropDownList();
-        fillProductsTable();
     }
 
     /**
@@ -505,7 +508,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         DAOComanda = new ComandaDAO();
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
-            DAOComanda.saveProduct(true, p, idComanda);
+            System.out.println(p.getQuantitat());
+            DAOComanda.saveProduct(false, p, idComanda);
         }
     }
 

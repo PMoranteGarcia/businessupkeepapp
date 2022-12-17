@@ -45,8 +45,7 @@ import javafx.scene.layout.HBox;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -266,99 +265,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             this.alertInfo(ex.toString());
         }
     }
-
-    /**
-     * Mètode que afegeix botons dins la cel·la d'accions de la TableView
-     *
-     * @author Víctor García - Creació/Implementació
-     */
-//    private void addCellButtons() {
-//
-//        columnActions.setCellFactory(param -> new TableCell<ProductesComanda, ProductesComanda>() {
-//
-//            private final Button btnEdit = new Button("");
-//            private final Button btnDelete = new Button("");
-//            private final HBox container = new HBox(btnEdit, btnDelete);
-//
-//            @Override
-//            protected void updateItem(ProductesComanda p, boolean empty) {
-//                super.updateItem(p, empty);
-//
-//                if (p == null) {
-//                    setGraphic(null);
-//                    return;
-//                }
-//
-//                // Inserir container amb botons a dins
-//                setGraphic(container);
-//                container.setId("container");
-//                container.setAlignment(Pos.CENTER);
-//
-//                // Desar canvis registre actual
-//                btnEdit.setId("btnEdit");
-//                btnEdit.setTooltip(tooltipDesar);
-//                btnEdit.setOnAction(event -> {
-//
-//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                    alert.setTitle("CONFIRMAR CANVIS");
-//                    alert.setHeaderText("Desitja actualitzar el Producte \"" + p.getNom().toUpperCase() + "\"?");
-//
-//                    ButtonType yesButton = new ButtonType("Sí");
-//                    ButtonType cancelButton = new ButtonType("No");
-//
-//                    alert.getButtonTypes().setAll(yesButton, cancelButton);
-//
-//                    if (alert.showAndWait().get() == yesButton) {
-//
-//                        DAOComanda.update(p);                                   // Actualitzar el registre actual dins la BD, taula 'products'
-//
-//                    } else {
-//                        DAOComanda.getOne(p);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
-//                        System.out.println("producte no modificat: "
-//                                + DAOComanda.getOne(p));
-//                        alert.close();
-//                    }
-//
-//                    columnProductName.getStyleClass().add("netejar");           // Netejar estils aplicats als camps modificats
-//                    orderLinesList.refresh();                                       // Refrescar llistat (NECESSARI)
-//
-//                });
-//
-//                btnDelete.setId("btnDelete");                                   // Botó per eliminar registre actual
-//                btnDelete.setTooltip(tooltipEliminar);
-//                btnDelete.setOnAction(event -> {
-////
-////                    if (validate.productIsInOrders(p) > 0) {                     // Mostrar avís si el client té comandes actives
-////
-////                        Alert alert = new Alert(Alert.AlertType.ERROR);
-////                        alert.setTitle("NO ES POT ELIMINAR EL Producte");
-////                        alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
-////                        alert.show();
-////
-////                    } else {                                                    // Demanar confirmació per eliminar el client
-////
-////                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-////                        alert.setTitle("CONFIRMAR BAIXA");
-////                        alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
-////
-////                        ButtonType yesButton = new ButtonType("Sí");
-////                        ButtonType cancelButton = new ButtonType("No");
-////
-////                        alert.getButtonTypes().setAll(yesButton, cancelButton);
-////
-////                        if (alert.showAndWait().get() == yesButton) {
-//                    dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
-//                    llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
-////                        } else {
-////                            alert.close();
-////                        }
-////                    }
-//                });
-//
-//            }
-//        }
-//        );
-//    }
+    
     /**
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
@@ -383,29 +290,42 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
-        alert.setTitle("CONFIRMI UNA OPCIÓ");
-        alert.setHeaderText("Vols confirmar la comanda actual?");
+        String errorText = validacions();
+        if (errorText.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            alert.setTitle("CONFIRMI UNA OPCIÓ");
+            alert.setHeaderText("Vols confirmar la comanda actual?");
 
-        ButtonType cancelButton = new ButtonType("Seguir Editant");
-        ButtonType yesButton = new ButtonType("Confirmar");
+            ButtonType cancelButton = new ButtonType("Seguir Editant");
+            ButtonType yesButton = new ButtonType("Confirmar");
 
-        alert.getButtonTypes().setAll(yesButton, cancelButton);
-        if (alert.showAndWait().get() == yesButton) {
-            // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
-            if (this.idComanda == 0) {
-                try {
-                    createNewCommand();
-                } catch (ParseException ex) {
-                    Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+            alert.getButtonTypes().setAll(yesButton, cancelButton);
+            if (alert.showAndWait().get() == yesButton) {
+                // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
+                if (this.idComanda == 0) {
+                    try {
+                        createNewCommand();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    updateCommand();
                 }
+                App.setRoot("comandes");
             } else {
-                updateCommand();
+                alert.close();
             }
-            App.setRoot("comandes");
         } else {
-            alert.close();
+            Alert error = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            error.setTitle("ALERTA");
+            error.setHeaderText(errorText);
+
+            ButtonType acceptButton = new ButtonType("Acceptar");
+
+            error.getButtonTypes().setAll(acceptButton);
+            error.show();
         }
+
     }
 
     /**
@@ -512,7 +432,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
 
         String cus = selectorClient.getValue().getCustomerEmail();
-        System.out.println(cus);
 
         Comanda c = new Comanda(new java.sql.Timestamp(today.getTime()), requiredDayG, cus);
 
@@ -534,8 +453,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void updateCommand() throws SQLException {
-        DAOComanda = new ComandaDAO();
+    private void updateCommand() {
+        Timestamp today = new Timestamp(System.currentTimeMillis());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+
+        String cus = selectorClient.getValue().getCustomerEmail();
+        Comanda c = new Comanda(this.idComanda, requiredDayG);
+        DAOComanda.update(c);
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
             DAOComanda.saveProduct(p, idComanda);
@@ -596,6 +523,30 @@ public class ComandesFormController extends PresentationLayer implements Initial
             }
         }
         );
+    }
+
+    public String validacions() {
+        if (selectorClient.getValue() == null || fieldHour.getText().isEmpty() || fieldMinutes.getText().isEmpty() || datePicker.getValue() == null) {
+            return "Per guardar una comanda s'han d'omplir tots els valors";
+        }
+        if ((Integer.parseInt(fieldHour.getText()) > 23) || (Integer.parseInt(fieldHour.getText()) < 0) || (Integer.parseInt(fieldMinutes.getText()) > 59) || (Integer.parseInt(fieldMinutes.getText()) < 0)) {
+            return "El format d'hora ha d'estar entre 0 i 23 i el de minuts entre 0 i 59 ";
+        }
+        if (llistaObservableProductes.size() == 0) {
+            return "Una comanda ha de tenir entre 1 i 20 productes.";
+        }
+        Timestamp today = Timestamp.from(Instant.now());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+        long milliseconds = requiredDayG.getTime() - today.getTime();
+        long hour = TimeUnit.MILLISECONDS.toHours(milliseconds);
+        if (hour < 48) {
+            return "El mínim d'hores entre fer la comanda i enviar-la és de x";
+        }
+
+        return "";
     }
 
 }

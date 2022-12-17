@@ -416,7 +416,7 @@ public class ClientsController implements Initializable {
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("REVISI LES DADES INTRODUÏDES");
-                alert.setHeaderText("ERROR: Només valors numèrics (amb o sense decimals)" );
+                alert.setHeaderText("ERROR: Només valors numèrics [amb o sense decimals (.)]" );
                 alert.show();
             }
         }
@@ -569,7 +569,7 @@ public class ClientsController implements Initializable {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("EDAT DE L'USUARI ERRÒNIA");
                         alert.setHeaderText("Revisi la data introduïda, l'usuari no"
-                                + " pot ser menor d'edat! (Edat mínima: " + defaultMinAge);
+                                + " pot ser menor d'edat! (Edat mínima: " + defaultMinAge +" anys)");
                         alert.show();
                         
                         cancelEdit();

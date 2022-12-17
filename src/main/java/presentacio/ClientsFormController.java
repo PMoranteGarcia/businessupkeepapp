@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package presentacio;
 
 import dades.ClientDAO;
@@ -269,7 +265,7 @@ public class ClientsFormController implements Initializable {
                 label_creditLimit.getStyleClass().add("filled"); 
                 label_euro.getStyleClass().add("filled");
             } else {
-                errors.add("ERROR: 'Crèdit Màxim' incorrecte, indicar un valor entre 0 i "+ defaultCredit);
+                errors.add("ERROR: 'Crèdit Màxim' incorrecte, indicar un valor entre 0 i "+ defaultCredit + " (valors decimals: \".\")");
                 field_creditLimit.getStyleClass().addAll("required");
                 label_creditLimit.getStyleClass().add("required");
                 label_euro.getStyleClass().add("required");

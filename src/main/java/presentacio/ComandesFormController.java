@@ -265,7 +265,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             this.alertInfo(ex.toString());
         }
     }
-    
+
     /**
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
@@ -287,6 +287,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     *
+     * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
+     * @author Víctor García - Creació/Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {

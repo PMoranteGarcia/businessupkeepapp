@@ -178,7 +178,7 @@ public class ProductesController implements Initializable {
     private void makeColsEditable() {
 
         // 1. Fer editables les cel·les de dins una mateixa columna
-       columnProductDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+        columnProductDescription.setCellFactory(TextFieldTableCell.forTableColumn());
         columnProductBuyPice.setCellFactory(col -> new NumberCellFloat());          // Crear Classe per editar la cel·la amb valors numèrics
         columnProductStock.setCellFactory(col -> new NumberCellInt());          // Crear Classe per editar la cel·la amb valors numèrics
         System.out.println("llistaObservableProducte: " + llistaObservableProducte.size());
@@ -312,33 +312,32 @@ public class ProductesController implements Initializable {
                 btnDelete.setTooltip(tooltipEliminar);
                 btnDelete.setOnAction(event -> {
 //
-//                    if (validate.productIsInOrders(p) > 0) {                     // Mostrar avís si el client té comandes actives
-//
-//                        Alert alert = new Alert(Alert.AlertType.ERROR);
-//                        alert.setTitle("NO ES POT ELIMINAR EL Producte");
-//                        alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
-//                        alert.show();
-//
-//                    } else {                                                    // Demanar confirmació per eliminar el client
-//
-//                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                        alert.setTitle("CONFIRMAR BAIXA");
-//                        alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
-//
-//                        ButtonType yesButton = new ButtonType("Sí");
-//                        ButtonType cancelButton = new ButtonType("No");
-//
-//                        alert.getButtonTypes().setAll(yesButton, cancelButton);
-//
-//                        if (alert.showAndWait().get() == yesButton) {
-                    dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
-                    llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
-//                        } else {
-//                            alert.close();
-//                        }
-//                    }
-                });
+                    if (validate.productIsInOrders(p)) {                        // Mostrar avís si el client té comandes actives
 
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("NO ES POT ELIMINAR EL PRODUCTE");
+                        alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
+                        alert.show();
+
+                    } else {                                                    // Demanar confirmació per eliminar el client
+
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("CONFIRMAR BAIXA");
+                        alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
+
+                        ButtonType yesButton = new ButtonType("Sí");
+                        ButtonType cancelButton = new ButtonType("No");
+
+                        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+                        if (alert.showAndWait().get() == yesButton) {
+                            dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
+                            llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
+                        } else {
+                            alert.close();
+                        }
+                    }
+                });
             }
         });
     }
@@ -346,8 +345,8 @@ public class ProductesController implements Initializable {
     /**
      * *
      * Classe que extén de TableCell i permet a la cel·la actual contenir dades
-     * numèriques no decimals. Conté una validació per evitar entrades incorrectes de
-     * l'usuari.
+     * numèriques no decimals. Conté una validació per evitar entrades
+     * incorrectes de l'usuari.
      *
      * @author Izan Jimenez - Implementació / Creació
      */

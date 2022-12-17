@@ -1,6 +1,7 @@
 package entitats;
 
 import dades.AppConfigDAO;
+import java.util.List;
 
 /**
  * Aquí anirà la classe/entitat pel manager (appconfig), connexió entre
@@ -15,6 +16,7 @@ public class AppConfig {
     private float defaultCreditLimit;
     private int minCustomerAge;
     private int defaultStock;
+    private List<Comanda> comandesList;
 
     public AppConfig() {
 
@@ -22,6 +24,14 @@ public class AppConfig {
 
     public float getDefaultCreditLimit() {
         return defaultCreditLimit;
+    }
+
+    public List<Comanda> getComandesList() {
+        return comandesList;
+    }
+
+    public void setComandesList(List<Comanda> comandesList) {
+        this.comandesList = comandesList;
     }
 
     public void setDefaultCreditLimit(float defaultCreditLimit) {

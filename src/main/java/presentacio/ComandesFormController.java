@@ -45,8 +45,7 @@ import javafx.scene.layout.HBox;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -288,14 +287,15 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
-     * 
+     *
      * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
      * @author Víctor García - Creació/Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
-        if (this.llistaObservableProductes.size() > 0) {                        //(RF40)Comprovem que hi ha productes dintre de la comanda abans de guardar
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);              // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+        String errorText = validacions();
+        if (errorText.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
             alert.setTitle("CONFIRMI UNA OPCIÓ");
             alert.setHeaderText("Vols confirmar la comanda actual?");
 
@@ -319,17 +319,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 alert.close();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);                     //Alerta per avisar que la comanda té 0 productes i, per tant, no deixa guardar-la
-            alert.setTitle("ERROR");
-            alert.setHeaderText("La comanda ha de tenir com a mínim 1 producte");
+            Alert error = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            error.setTitle("ALERTA");
+            error.setHeaderText(errorText);
 
-            ButtonType okButton = new ButtonType("D'acord");
+            ButtonType acceptButton = new ButtonType("Acceptar");
 
-            alert.getButtonTypes().setAll(okButton);
-            if (alert.showAndWait().get() == okButton) {
-                alert.close();
-            }
+            error.getButtonTypes().setAll(acceptButton);
+            error.show();
         }
+
     }
 
     /**
@@ -436,7 +435,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
 
         String cus = selectorClient.getValue().getCustomerEmail();
-        System.out.println(cus);
 
         Comanda c = new Comanda(new java.sql.Timestamp(today.getTime()), requiredDayG, cus);
 
@@ -458,8 +456,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void updateCommand() throws SQLException {
-        DAOComanda = new ComandaDAO();
+    private void updateCommand() {
+        Timestamp today = new Timestamp(System.currentTimeMillis());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+
+        String cus = selectorClient.getValue().getCustomerEmail();
+        Comanda c = new Comanda(this.idComanda, requiredDayG);
+        DAOComanda.update(c);
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
             DAOComanda.saveProduct(p, idComanda);
@@ -520,6 +526,30 @@ public class ComandesFormController extends PresentationLayer implements Initial
             }
         }
         );
+    }
+
+    public String validacions() {
+        if (selectorClient.getValue() == null || fieldHour.getText().isEmpty() || fieldMinutes.getText().isEmpty() || datePicker.getValue() == null) {
+            return "Per guardar una comanda s'han d'omplir tots els valors";
+        }
+        if ((Integer.parseInt(fieldHour.getText()) > 23) || (Integer.parseInt(fieldHour.getText()) < 0) || (Integer.parseInt(fieldMinutes.getText()) > 59) || (Integer.parseInt(fieldMinutes.getText()) < 0)) {
+            return "El format d'hora ha d'estar entre 0 i 23 i el de minuts entre 0 i 59 ";
+        }
+        if (llistaObservableProductes.size() == 0) {
+            return "Una comanda ha de tenir entre 1 i 20 productes.";
+        }
+        Timestamp today = Timestamp.from(Instant.now());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+        long milliseconds = requiredDayG.getTime() - today.getTime();
+        long hour = TimeUnit.MILLISECONDS.toHours(milliseconds);
+        if (hour < 48) {
+            return "El mínim d'hores entre fer la comanda i enviar-la és de x";
+        }
+
+        return "";
     }
 
 }

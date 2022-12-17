@@ -95,8 +95,19 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     @Override
-    public void update(Comanda t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void update(Comanda t) {
+        String update = "UPDATE orders SET requiredDate = ? WHERE orderNumber = ?;";
+
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = con.prepareStatement(update);
+
+            preparedStatement.setTimestamp(1, t.getDataEntrega());
+            preparedStatement.setInt(2, t.getNumOrdre());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

@@ -22,6 +22,10 @@ public class Comanda {
     public Comanda () {
         
     }
+    
+    public Comanda(int numOrdre) {
+        this.numOrdre = numOrdre;
+    }
 
     //TEMPORAL NOVA COMANDA
     public Comanda(Date dataOrdre, Date dataEntrega, String customers_customerEmail) {

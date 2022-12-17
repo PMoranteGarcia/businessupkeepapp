@@ -22,7 +22,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -30,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import java.time.LocalDate;
 
 /**
  * Controlador de la vista 'comandes.fxml'. Permet a l'usuari gestionar el CRUD
@@ -56,8 +59,6 @@ public class ComandesController implements Initializable {
     @FXML
     private DatePicker datePickerTo;
     @FXML
-    private Button btnSearchOrder;
-    @FXML
     private TableView<Comanda> ordersList;
     @FXML
     private TableColumn columnOrderNumber;
@@ -83,7 +84,7 @@ public class ComandesController implements Initializable {
     // Instància de ComandaLogic per carregar els mètodes de validacions
     private ComandaLogic validate = new ComandaLogic();
     
-    public static int idComanda = 0;
+    public static Comanda comandaActual;
 
     /**
      * Inicialitza els components especificats.
@@ -101,7 +102,6 @@ public class ComandesController implements Initializable {
         String text3 = btnProducts.getText();
         String text4 = btnAbout.getText();
         String text5 = btnNewOrder.getText();
-        String text6 = btnSearchOrder.getText();
 
         // Passar el texte a MAJÚSCULES
         btnOrders.setText(text1.toUpperCase());
@@ -109,10 +109,12 @@ public class ComandesController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewOrder.setText(text5.toUpperCase());
-        btnSearchOrder.setText(text6.toUpperCase());
 
         // Recuperar registres taula 'orders'
         fillOrdersTable();
+
+        //Recuperar registres entre dues dates
+        filteredTable();
     }
 
     /**
@@ -127,7 +129,7 @@ public class ComandesController implements Initializable {
     private void goToNewOrder() throws IOException {
 
         // Carregar la vista del formulari "COMANDES (Detalls)" in-situ
-        setIdComanda(0); // si la comanda és nova, id 0
+        setComandaActual(new Comanda(0)); // si la comanda és nova, comanda nova amb id 0
         App.setRoot("comandesForm");
     }
 
@@ -250,19 +252,19 @@ public class ComandesController implements Initializable {
      */
     @FXML
     private void goToOrderDetails(Comanda t) throws IOException {
-        setIdComanda(t.getNumOrdre());
+        setComandaActual(t);
         
         App.setRoot("comandesForm");
     }
     
-    /** Estableix la id de la comanda seleccionada
+    /** Estableix la comanda seleccionada
      * 
-     * @param i 
+     * @param c
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void setIdComanda(int i) {
-        idComanda = i;
+    private void setComandaActual(Comanda c) {
+        comandaActual = c;
     }
     
     /** Mètode per saber quina comanda ha estat seleccionada
@@ -270,8 +272,8 @@ public class ComandesController implements Initializable {
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    public static int getIdComanda() {
-        return idComanda;
+    public static Comanda getComanda() {
+        return comandaActual;
     }
     
     /**
@@ -320,4 +322,24 @@ public class ComandesController implements Initializable {
     private void searchOrderBetweenDates() {
     }
 
+    private void filteredTable() {
+        ObservableList<Comanda> allItems = llistaObservableComanda;
+        FilteredList<Comanda> filteredItems = new FilteredList<>(allItems);
+        // bind predicate based on datepicker choices
+        filteredItems.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+            LocalDate minDate = datePickerFrom.getValue();
+            LocalDate maxDate = datePickerTo.getValue();
+
+            // get final values != null
+            final LocalDate finalMin = minDate == null ? LocalDate.MIN : minDate;
+            final LocalDate finalMax = maxDate == null ? LocalDate.MAX : maxDate;
+
+            // values for openDate need to be in the interval [finalMin, finalMax]
+            return ti -> !finalMin.isAfter( ti.getDataEntrega().toLocalDate() ) && !finalMax.isBefore( ti.getDataEntrega().toLocalDate() );
+        },
+                datePickerFrom.valueProperty(),
+                datePickerTo.valueProperty()));
+
+        ordersList.setItems(filteredItems);
+    }
 }

@@ -1,5 +1,6 @@
 package presentacio;
 
+import dades.AppConfigDAO;
 import dades.ClientDAO;
 import dades.ComandaDAO;
 import dades.ProducteDAO;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -98,10 +100,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldMinutes;
 
     private ComandaDAO DAOComanda;
-
     private ClientDAO DAOClient;
-
     private ProducteDAO DAOProducte;
+    private AppConfigDAO DAOAppConfig;
 
     private ObservableList<ProductesComanda> llistaObservableProductes = FXCollections.observableArrayList();
 
@@ -145,8 +146,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
             datePicker.setValue((comandaActual.getDataEntrega()).toLocalDateTime().toLocalDate());
             String hours = String.valueOf(comandaActual.getDataEntrega().getHours());
             String minutes = String.valueOf(comandaActual.getDataEntrega().getMinutes());
-            if (hours.equals("0")) hours = hours + "0";
-            if (minutes.equals("0")) minutes = minutes + "0";
+            if (hours.equals("0")) {
+                hours = hours + "0";
+            }
+            if (minutes.equals("0")) {
+                minutes = minutes + "0";
+            }
             fieldHour.setText(hours);
             fieldMinutes.setText(minutes);
             TitolComanda.setText("Detall Comanda ");
@@ -503,9 +508,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp today = new Timestamp(System.currentTimeMillis());
         LocalDate requiredDay = datePicker.getValue();
         LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
-        
+
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
-        System.out.println("required day " + requiredDayG);
 
         String cus = selectorClient.getValue().getCustomerEmail();
         System.out.println(cus);
@@ -517,7 +521,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
         if (idComanda != 0) {
             for (int i = 0; i < llistaObservableProductes.size(); i++) {
                 ProductesComanda p = llistaObservableProductes.get(i);
-                DAOComanda.saveProduct(true, p, idComanda);
+                DAOComanda.saveProduct(p, idComanda);
             }
         } else {
             System.out.println("Error al generar nova comanda a base de dades.");
@@ -534,8 +538,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
         DAOComanda = new ComandaDAO();
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
-            System.out.println(p.getQuantitat());
-            DAOComanda.saveProduct(false, p, idComanda);
+            DAOComanda.saveProduct(p, idComanda);
         }
     }
 

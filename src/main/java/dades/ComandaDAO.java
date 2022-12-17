@@ -112,7 +112,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         preparedStatement.setString(1, Integer.toString(t.getNumOrdre()));
         preparedStatement.executeUpdate();
         System.out.println(">> Eliminada ordre: " + t.toString());
-    
+
     }
 
     @Override
@@ -172,35 +172,38 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     }
 
-    public void saveProduct(boolean novaComanda, ProductesComanda p, int idComanda) throws SQLException {
+    public void saveProduct(ProductesComanda p, int idComanda) {
         PreparedStatement preparedStatement;
-        if (novaComanda) {
-            String insert = "insert into orderdetails values ((select orderNumber from orders where orderNumber = ?), (select productCode from products where productCode = ?), ?, ?, ?)";
-            try {
-                preparedStatement = con.prepareStatement(insert);
+        String insert = "insert into orderdetails values ((select orderNumber from orders where orderNumber = ?), (select productCode from products where productCode = ?), ?, ?, ?)";
+        try {
+            preparedStatement = con.prepareStatement(insert);
 
-                preparedStatement.setInt(1, idComanda);
-                preparedStatement.setInt(2, p.getIdProducte());
-                preparedStatement.setInt(3, p.getQuantitat());
-                preparedStatement.setFloat(4, p.getUnitaryPrice());
-                preparedStatement.setInt(5, p.getOrderNumber());
-                preparedStatement.executeUpdate();
-                System.out.println(">> Producte insertat: " + p.toString());
-            } catch (SQLException ex) {
-                Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            String update = "UPDATE orderdetails SET quantityOrdered = ? WHERE orderNumber = ? AND productCode = ?;";
-            try {
-                preparedStatement = con.prepareStatement(update);
+            preparedStatement.setInt(1, idComanda);
+            preparedStatement.setInt(2, p.getIdProducte());
+            preparedStatement.setInt(3, p.getQuantitat());
+            preparedStatement.setFloat(4, p.getUnitaryPrice());
+            preparedStatement.setInt(5, p.getOrderNumber());
+            preparedStatement.executeUpdate();
+            System.out.println(">> Producte insertat: " + p.toString());
+        } catch (java.sql.SQLIntegrityConstraintViolationException ex) {
+            updateProduct(p, idComanda);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-                preparedStatement.setInt(1, p.getQuantitat());
-                preparedStatement.setInt(2, idComanda);
-                preparedStatement.setInt(3, p.getIdProducte());
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public void updateProduct(ProductesComanda p, int idComanda) {
+        String update = "UPDATE orderdetails SET quantityOrdered = ? WHERE orderNumber = ? AND productCode = ?;";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = con.prepareStatement(update);
+
+            preparedStatement.setInt(1, p.getQuantitat());
+            preparedStatement.setInt(2, idComanda);
+            preparedStatement.setInt(3, p.getIdProducte());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

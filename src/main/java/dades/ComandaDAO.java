@@ -48,7 +48,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         while (resultats.next()) {
             Comanda o = new Comanda();
             o.setNumOrdre(resultats.getInt("orderNumber"));
-            System.out.println("orderNumber: " + resultats.getInt("orderNumber"));
             o.setDataOrdre(resultats.getTimestamp("orderDate"));
             o.setDataEntrega(resultats.getTimestamp("requiredDate"));
             o.setDataEnviament(resultats.getTimestamp("shippedDate"));

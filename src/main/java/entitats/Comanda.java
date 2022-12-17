@@ -1,6 +1,6 @@
 package entitats;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class Comanda {
     private int numOrdre;           // PK de comanda
-    private Date dataOrdre;
-    private Date dataEntrega;
-    private Date dataEnviament;
+    private Timestamp dataOrdre;
+    private Timestamp dataEntrega;
+    private Timestamp dataEnviament;
     private Client client;
     private float total;
     private List<ProductesComanda> productes;
@@ -28,13 +28,13 @@ public class Comanda {
     }
 
     //TEMPORAL NOVA COMANDA
-    public Comanda(Date dataOrdre, Date dataEntrega, String customers_customerEmail) {
+    public Comanda(Timestamp dataOrdre, Timestamp dataEntrega, String customers_customerEmail) {
         this.dataOrdre = dataOrdre;
         this.dataEntrega = dataEntrega;
         this.customers_customerEmail = customers_customerEmail;
     }
     
-    public Comanda(int numOrdre, Date dataOrdre, Date dataEntrega, Date dataEnviament, Client client, float total, List<ProductesComanda> productes) {
+    public Comanda(int numOrdre, Timestamp dataOrdre, Timestamp dataEntrega, Timestamp dataEnviament, Client client, float total, List<ProductesComanda> productes) {
         this.numOrdre = numOrdre;
         this.dataOrdre = dataOrdre;
         this.dataEntrega = dataEntrega;
@@ -48,15 +48,15 @@ public class Comanda {
         return numOrdre;
     }
     
-    public Date getDataOrdre() {
+    public Timestamp getDataOrdre() {
         return dataOrdre;
     }
 
-    public Date getDataEntrega() {
+    public Timestamp getDataEntrega() {
         return dataEntrega;
     }
 
-    public Date getDataEnviament() {
+    public Timestamp getDataEnviament() {
         return dataEnviament;
     }
 
@@ -80,15 +80,15 @@ public class Comanda {
         this.numOrdre = numOrdre;
     }
     
-    public void setDataOrdre(Date dataEntrega) {
+    public void setDataOrdre(Timestamp dataEntrega) {
         this.dataOrdre = dataOrdre;
     }
 
-    public void setDataEntrega(Date dataEntrega) {
+    public void setDataEntrega(Timestamp dataEntrega) {
         this.dataEntrega = dataEntrega;
     }
 
-    public void setDataEnviament(Date dataEnviament) {
+    public void setDataEnviament(Timestamp dataEnviament) {
         this.dataEnviament = dataEnviament;
     }
 

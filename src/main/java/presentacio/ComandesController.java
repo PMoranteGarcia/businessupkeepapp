@@ -83,7 +83,7 @@ public class ComandesController implements Initializable {
 
     // Instància de ComandaLogic per carregar els mètodes de validacions
     private ComandaLogic validate = new ComandaLogic();
-    
+
     public static Comanda comandaActual;
 
     /**
@@ -217,7 +217,6 @@ public class ComandesController implements Initializable {
                     }
                 });
 
-
                 // FALTA IF/ELSE PARA SI LA COMANDA TIENE PRODUCTOS DENTRO NO PODER BORRARLA
                 btnDelete.setId("btnDelete");
                 btnDelete.setTooltip(tooltipEliminar);
@@ -233,8 +232,25 @@ public class ComandesController implements Initializable {
                     alert.getButtonTypes().setAll(yesButton, cancelButton);
 
                     if (alert.showAndWait().get() == yesButton) {
-                            dataComanda.delete(t);   
+                        try {
+                            dataComanda.delete(t);
                             llistaObservableComanda.remove(t);
+                        } catch (java.sql.SQLIntegrityConstraintViolationException ex) {
+                            alert.setHeaderText("Una comanda amb productes no es pot eliminar. Vols eliminar tots els productes de la comanda i tornar a provar?");
+                            if(alert.showAndWait().get() == yesButton) {
+                                dataComanda.deleteAllProductsFromComanda(t.getNumOrdre());
+                                try {
+                                    dataComanda.delete(t);
+                                    llistaObservableComanda.remove(t);
+                                } catch (SQLException ex1) {
+                                    Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex1);
+                                }
+                            } else {
+                                alert.close();
+                            }
+                        } catch (SQLException ex) {
+                            
+                        }
                     } else {
                         alert.close();
                     }
@@ -253,12 +269,13 @@ public class ComandesController implements Initializable {
     @FXML
     private void goToOrderDetails(Comanda t) throws IOException {
         setComandaActual(t);
-        
+
         App.setRoot("comandesForm");
     }
-    
-    /** Estableix la comanda seleccionada
-     * 
+
+    /**
+     * Estableix la comanda seleccionada
+     *
      * @param c
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
@@ -266,16 +283,17 @@ public class ComandesController implements Initializable {
     private void setComandaActual(Comanda c) {
         comandaActual = c;
     }
-    
-    /** Mètode per saber quina comanda ha estat seleccionada
-     * 
+
+    /**
+     * Mètode per saber quina comanda ha estat seleccionada
+     *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
     public static Comanda getComanda() {
         return comandaActual;
     }
-    
+
     /**
      * Mostra l'apartat 'Clients' i al llistat que conté tots els registres de
      * la BD.
@@ -335,7 +353,7 @@ public class ComandesController implements Initializable {
             final LocalDate finalMax = maxDate == null ? LocalDate.MAX : maxDate;
 
             // values for openDate need to be in the interval [finalMin, finalMax]
-            return ti -> !finalMin.isAfter( ti.getDataEntrega().toLocalDate() ) && !finalMax.isBefore( ti.getDataEntrega().toLocalDate() );
+            return ti -> !finalMin.isAfter(ti.getDataEntrega().toLocalDateTime().toLocalDate()) && !finalMax.isBefore(ti.getDataEntrega().toLocalDateTime().toLocalDate());
         },
                 datePickerFrom.valueProperty(),
                 datePickerTo.valueProperty()));

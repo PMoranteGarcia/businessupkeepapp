@@ -27,6 +27,10 @@ public class Client {
         this.creditLimit = creditLimit;
         this.birthDate = birthDate;
     }
+    
+    public Client(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
 
     public String getCustomerEmail() {
         return customerEmail;

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -41,8 +42,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -137,9 +139,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
         } else { // si no, estableix el número de comanda
             Comanda comandaActual = DAOComanda.getOne(ComandesController.getComanda());
             orderNumber.setText(Integer.toString(comandaActual.getNumOrdre()));
-            System.out.println("client " + comandaActual.getClient());
-            selectorClient.setValue(comandaActual.getClient());
+            Client clientActual = DAOClient.getOne(new Client(comandaActual.getCustomers_customerEmail()));
+            selectorClient.setValue(clientActual);
             selectorClient.setDisable(true);
+            datePicker.setValue((comandaActual.getDataEntrega()).toLocalDateTime().toLocalDate());
+            String hours = String.valueOf(comandaActual.getDataEntrega().getHours());
+            String minutes = String.valueOf(comandaActual.getDataEntrega().getMinutes());
+            if (hours.equals("0")) hours = hours + "0";
+            if (minutes.equals("0")) minutes = minutes + "0";
+            fieldHour.setText(hours);
+            fieldMinutes.setText(minutes);
             TitolComanda.setText("Detall Comanda ");
             calculateTotalAmount();
         }
@@ -491,19 +500,17 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Víctor García - Creació/Implementació
      */
     private void createNewCommand() throws SQLException, ParseException {
-        LocalDate today = java.time.LocalDate.now();
+        Timestamp today = new Timestamp(System.currentTimeMillis());
         LocalDate requiredDay = datePicker.getValue();
-        String temp = requiredDay.toString() + " " + fieldHour.getText() + ":" + fieldMinutes.getText() + ":" + "00";
-        System.out.println("hora temp " + temp);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("formatter " + formatter.parse(temp));
-        Date requiredDayG = new java.sql.Date((formatter.parse(temp)).getTime());
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+        
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
         System.out.println("required day " + requiredDayG);
 
         String cus = selectorClient.getValue().getCustomerEmail();
         System.out.println(cus);
 
-        Comanda c = new Comanda(java.sql.Date.valueOf(today), requiredDayG, cus);
+        Comanda c = new Comanda(new java.sql.Timestamp(today.getTime()), requiredDayG, cus);
 
         DAOComanda = new ComandaDAO();
         this.idComanda = DAOComanda.saveCommand(c);

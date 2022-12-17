@@ -65,7 +65,6 @@ public class Client {
     }
 
     public float getCreditLimit() {
-        //creditLimit = 500.00F;
         return creditLimit;
     }
 

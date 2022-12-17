@@ -16,11 +16,9 @@ import java.util.logging.Logger;
  */
 public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
     
-    // Preparar instància per realitzar una consulta SQL
-    private final Statement statement = con.createStatement();
+    private final Statement statement = con.createStatement();                  // Preparar instància per realitzar una consulta SQL, recuperant la connexió des de DataLayer
     
-    // Instància per gestionar objectes de tipus AppConfig
-    AppConfig defaults;
+    AppConfig defaults;                                                         // Instància per gestionar objectes de tipus AppConfig
     
         
     public AppConfigDAO() throws SQLException {
@@ -34,16 +32,13 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
     @Override
     public List<AppConfig> getAll() {
         
-        // Crear llistat on desar els registres dels valors per defecte
-        List<AppConfig> ret = new ArrayList<>();
-
-        // Definir consulta SQL per llegir totes les dades de la taula 'appConfig'
-        ResultSet resultats;
+        List<AppConfig> ret = new ArrayList<>();                                // Crear llistat on desar els registres dels valors per defecte
+        ResultSet resultats;                                                    // Instància per recollir resultats provinents de la consulta a realitzar
 
         try {
             
-            statement.setMaxRows(1);
-            resultats = statement.executeQuery("SELECT * FROM appConfig;"); 
+            statement.setMaxRows(1);                                            // Limitar a 1 registre: interessa recuperar només el 1r registre
+            resultats = statement.executeQuery("SELECT * FROM appConfig;");     // Definir consulta SQL per llegir totes les dades de la taula 'appConfig'
             
             while (resultats.next())                                            // Mostrar resultats disponibles a la taula via nom del camp
             {
@@ -89,15 +84,14 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
     @Override
     public AppConfig getOne(AppConfig defaults) {
 
-        // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
-        String consulta = "SELECT * FROM appConfig";
+        String consulta = "SELECT * FROM appConfig";                            // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
+        
         try {
             
             statement.setMaxRows(1);
             ResultSet resultats = statement.executeQuery(consulta);
             
-            // Mostrar resultats disponibles a la taula via nom del camp
-            while (resultats.next())
+            while (resultats.next())                                            // Mostrar resultats disponibles a la taula via nom del camp
             {
                 defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));
                 defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));

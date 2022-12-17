@@ -14,15 +14,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 /**
- * Llògica de negoci de clients amb les comprovacions pertinents
+ * Lògica de negoci de clients amb les comprovacions pertinents
  * 
  * @author Pablo Morante - Creació
  * @author Victor García - Creació
  * @author Txell Llanas - Implementació (RF34 i RF44)
  */
 public class ClientLogic {
-
-    private AppConfig values = new AppConfig();
     
     private AppConfigDAO dataDefaults;                                          // Instància d'AppConfigDAO per carregar els registres de la taula 'appConfig'
     private ClientDAO dataClient;                                               // Instància de ClientDAO per carregar els registres de la taula 'customers'
@@ -220,13 +218,20 @@ public class ClientLogic {
     public boolean checkCreditLimit(TextField f) {
         
         boolean ret = false;
-        Float userValue = Float.parseFloat(f.getText());
-        Float maxValue = valuesList.get(0).getDefaultCreditLimit();
-        System.out.println("userValue: " + userValue);
-        System.out.println("maxValue: " + maxValue);
+        
+        try {
+            
+            Float userValue = Float.parseFloat(f.getText());
+            Float maxValue = valuesList.get(0).getDefaultCreditLimit();
 
-        if( (userValue > 0) && (userValue <= maxValue) )
-            ret = true;
+            if( (userValue > 0) && (userValue <= maxValue) )
+                ret = true;
+            
+        } catch (NumberFormatException e) {
+            System.out.println("Les dades introduïdes no són numèriques!!!");
+            System.out.println("NumberFormatException: " + e.getMessage());
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, e);
+        }
         
         return ret;
     }

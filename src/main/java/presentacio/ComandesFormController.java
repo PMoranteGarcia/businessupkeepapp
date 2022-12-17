@@ -1,5 +1,6 @@
 package presentacio;
 
+import dades.AppConfigDAO;
 import dades.ClientDAO;
 import dades.ComandaDAO;
 import dades.ProducteDAO;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -98,10 +100,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldMinutes;
 
     private ComandaDAO DAOComanda;
-
     private ClientDAO DAOClient;
-
     private ProducteDAO DAOProducte;
+    private AppConfigDAO DAOAppConfig;
 
     private ObservableList<ProductesComanda> llistaObservableProductes = FXCollections.observableArrayList();
 
@@ -145,8 +146,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
             datePicker.setValue((comandaActual.getDataEntrega()).toLocalDateTime().toLocalDate());
             String hours = String.valueOf(comandaActual.getDataEntrega().getHours());
             String minutes = String.valueOf(comandaActual.getDataEntrega().getMinutes());
-            if (hours.equals("0")) hours = hours + "0";
-            if (minutes.equals("0")) minutes = minutes + "0";
+            if (hours.equals("0")) {
+                hours = hours + "0";
+            }
+            if (minutes.equals("0")) {
+                minutes = minutes + "0";
+            }
             fieldHour.setText(hours);
             fieldMinutes.setText(minutes);
             TitolComanda.setText("Detall Comanda ");
@@ -263,98 +268,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
     }
 
     /**
-     * Mètode que afegeix botons dins la cel·la d'accions de la TableView
-     *
-     * @author Víctor García - Creació/Implementació
-     */
-//    private void addCellButtons() {
-//
-//        columnActions.setCellFactory(param -> new TableCell<ProductesComanda, ProductesComanda>() {
-//
-//            private final Button btnEdit = new Button("");
-//            private final Button btnDelete = new Button("");
-//            private final HBox container = new HBox(btnEdit, btnDelete);
-//
-//            @Override
-//            protected void updateItem(ProductesComanda p, boolean empty) {
-//                super.updateItem(p, empty);
-//
-//                if (p == null) {
-//                    setGraphic(null);
-//                    return;
-//                }
-//
-//                // Inserir container amb botons a dins
-//                setGraphic(container);
-//                container.setId("container");
-//                container.setAlignment(Pos.CENTER);
-//
-//                // Desar canvis registre actual
-//                btnEdit.setId("btnEdit");
-//                btnEdit.setTooltip(tooltipDesar);
-//                btnEdit.setOnAction(event -> {
-//
-//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                    alert.setTitle("CONFIRMAR CANVIS");
-//                    alert.setHeaderText("Desitja actualitzar el Producte \"" + p.getNom().toUpperCase() + "\"?");
-//
-//                    ButtonType yesButton = new ButtonType("Sí");
-//                    ButtonType cancelButton = new ButtonType("No");
-//
-//                    alert.getButtonTypes().setAll(yesButton, cancelButton);
-//
-//                    if (alert.showAndWait().get() == yesButton) {
-//
-//                        DAOComanda.update(p);                                   // Actualitzar el registre actual dins la BD, taula 'products'
-//
-//                    } else {
-//                        DAOComanda.getOne(p);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
-//                        System.out.println("producte no modificat: "
-//                                + DAOComanda.getOne(p));
-//                        alert.close();
-//                    }
-//
-//                    columnProductName.getStyleClass().add("netejar");           // Netejar estils aplicats als camps modificats
-//                    orderLinesList.refresh();                                       // Refrescar llistat (NECESSARI)
-//
-//                });
-//
-//                btnDelete.setId("btnDelete");                                   // Botó per eliminar registre actual
-//                btnDelete.setTooltip(tooltipEliminar);
-//                btnDelete.setOnAction(event -> {
-////
-////                    if (validate.productIsInOrders(p) > 0) {                     // Mostrar avís si el client té comandes actives
-////
-////                        Alert alert = new Alert(Alert.AlertType.ERROR);
-////                        alert.setTitle("NO ES POT ELIMINAR EL Producte");
-////                        alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
-////                        alert.show();
-////
-////                    } else {                                                    // Demanar confirmació per eliminar el client
-////
-////                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-////                        alert.setTitle("CONFIRMAR BAIXA");
-////                        alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
-////
-////                        ButtonType yesButton = new ButtonType("Sí");
-////                        ButtonType cancelButton = new ButtonType("No");
-////
-////                        alert.getButtonTypes().setAll(yesButton, cancelButton);
-////
-////                        if (alert.showAndWait().get() == yesButton) {
-//                    dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
-//                    llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
-////                        } else {
-////                            alert.close();
-////                        }
-////                    }
-//                });
-//
-//            }
-//        }
-//        );
-//    }
-    /**
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
      *
@@ -375,31 +288,47 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     * 
+     * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
+     * @author Víctor García - Creació/Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
-        alert.setTitle("CONFIRMI UNA OPCIÓ");
-        alert.setHeaderText("Vols confirmar la comanda actual?");
+        if (this.llistaObservableProductes.size() > 0) {                        //(RF40)Comprovem que hi ha productes dintre de la comanda abans de guardar
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);              // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            alert.setTitle("CONFIRMI UNA OPCIÓ");
+            alert.setHeaderText("Vols confirmar la comanda actual?");
 
-        ButtonType cancelButton = new ButtonType("Seguir Editant");
-        ButtonType yesButton = new ButtonType("Confirmar");
+            ButtonType cancelButton = new ButtonType("Seguir Editant");
+            ButtonType yesButton = new ButtonType("Confirmar");
 
-        alert.getButtonTypes().setAll(yesButton, cancelButton);
-        if (alert.showAndWait().get() == yesButton) {
-            // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
-            if (this.idComanda == 0) {
-                try {
-                    createNewCommand();
-                } catch (ParseException ex) {
-                    Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+            alert.getButtonTypes().setAll(yesButton, cancelButton);
+            if (alert.showAndWait().get() == yesButton) {
+                // si la id de comanda és 0, es que s'ha de crear una nova comanda, si no, s'ha de fer un update
+                if (this.idComanda == 0) {
+                    try {
+                        createNewCommand();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    updateCommand();
                 }
+                App.setRoot("comandes");
             } else {
-                updateCommand();
+                alert.close();
             }
-            App.setRoot("comandes");
         } else {
-            alert.close();
+            Alert alert = new Alert(Alert.AlertType.ERROR);                     //Alerta per avisar que la comanda té 0 productes i, per tant, no deixa guardar-la
+            alert.setTitle("ERROR");
+            alert.setHeaderText("La comanda ha de tenir com a mínim 1 producte");
+
+            ButtonType okButton = new ButtonType("D'acord");
+
+            alert.getButtonTypes().setAll(okButton);
+            if (alert.showAndWait().get() == okButton) {
+                alert.close();
+            }
         }
     }
 
@@ -503,9 +432,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp today = new Timestamp(System.currentTimeMillis());
         LocalDate requiredDay = datePicker.getValue();
         LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
-        
+
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
-        System.out.println("required day " + requiredDayG);
 
         String cus = selectorClient.getValue().getCustomerEmail();
         System.out.println(cus);
@@ -517,7 +445,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
         if (idComanda != 0) {
             for (int i = 0; i < llistaObservableProductes.size(); i++) {
                 ProductesComanda p = llistaObservableProductes.get(i);
-                DAOComanda.saveProduct(true, p, idComanda);
+                DAOComanda.saveProduct(p, idComanda);
             }
         } else {
             System.out.println("Error al generar nova comanda a base de dades.");
@@ -534,8 +462,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
         DAOComanda = new ComandaDAO();
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
-            System.out.println(p.getQuantitat());
-            DAOComanda.saveProduct(false, p, idComanda);
+            DAOComanda.saveProduct(p, idComanda);
         }
     }
 

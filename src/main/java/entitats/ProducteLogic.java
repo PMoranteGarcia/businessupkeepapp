@@ -36,29 +36,39 @@ public class ProducteLogic {
      * @return boolean (True/False) si es troben coincidències o no amb la BD
      * @author Izan Jimenez - Implementació
      */
-    public int productIsInOrders(Producte p) {
+    public boolean productIsInOrders(Producte p) {  
 
         int productCode = p.getProductCode();
-        int numComandes = 0;
-//
-//        try {
-//
-//            dataProduct = new ProducteDAO();
-//            ordersList.addAll(dataOrder.getAll());
-//
-//            for (int i = 0; i < ordersList.size(); i++) {
-//
-//                if (productCode.equals(ordersList.get(i).getCustomers_customerEmail())) {
-//                    numComandes++;
-//                }
-//
-//            }
-//
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        boolean existeix = false;
 
-        return numComandes;
+        try {
+
+            dataProduct = new ProducteDAO();
+            dataOrder = new ComandaDAO();
+
+            ordersList.addAll(dataOrder.getAll());
+            System.out.println("OrderListSize "+ordersList.size());
+            for (int i = 0; i <= ordersList.size()-1; i++) {
+                System.out.println("Dentro de oderlistSize");
+                System.out.println("OrderList GET i "+ordersList.get(i));
+                
+                //aa
+                        
+                List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
+
+                for (ProductesComanda productesComanda : llistProductesInComanda) {
+                       System.out.println("ProductesComandaGetComanda "+productesComanda.getIdProducte());
+                    if (productCode == productesComanda.getIdProducte()) {
+                        System.out.println("LO ESSSS");
+                        return true;
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+        }
+
+        return existeix;
     }
 
     /**

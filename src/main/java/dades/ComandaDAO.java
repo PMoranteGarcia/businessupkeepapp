@@ -47,7 +47,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         // Mostrar resultats disponibles a la taula via nom del camp
         while (resultats.next()) {
             Comanda o = new Comanda();
-
             o.setNumOrdre(resultats.getInt("orderNumber"));
             System.out.println("orderNumber: " + resultats.getInt("orderNumber"));
             o.setDataOrdre(resultats.getTimestamp("orderDate"));

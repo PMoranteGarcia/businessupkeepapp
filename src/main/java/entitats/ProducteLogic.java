@@ -36,7 +36,7 @@ public class ProducteLogic {
      * @return boolean (True/False) si es troben coincidències o no amb la BD
      * @author Izan Jimenez - Implementació
      */
-    public boolean productIsInOrders(Producte p) {  
+    public boolean productIsInOrders(Producte p) {
 
         int productCode = p.getProductCode();
         boolean existeix = false;
@@ -47,17 +47,18 @@ public class ProducteLogic {
             dataOrder = new ComandaDAO();
 
             ordersList.addAll(dataOrder.getAll());
-            System.out.println("OrderListSize "+ordersList.size());
-            for (int i = 0; i <= ordersList.size()-1; i++) {
+            System.out.println("OrderListSize " + ordersList.size());
+
+            for (int i = 0; i <= ordersList.size() - 1; i++) {
                 System.out.println("Dentro de oderlistSize");
-                System.out.println("OrderList GET i "+ordersList.get(i));
+                System.out.println("OrderList GET i " + ordersList.get(i).getNumOrdre());
+
+                List<ProductesComanda> llistProductesInComanda = dataOrder.getProductes(ordersList.get(i).getNumOrdre());
                 
-                //aa
-                        
-                List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
+               // List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
 
                 for (ProductesComanda productesComanda : llistProductesInComanda) {
-                       System.out.println("ProductesComandaGetComanda "+productesComanda.getIdProducte());
+                    System.out.println("ProductesComandaGetComanda " + productesComanda.getIdProducte());
                     if (productCode == productesComanda.getIdProducte()) {
                         System.out.println("LO ESSSS");
                         return true;

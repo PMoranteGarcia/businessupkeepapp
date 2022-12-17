@@ -48,7 +48,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         while (resultats.next()) {
             Comanda o = new Comanda();
             o.setNumOrdre(resultats.getInt("orderNumber"));
-            System.out.println("orderNumber: " + resultats.getInt("orderNumber"));
             o.setDataOrdre(resultats.getTimestamp("orderDate"));
             o.setDataEntrega(resultats.getTimestamp("requiredDate"));
             o.setDataEnviament(resultats.getTimestamp("shippedDate"));
@@ -141,7 +140,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     public List<ProductesComanda> getProductes(int id) throws SQLException {
         List<ProductesComanda> ret = new ArrayList<>();
-        String consulta = "SELECT productCode, quantityOrdered, priceEach, orderLineNumber FROM orderdetails WHERE orderNumber = ?;";
+
+        String consulta = "SELECT * FROM orderdetails WHERE orderNumber = ?;";
         String consultaNom = "SELECT productName FROM products WHERE productCode = ?;";
         PreparedStatement sentencia = con.prepareStatement(consulta);
         PreparedStatement sentencia2 = con.prepareStatement(consultaNom);
@@ -153,6 +153,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         while (resultats.next()) {
             ProductesComanda pc = new ProductesComanda();
 
+            pc.setOrderNummber(id);
             pc.setIdProducte(resultats.getInt("productCode"));
             pc.setNumberLine(resultats.getInt("orderLineNumber"));
             pc.setQuantitat(resultats.getInt("quantityOrdered"));

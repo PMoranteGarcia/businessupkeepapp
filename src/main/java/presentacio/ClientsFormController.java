@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -19,9 +21,11 @@ import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.util.StringConverter;
 
 /**
- * FXML Controller class
+ * Controlador de la vista 'clientsForm.fxml'. 
+ * Permet a l'usuari crear un Client des d'una UI.
  *
  * @author Izan
  * @author Txell Llanas - Implementació
@@ -45,14 +49,43 @@ public class ClientsFormController implements Initializable {
     /**
      * Inicialitza el controlador.
      * 
-     * @param url
-     * @param rb
+     * @param url The location used to resolve relative paths for the root
+     * object, or null if the location is not known.
+     * @param rb The resources used to localize the root object, or null if the
+     * root object was not localized.
      * @author Txell Llanas - Creació / Implementació 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        field_creditLimit.setText(defaultCredit);                               // Inserir valor per defecte del crèdit màxim d'un client al formulari de creació
+        // Inserir valor per defecte del crèdit màxim d'un client al formulari de creació
+        field_creditLimit.setText(defaultCredit);
+        
+        // Definir format:(dia/mes/any) a mostrar quan s'edita a dins el camp del calendari
+        String datePattern = "dd/MM/yyyy";                                      // Format per aplicar a la Data
+        field_birthDate.setPromptText("dd/mm/aaaa");                            // Texte que es mostra al camp Data                    
+        field_birthDate.setConverter(new StringConverter<LocalDate>() {
+            
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            @Override 
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);                          // Aplico format a la data
+                } else {
+                    return "";
+                }
+            }
+
+            @Override 
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
+                } else {
+                    return null;
+                }
+            }
+        });
     }
 
     /**
@@ -138,7 +171,7 @@ public class ClientsFormController implements Initializable {
      * Validacions:
      * - Que no hi hagi camps buits
      * - Que el client no sigui un menor (RF44)
-     * - Que no se sobrepassi el crèdit màxim preestablert a la BD
+     * - Que no se sobrepassi el crèdit màxim preestablert a la BD (RF34)
      * - Que no existeixi un usuari amb el mateix email i dni (dades úniques)
      * 
      * @author Txell Llanas - Creació / Implementació

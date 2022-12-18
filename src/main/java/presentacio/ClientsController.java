@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.util.Callback;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -36,6 +38,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 
 /**
  * Controlador de la vista 'clients.fxml'. Permet a l'usuari gestionar el CRUD
@@ -76,7 +79,15 @@ public class ClientsController implements Initializable {
     private final ClientLogic validate = new ClientLogic();
     
    
-            
+    /**
+     * Inicialitza el controlador.
+     * 
+     * @param url The location used to resolve relative paths for the root
+     * object, or null if the location is not known.
+     * @param rb The resources used to localize the root object, or null if the
+     * root object was not localized.
+     * @author Txell Llanas - Creació / Implementació 
+     */        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -472,7 +483,8 @@ public class ClientsController implements Initializable {
         
         private DatePicker datePicker;
         private final TextField textField = new TextField();
-        private final SimpleDateFormat dateOutput = new SimpleDateFormat("dd/MM/yyyy");   // Especificar format per la data 
+        String datePattern = "dd/MM/yyyy";                                      // Format per aplicar al camp de la Data de Naixement                
+        private final SimpleDateFormat dateOutput = new SimpleDateFormat(datePattern);   // Especificar format per la data 
         int defaultMinAge = validate.getDefaultMinCustomerAge();                // Valor per defecte d'edat mínima d'un client
         
         public DatePickerCell() {
@@ -489,7 +501,6 @@ public class ClientsController implements Initializable {
                 createDatePicker();
             }
             
-            //setText(textField.getText());
             setGraphic(datePicker);
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
@@ -539,14 +550,35 @@ public class ClientsController implements Initializable {
             // Variables inicials
             this.datePicker = new DatePicker();                                 // Crear UI calendari           
             Date aniversari = this.getTableRow().getItem().getBirthDate();      // Mostrar valor actual del client en format 'Date' (DatePicker només accepta aquest format)
-            
-            // (dia/mes/any) a mostrar i format específic quan s'edita a dins el calendari
             String clientBirthday = aniversari.toString();
             
-            // Recuperar data naixement desada a la BD
+            // 1. Recuperar data naixement desada a la BD
             datePicker.setValue(java.time.LocalDate.parse(clientBirthday));            
             
-            // Mostrar la data després de ser seleccionada al calendari
+            // 2. Definir format:(dia/mes/any) a mostrar quan s'edita a dins el camp del calendari
+            datePicker.setConverter(new StringConverter<LocalDate>() {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+                @Override 
+                public String toString(LocalDate date) {
+                    if (date != null) {
+                        return dateFormatter.format(date);                      // Aplico format a la data
+                    } else {
+                        return "";
+                    }
+                }
+
+                @Override 
+                public LocalDate fromString(String string) {
+                    if (string != null && !string.isEmpty()) {
+                        return LocalDate.parse(string, dateFormatter);          // Aplico format a la data
+                    } else {
+                        return null;
+                    }
+                }
+            });
+            
+            // 3. Mostrar la data després de ser seleccionada al calendari
             setText(dateOutput.format(aniversari));          
             
             /* Actualitzar data naixement a l'objecte Client si ha canviat.
@@ -627,7 +659,7 @@ public class ClientsController implements Initializable {
         // Establir vincle de la SortedList amb la TableView
         sortedData.comparatorProperty().bind(customersTableView.comparatorProperty());
 
-        // Aplicar filtratge a la taula
+        // Aplicar filtratge ordenat a la taula
         customersTableView.setItems(sortedData);
     }
 

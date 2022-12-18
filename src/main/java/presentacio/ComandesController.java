@@ -69,6 +69,8 @@ public class ComandesController implements Initializable {
     @FXML
     private TableColumn columnCustomerEmail;
     @FXML
+    private TableColumn columnOrderAmount;
+    @FXML
     private TableColumn<Comanda, Comanda> columnActions;
 
     private Tooltip tooltipEliminar = new Tooltip("Eliminar Comanda");
@@ -152,6 +154,7 @@ public class ComandesController implements Initializable {
             columnRequiredDate.setCellValueFactory(new PropertyValueFactory<Comanda, Date>("dataEntrega"));
             columnShippedDate.setCellValueFactory(new PropertyValueFactory<Comanda, Date>("dataEnviament"));
             columnCustomerEmail.setCellValueFactory(new PropertyValueFactory<>("customers_customerEmail"));
+            columnOrderAmount.setCellValueFactory(new PropertyValueFactory<>("total"));
 
             columnActions.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
             addCellButtons(); // Afegir BOTONS ACCIONS

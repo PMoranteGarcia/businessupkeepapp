@@ -53,6 +53,13 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             o.setDataEnviament(resultats.getTimestamp("shippedDate"));
             o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
 
+            List<ProductesComanda> productes = this.getProductes(resultats.getInt("orderNumber"));
+            float total = 0;
+            for (int i = 0; i < productes.size(); i++) {
+                total = total + productes.get(i).getTotal();
+            }
+            o.setTotal(total);
+
             ret.add(o);
         }
 

@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  * Classe que defineix l'objecte Aplicació. Permet configurar la finestra de
@@ -77,9 +79,20 @@ public class App extends Application {
         appConfigVal = new AppConfigDAO();
         try {
             llistaObservableAppConfig.addAll(appConfigVal.getAll());
-            if (llistaObservableAppConfig.size() < 1) {
-                Platform.exit();
-                System.exit(0);
+            if (llistaObservableAppConfig.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
+                        alert.setTitle("ERROR");
+                        alert.setHeaderText("No hi ha cap regla de negoci a la base de dades. L'aplicació es tancarà.");
+
+                        ButtonType okButton = new ButtonType("D'acord");
+
+                        alert.getButtonTypes().setAll(okButton);
+                        if (alert.showAndWait().get() == okButton) {
+                            alert.close();
+                            Platform.exit();
+                            System.exit(0);
+                        }
+                
             }
         } catch (Exception ex) {
             Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);

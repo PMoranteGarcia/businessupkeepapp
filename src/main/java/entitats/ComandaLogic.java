@@ -43,10 +43,6 @@ public class ComandaLogic {
            
             
         } catch (SQLException ex) {
-            System.out.println("Error gestionant la connexió a MySQL !!!");
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
         

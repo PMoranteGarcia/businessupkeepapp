@@ -413,6 +413,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
         }
     }
 
+    /**
+     * Mètode per omplir el preu total de la comanda en curs a la vista
+     *
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
     private void calculateTotalAmount() {
         float total = 0;
 

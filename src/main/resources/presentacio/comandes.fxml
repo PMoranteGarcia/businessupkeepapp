@@ -127,7 +127,7 @@
 
             <TableColumn id="customerEmail" fx:id="columnCustomerEmail" editable="false" minWidth="200.0" prefWidth="200.0" text="Client" />
 
-            <TableColumn id="orderAmount" fx:id="columnCustomerEmail1" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Import" />
+            <TableColumn id="orderAmount" fx:id="columnOrderAmount" editable="false" maxWidth="500.0" minWidth="100.0" prefWidth="100.0" text="Import" />
 
             <TableColumn id="actions" fx:id="columnActions" editable="false" maxWidth="250.0" minWidth="120.0" prefWidth="120.0" text="Accions" />
 

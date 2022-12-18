@@ -11,7 +11,6 @@ import entitats.Producte;
 import entitats.ProductesComanda;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -27,7 +26,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -42,11 +40,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Controlador de la vista 'comandesForm.fxml'. Permet a l'usuari gestionar el
@@ -108,6 +104,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
     private final Tooltip tooltipDesar = new Tooltip("Desar Canvis");
     private final Tooltip tooltipEliminar = new Tooltip("Eliminar Producte");
+
+    // Instància del ClientLogic per carregar els mètodes de validacions
+    private final ComandaLogic validate = new ComandaLogic();
 
     /**
      * Initializes the controller class.
@@ -276,9 +275,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void goToOrdersList(ActionEvent event) throws IOException {
-
-        // Carregar la vista del llistat "COMANDES (Llistat)" in-situ
-        App.setRoot("comandes");
+        cancelOrder();
     }
 
     /**
@@ -288,14 +285,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
-     * 
-     * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
-     * @author Víctor García - Creació/Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
-        if (this.llistaObservableProductes.size() > 0) {                        //(RF40)Comprovem que hi ha productes dintre de la comanda abans de guardar
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);              // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+        String errorText = validacions();
+        if (errorText.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
             alert.setTitle("CONFIRMI UNA OPCIÓ");
             alert.setHeaderText("Vols confirmar la comanda actual?");
 
@@ -319,17 +314,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 alert.close();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);                     //Alerta per avisar que la comanda té 0 productes i, per tant, no deixa guardar-la
-            alert.setTitle("ERROR");
-            alert.setHeaderText("La comanda ha de tenir com a mínim 1 producte");
+            Alert error = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+            error.setTitle("ALERTA");
+            error.setHeaderText(errorText);
 
-            ButtonType okButton = new ButtonType("D'acord");
+            ButtonType acceptButton = new ButtonType("Acceptar");
 
-            alert.getButtonTypes().setAll(okButton);
-            if (alert.showAndWait().get() == okButton) {
-                alert.close();
-            }
+            error.getButtonTypes().setAll(acceptButton);
+            error.show();
         }
+
     }
 
     /**
@@ -367,6 +361,12 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     *
+     * (RF36) La quantitat d'un producte per defecte ha de ser
+     * defaultQuantityOrdered
+     * @author Pablo Morante - Creació/Implementació (RF38) El marge de benefici
+     * per defecte ha de ser defaultProductBenefit
+     * @author Pablo Morante - Creació/Implementació
      */
     @FXML
     private void addProduct() {
@@ -396,15 +396,31 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 }
             }
             if (!producteRepetit) {
-                ProductesComanda newProduct = new ProductesComanda();
-                newProduct.setIdProducte(temp.getProductCode());
-                newProduct.setNumberLine(llistaObservableProductes.size() + 1);
-                newProduct.setOrderNummber(this.idComanda);
-                newProduct.setQuantitat(1);
-                newProduct.setUnitaryPrice(temp.getBuyPrice());
-                newProduct.setNom(temp.getProductName());
-                newProduct.setTotal(temp.getBuyPrice() * 1);
-                llistaObservableProductes.add(newProduct);
+                //si el numero de productes supera el maxLinesPerOrder
+                if (!checkMaxLInesPerOrder(llistaObservableProductes.size())) {
+                    //Mostrar alerta per informar que no es pot afegir mes productes
+                    Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                    alert.setTitle("ALERTA");
+                    alert.setHeaderText("La quantitat de productes no pot superar " + validate.getmaxLinesPerOrder() + " productes");
+
+                    ButtonType yesButton = new ButtonType("Acceptar");
+
+                    alert.getButtonTypes().setAll(yesButton);
+                    if (alert.showAndWait().get() == yesButton) {
+                        alert.close();
+                    }
+                } else {
+
+                    ProductesComanda newProduct = new ProductesComanda();
+                    newProduct.setIdProducte(temp.getProductCode());
+                    newProduct.setNumberLine(llistaObservableProductes.size() + 1);
+                    newProduct.setOrderNummber(this.idComanda);
+                    newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
+                    newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * ((float) validate.getDefaultProductBenefit() / 100)));
+                    newProduct.setNom(temp.getProductName());
+                    newProduct.setTotal(newProduct.getQuantitat() * newProduct.getUnitaryPrice());
+                    llistaObservableProductes.add(newProduct);
+                }
             }
             calculateTotalAmount();
         } catch (NullPointerException ex) {
@@ -412,6 +428,24 @@ public class ComandesFormController extends PresentationLayer implements Initial
         }
     }
 
+    /**
+     * *
+     * Comprova que la quantitat de productes a la comanda no superi el maxim
+     *
+     * @param quantitat
+     * @return true si no supera la quantitat, false si ja te el maxim de productes
+     * @author Izan Jimenez - Creació /Implementació
+     */
+    private boolean checkMaxLInesPerOrder(int quantitat) {
+        return validate.getmaxLinesPerOrder() < quantitat;
+    }
+
+    /**
+     * Mètode per omplir el preu total de la comanda en curs a la vista
+     *
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     */
     private void calculateTotalAmount() {
         float total = 0;
 
@@ -419,7 +453,24 @@ public class ComandesFormController extends PresentationLayer implements Initial
             total = total + llistaObservableProductes.get(i).getTotal();
         }
 
-        totalAmount.setText("" + total);
+        totalAmount.setText(String.format("%.2f", total));
+    }
+
+    /**
+     * Mètode per obtenir el preu total de la comanda en curs
+     *
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     * @return Float amb el preu total de la comanda en curs
+     */
+    private float calculateTotalAmountCheckMaxOrderAmount() {
+        float total = 0;
+
+        for (int i = 0; i < llistaObservableProductes.size(); i++) {
+            total = total + llistaObservableProductes.get(i).getTotal();
+        }
+
+        return total;
     }
 
     /**
@@ -436,7 +487,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
 
         String cus = selectorClient.getValue().getCustomerEmail();
-        System.out.println(cus);
 
         Comanda c = new Comanda(new java.sql.Timestamp(today.getTime()), requiredDayG, cus);
 
@@ -458,8 +508,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void updateCommand() throws SQLException {
-        DAOComanda = new ComandaDAO();
+    private void updateCommand() {
+        Timestamp today = new Timestamp(System.currentTimeMillis());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+
+        String cus = selectorClient.getValue().getCustomerEmail();
+        Comanda c = new Comanda(this.idComanda, requiredDayG);
+        DAOComanda.update(c);
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             ProductesComanda p = llistaObservableProductes.get(i);
             DAOComanda.saveProduct(p, idComanda);
@@ -520,6 +578,56 @@ public class ComandesFormController extends PresentationLayer implements Initial
             }
         }
         );
+    }
+
+    /**
+     * Mètode per fer les comprovacions de què tots els camps estiguin plens i
+     * compleixin les regles de negoci
+     *
+     * @author Pablo Morante - Creació/Implementació
+     * @author Víctor García - Creació/Implementació
+     * @return String amb el missatge d'error en cas que alguna condició no es
+     * compleixi
+     *
+     * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
+     * @author Víctor García - Creació/Implementació
+     *
+     * (RF48) No es pot donar d'alta una comanda amb més import que el valor de
+     * maxOrderAmount
+     * @author Víctor García - Creació/Implementació
+     *
+     * (RF42) No es pot donar d'alta una comanda amb una diferència d'hores
+     * menors a minShippingHours
+     * @author Pablo Morante - Creació/Implementació
+     */
+    public String validacions() {
+        float totalComanda = calculateTotalAmountCheckMaxOrderAmount();
+
+        if (selectorClient.getValue() == null || fieldHour.getText().isEmpty() || fieldMinutes.getText().isEmpty() || datePicker.getValue() == null) {
+            return "Per guardar una comanda s'han d'omplir tots els valors";
+        }
+        if ((Integer.parseInt(fieldHour.getText()) > 23) || (Integer.parseInt(fieldHour.getText()) < 0) || (Integer.parseInt(fieldMinutes.getText()) > 59) || (Integer.parseInt(fieldMinutes.getText()) < 0)) {
+            return "El format d'hora ha d'estar entre 0 i 23 i el de minuts entre 0 i 59 ";
+        }
+        if (llistaObservableProductes.isEmpty()) {
+            return "Una comanda ha de tenir entre 1 i 20 productes.";
+        }
+        Timestamp today = Timestamp.from(Instant.now());
+        LocalDate requiredDay = datePicker.getValue();
+        LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
+
+        Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+        long milliseconds = requiredDayG.getTime() - today.getTime();
+        long hour = TimeUnit.MILLISECONDS.toHours(milliseconds);
+        if (hour < validate.getMinShippingHours()) {
+            return "El mínim d'hores entre fer la comanda i enviar-la és de " + validate.getMinShippingHours() + "h.";
+        }
+
+        if (totalComanda > validate.getMaxOrderAmount()) {
+            return "L'import màxim de la comanda no pot superar els " + validate.getMaxOrderAmount() + "€";
+        }
+
+        return "";
     }
 
 }

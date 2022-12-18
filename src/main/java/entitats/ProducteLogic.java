@@ -19,12 +19,15 @@ import javafx.scene.control.TextField;
  */
 public class ProducteLogic {
 
+    //variables DAO per fer consultes necessaries
     private AppConfigDAO dataDefaults;
     private ProducteDAO dataProduct;
     private ComandaDAO dataOrder;
-    private final List<Producte> productList = new ArrayList<>();                 // Llistat amb clients (taula: customers)
+
+    //Llistes per fer comprovacions
+    private final List<Producte> productList = new ArrayList<>();
     private final List<Comanda> ordersList = new ArrayList<>();
-    private final List<AppConfig> valuesList = new ArrayList<>();               // Llistat per desar valors per defecte (Regles de negoci, taula: appConfig)
+    private final List<AppConfig> valuesList = new ArrayList<>();
 
     public ProducteLogic() {
     }
@@ -36,7 +39,7 @@ public class ProducteLogic {
      * @return boolean (True/False) si es troben coincidències o no amb la BD
      * @author Izan Jimenez - Implementació
      */
-    public boolean productIsInOrders(Producte p) {  
+    public boolean productIsInOrders(Producte p) {
 
         int productCode = p.getProductCode();
         boolean existeix = false;
@@ -47,17 +50,17 @@ public class ProducteLogic {
             dataOrder = new ComandaDAO();
 
             ordersList.addAll(dataOrder.getAll());
-            System.out.println("OrderListSize "+ordersList.size());
-            for (int i = 0; i <= ordersList.size()-1; i++) {
-                System.out.println("Dentro de oderlistSize");
-                System.out.println("OrderList GET i "+ordersList.get(i));
-                
-                //aa
-                        
-                List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
+            System.out.println("OrderListSize " + ordersList.size());
 
+            for (int i = 0; i <= ordersList.size() - 1; i++) {
+                System.out.println("Dentro de oderlistSize");
+                System.out.println("OrderList GET i " + ordersList.get(i).getNumOrdre());
+
+                List<ProductesComanda> llistProductesInComanda = dataOrder.getProductes(ordersList.get(i).getNumOrdre());
+
+                // List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
                 for (ProductesComanda productesComanda : llistProductesInComanda) {
-                       System.out.println("ProductesComandaGetComanda "+productesComanda.getIdProducte());
+                    System.out.println("ProductesComandaGetComanda " + productesComanda.getIdProducte());
                     if (productCode == productesComanda.getIdProducte()) {
                         System.out.println("LO ESSSS");
                         return true;
@@ -67,7 +70,7 @@ public class ProducteLogic {
 
         } catch (SQLException ex) {
         }
-
+        ordersList.clear();
         return existeix;
     }
 
@@ -75,6 +78,7 @@ public class ProducteLogic {
      * Mètode per retornar la quantitat minima d'stock (RF32).
      *
      * @author Izan Jimenez - Implementació
+     * @return Retorna el minim d'stock configurat a la BBDD
      */
     public int getDefaultStock() {
 
@@ -86,6 +90,7 @@ public class ProducteLogic {
         } catch (SQLException ex) {
             Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
+        valuesList.clear();
         return stock;
     }
 
@@ -123,22 +128,18 @@ public class ProducteLogic {
 
         boolean res = false;
         String nom = f.getText().trim();
-        int count = 0;
         try {
             dataProduct = new ProducteDAO();
             productList.addAll(dataProduct.getAll());
 
             for (int i = 0; i < productList.size(); i++) {
                 if (nom.equals(productList.get(i).getProductName())) {
-                    count++;
+                    res = true;
                 }
             }
         } catch (SQLException ex) {
         }
-
-        if (count > 0) {
-            res = true;
-        }
+        productList.clear();
 
         return res;
     }
@@ -153,9 +154,7 @@ public class ProducteLogic {
     public boolean checkPreu(TextField f) {
         boolean ret = false;
         try {
-
             float preu = Float.parseFloat(f.getText());
-
             if (preu > 0.0) {
                 ret = true;
             }

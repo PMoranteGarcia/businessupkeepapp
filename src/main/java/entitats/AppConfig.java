@@ -16,10 +16,23 @@ public class AppConfig {
     private float defaultCreditLimit;
     private int minCustomerAge;
     private int defaultStock;
+    private float maxOrderAmount;
+    private int minShippingHours;
+    private int defaultQuantityOrdered;
+    private int defaultProductBenefit;
     private List<Comanda> comandesList;
+    private int maxLinesPerOrdes;
 
     public AppConfig() {
 
+    }
+
+    public int getMaxLinesPerOrdes() {
+        return maxLinesPerOrdes;
+    }
+
+    public void setMaxLinesPerOrdes(int maxLinesPerOrdes) {
+        this.maxLinesPerOrdes = maxLinesPerOrdes;
     }
 
     public float getDefaultCreditLimit() {
@@ -28,6 +41,14 @@ public class AppConfig {
 
     public List<Comanda> getComandesList() {
         return comandesList;
+    }
+
+    public float getMaxOrderAmount() {
+        return maxOrderAmount;
+    }
+
+    public void setMaxOrderAmount(float maxOrderAmount) {
+        this.maxOrderAmount = maxOrderAmount;
     }
 
     public void setComandesList(List<Comanda> comandesList) {
@@ -52,6 +73,30 @@ public class AppConfig {
 
     public void setDefaultStock(int defaultStock) {
         this.defaultStock = defaultStock;
+    }
+
+    public int getMinShippingHours() {
+        return minShippingHours;
+    }
+
+    public void setMinShippingHours(int minShippingHours) {
+        this.minShippingHours = minShippingHours;
+    }
+
+    public int getDefaultQuantityOrdered() {
+        return defaultQuantityOrdered;
+    }
+
+    public void setDefaultQuantityOrdered(int defaultQuantityOrdered) {
+        this.defaultQuantityOrdered = defaultQuantityOrdered;
+    }
+
+    public int getDefaultProductBenefit() {
+        return defaultProductBenefit;
+    }
+
+    public void setDefaultProductBenefit(int defaultProductBenefit) {
+        this.defaultProductBenefit = defaultProductBenefit;
     }
 
 }

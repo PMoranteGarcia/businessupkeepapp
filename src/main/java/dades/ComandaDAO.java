@@ -53,6 +53,13 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             o.setDataEnviament(resultats.getTimestamp("shippedDate"));
             o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
 
+            List<ProductesComanda> productes = this.getProductes(resultats.getInt("orderNumber"));
+            float total = 0;
+            for (int i = 0; i < productes.size(); i++) {
+                total = total + productes.get(i).getTotal();
+            }
+            o.setTotal(total);
+
             ret.add(o);
         }
 
@@ -95,8 +102,19 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     @Override
-    public void update(Comanda t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void update(Comanda t) {
+        String update = "UPDATE orders SET requiredDate = ? WHERE orderNumber = ?;";
+
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = con.prepareStatement(update);
+
+            preparedStatement.setTimestamp(1, t.getDataEntrega());
+            preparedStatement.setInt(2, t.getNumOrdre());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -138,9 +156,19 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         return ret;
     }
 
+    /**
+     * *
+     *Retorna tots els productes d'una comanda
+     * 
+     * @param id
+     * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
+     * @throws SQLException
+     * @author Izan Jimenez - Implementació
+     */
     public List<ProductesComanda> getProductes(int id) throws SQLException {
         List<ProductesComanda> ret = new ArrayList<>();
-        String consulta = "SELECT productCode, quantityOrdered, priceEach, orderLineNumber FROM orderdetails WHERE orderNumber = ?;";
+
+        String consulta = "SELECT * FROM orderdetails WHERE orderNumber = ?;";
         String consultaNom = "SELECT productName FROM products WHERE productCode = ?;";
         PreparedStatement sentencia = con.prepareStatement(consulta);
         PreparedStatement sentencia2 = con.prepareStatement(consultaNom);
@@ -152,6 +180,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         while (resultats.next()) {
             ProductesComanda pc = new ProductesComanda();
 
+            pc.setOrderNummber(id);
             pc.setIdProducte(resultats.getInt("productCode"));
             pc.setNumberLine(resultats.getInt("orderLineNumber"));
             pc.setQuantitat(resultats.getInt("quantityOrdered"));

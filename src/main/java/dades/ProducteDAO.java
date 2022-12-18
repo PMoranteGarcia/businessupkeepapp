@@ -24,7 +24,12 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     final String GETALL = "SELECT * FROM products";
     final String GETONE = "SELECT * FROM products WHERE productCode = ?";
 
-    //al crear un ProducteDAO crea una conexió 
+    /**
+     * *
+     * Al crear un ProducteDAO crea una conexió amb la BBDD
+     *
+     * @throws java.sql.SQLException
+     */
     public ProducteDAO() throws SQLException {
         super();
     }
@@ -32,11 +37,11 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     /**
      * Desar un producte a la taula 'products' (RF58)
      *
-     * @param t Instància de tipus Producte a desar
+     * @param p Instància de tipus Producte a desar
      * @author Izan Jimenez - Implementació
      */
     @Override
-    public void save(Producte t) {
+    public void save(Producte p) {
         //es prepara el Statement
         System.out.println("Guardant producte");
         PreparedStatement stat = null;
@@ -46,10 +51,10 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             //es carrega el statement amb la conexió i la comanda
             stat = super.getCon().prepareStatement(INSERT);
             //inserim els camps del producte al statement
-            stat.setString(1, t.getProductName());
-            stat.setString(2, t.getProductDescription());
-            stat.setInt(3, t.getQuantityInStock());
-            stat.setFloat(4, t.getBuyPrice());
+            stat.setString(1, p.getProductName());
+            stat.setString(2, p.getProductDescription());
+            stat.setInt(3, p.getQuantityInStock());
+            stat.setFloat(4, p.getBuyPrice());
 
             //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
             if (stat.executeUpdate() == 0) {
@@ -128,7 +133,9 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
 
         try {
             stat = super.getCon().prepareStatement(DELETE);
+            //posem el codi del producte a eliminar en la consulta
             stat.setInt(1, t.getProductCode());
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
             if (stat.executeUpdate() == 0) {
                 throw new SQLException();
             }
@@ -160,11 +167,11 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         Producte p = null;
 
         try {
-
+            //preparem la consulta
             stat = super.getCon().prepareStatement(GETONE);
             stat.setInt(1, t.getProductCode());
             rs = stat.executeQuery();
-//          si rep algun parametre el transformem a Porducte
+            //si rep algun parametre el transformem a Porducte
             if (rs.next()) {
                 p = convertir(rs);
             } else {
@@ -195,7 +202,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     }
 
     /**
-     * Mostrar tots els productes de la taula 'productes' (RF64)
+     * Recupera tots els productes de la taula 'productes' (RF64)
      *
      * @return List de tipus Producte amb tots els registres de la BD
      * @author Izan Jimenez - Implementació
@@ -207,8 +214,10 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         List<Producte> p = new ArrayList<>();
 
         try {
+            //fem la consulta a la BBDD
             stat = super.getCon().prepareStatement(GETALL);
             rs = stat.executeQuery();
+            //mentres retorni un resultat, el guardem a la llista que retornarem
             while (rs.next()) {
                 p.add(convertir(rs));
             }
@@ -256,30 +265,4 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         return p;
     }
 
-    
-    
-//    public static void main(String[] args) {
-//        try {
-//            ProducteDAO pd = new ProducteDAO();
-//
-//            //SAVE
-////            Producte p = new Producte("Gafas", "Gafas2", 2, (float) 5.99);
-////            pd.save(p);
-//            //GetOne
-//            Producte p = new Producte("GAFITAS", "GAFITAS MODIFICADAS", 0, 0);
-//            p.setProductCode(3);
-//            System.out.println("---" + pd.getOne(p));
-//            //UPDATE
-////            pd.update(p);
-//            //DELETE
-////            pd.delete(p);
-//            //GETALL
-//            List<Producte> productes = pd.getAll();
-//            for (Producte producte : productes) {
-//                System.out.println(producte.toString());
-//            }
-//        } catch (Exception e) {
-//        } finally {
-//        }
-//    }
 }

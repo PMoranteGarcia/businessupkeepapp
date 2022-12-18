@@ -275,9 +275,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      */
     @FXML
     private void goToOrdersList(ActionEvent event) throws IOException {
-
-        // Carregar la vista del llistat "COMANDES (Llistat)" in-situ
-        App.setRoot("comandes");
+        cancelOrder();
     }
 
     /**

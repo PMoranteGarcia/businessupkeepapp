@@ -425,7 +425,10 @@ public class ComandesFormController extends PresentationLayer implements Initial
             }
             if (!producteRepetit) {
                 //si el numero de productes supera el maxLinesPerOrder
-                if (!checkMaxLInesPerOrder(llistaObservableProductes.size())) {
+                System.out.println(llistaObservableProductes.size());
+                System.out.println(validate.getmaxLinesPerOrder());
+                System.out.println(checkMaxLInesPerOrder(llistaObservableProductes.size()));
+                if (checkMaxLInesPerOrder(llistaObservableProductes.size())) {
                     //Mostrar alerta per informar que no es pot afegir mes productes
                     Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
                     alert.setTitle("ALERTA");
@@ -465,7 +468,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Izan Jimenez - Creació /Implementació
      */
     private boolean checkMaxLInesPerOrder(int quantitat) {
-        return validate.getmaxLinesPerOrder() < quantitat;
+        return validate.getmaxLinesPerOrder() <= quantitat;
     }
 
     /**

@@ -47,22 +47,26 @@ public class ProductesFormController implements Initializable {
     @FXML
     private TextArea textAreaDescripcio;
 
-    private ProducteLogic validate = new ProducteLogic();                       // Instància del ProducteLogic per carregar els mètodes de validacions    
-    List<String> errors = new ArrayList<>();                                    // Llistat per recollir errors de validació del formulari    
+    // Instància del ProducteLogic per carregar els mètodes de validacions 
+    private final ProducteLogic validate = new ProducteLogic();
+    // Llistat per recollir errors de validació del formulari  
+    List<String> errors = new ArrayList<>();
     String defaultStock = Integer.toString(validate.getDefaultStock());
 
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        //camps responsive
         textFieldNom.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
         textAreaDescripcio.setPrefHeight(Screen.getPrimary().getBounds().getHeight());
         textAreaDescripcio.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
-
-        System.out.println("DefaultStock = " + defaultStock);
-        textFieldStock.setText(defaultStock); // Inserir valor per defecte
+        
+        // Inserir valor per defecte
+        textFieldStock.setText(defaultStock); 
 
     }
 
@@ -85,8 +89,7 @@ public class ProductesFormController implements Initializable {
     @FXML
     private void saveProducte() throws IOException, SQLException {
         validacions();
-        System.out.println(errors.isEmpty());
-
+        
         if (!errors.isEmpty()) {
 
             System.out.println(">> Hi ha errors al formulari!");
@@ -128,7 +131,6 @@ public class ProductesFormController implements Initializable {
     @FXML
     private void cancelProducte() throws IOException {
         cancel();
-
     }
 
     /**
@@ -161,8 +163,8 @@ public class ProductesFormController implements Initializable {
 
     /**
      * Mètode per validar el formulari d'alta d'un nou producte. Validacions: -
-     * Que no hi hagi camps buits - Que no existeixi un producte a la BBDD - 
-     * Que el preu sigui un numero positiu
+     * Que no hi hagi camps buits - Que no existeixi el mateix producte a la BBDD - Que
+     * el preu sigui un numero positiu
      *
      * @author Izan JImenez - Implementació
      */
@@ -190,7 +192,7 @@ public class ProductesFormController implements Initializable {
         textFieldPreu.applyCss();
         lblPreu.applyCss();
 
-        // VALIDACIONS: Detectar camps buits, usuari no duplicat, edat mínima i crèdit màxim
+        // VALIDACIONS: Que no hi hagi camps buits - Que no existeixi el mateix producte a la BBDD - Que el preu sigui un numero positiu
         if (textFieldNom.getText().isEmpty() || textFieldNom.getText().isBlank()) {
             errors.add("El camp 'Nom' és obligatori.");
             textFieldNom.getStyleClass().add("required");
@@ -200,7 +202,7 @@ public class ProductesFormController implements Initializable {
                 textFieldNom.getStyleClass().add("filled");
                 lblNom.getStyleClass().add("filled");
             } else {
-                errors.add("ERROR: No es pot donar d'alta el producte: ja existeix un producte amb aquest email.");
+                errors.add("ERROR: No es pot donar d'alta el producte: ja existeix un producte amb aquest nom.");
                 textFieldNom.getStyleClass().add("required");
                 lblNom.getStyleClass().add("required");
             }

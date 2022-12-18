@@ -1,15 +1,11 @@
 package presentacio;
 
-import dades.DAOInterface;
 import dades.ProducteDAO;
 import entitats.Producte;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -27,12 +23,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 /**
@@ -47,7 +41,7 @@ public class ProductesController implements Initializable {
 
     @FXML
     private Button btnOrders, btnCustomers, btnProducts, btnAbout,
-            btnNewCustomer, btnSearchCustomer;
+            btnNewCustomer, btnSearchProduct;
     @FXML
     private TableView<Producte> productList;
     @FXML
@@ -67,11 +61,18 @@ public class ProductesController implements Initializable {
     private ProducteDAO dataProducte;
 
     // Instància del ProducteLogic per carregar els mètodes de validacions
-    private ProducteLogic validate = new ProducteLogic();
+    private final ProducteLogic validate = new ProducteLogic();
 
     //INstancia de la llista que carrega el TableView
-    private ObservableList<Producte> llistaObservableProducte = FXCollections.observableArrayList();
+    private final ObservableList<Producte> llistaObservableProducte = FXCollections.observableArrayList();
 
+    /**
+     * Al inicialitzar, omplim la taula i iniciem el buscador de productes
+     *
+     * @param url
+     * @param rb
+     * @author Izan Jimenez - Creació / Implementació
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -104,20 +105,21 @@ public class ProductesController implements Initializable {
     }
 
     @FXML
-    private void searchCustomer(ActionEvent event) {
-    }
-
-    @FXML
     private void goToNewProduct(ActionEvent event) throws IOException {
         App.setRoot("productesForm");
     }
 
+    @FXML
+    private void Clear(ActionEvent event) {
+        textFieldCercarProducte.clear();
+    }
+
     /**
      * *
-     * EMplena la taula
+     * Emplena la taula de Productes
      *
      * @throws SQLException
-     * @author
+     * @author Izan Jimenez
      */
     private void emplenarTaula() throws SQLException {
 
@@ -163,8 +165,10 @@ public class ProductesController implements Initializable {
                 }
             }
         });
-
+        //fem les celes editables
         makeColsEditable();
+
+        //omplim la taula
         productList.setItems(llistaObservableProducte);
 
     }
@@ -173,17 +177,21 @@ public class ProductesController implements Initializable {
      * Mètode que defineix com a editables les dades de tots els camps d'una
      * mateixa columna.
      *
-     * @author Txell Llanas - Creació/Implementació
+     * @author Izan Jimenez - Creació/Implementació
      */
     private void makeColsEditable() {
 
-        // 1. Fer editables les cel·les de dins una mateixa columna
+        //  Fer editables les cel·les de dins una mateixa columna
         columnProductDescription.setCellFactory(TextFieldTableCell.forTableColumn());
-        columnProductBuyPice.setCellFactory(col -> new NumberCellFloat());          // Crear Classe per editar la cel·la amb valors numèrics
-        columnProductStock.setCellFactory(col -> new NumberCellInt());          // Crear Classe per editar la cel·la amb valors numèrics
-        System.out.println("llistaObservableProducte: " + llistaObservableProducte.size());
 
-        // 2. Desar els registres editats
+        // Crear Classe per editar la cel·la amb valors numèrics decimals
+        columnProductBuyPice.setCellFactory(col -> new NumberCellFloat());
+
+        // Crear Classe per editar la cel·la amb valors numèrics enters
+        columnProductStock.setCellFactory(col -> new NumberCellInt());
+
+        // Desar els registres editats
+//Descripció
         columnProductDescription.setOnEditCommit(event -> {
 
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
@@ -191,7 +199,6 @@ public class ProductesController implements Initializable {
 
             //valor antic abans de la modificació
             String valorAntic = (String) e.getOldValue();
-            System.out.println("Valor antic:" + valorAntic);
 
             //valor nou
             String valorNou = (String) e.getNewValue();
@@ -205,7 +212,7 @@ public class ProductesController implements Initializable {
             p.setProductDescription(valorNou);
 
         });
-
+//Stock
         columnProductStock.setOnEditCommit(event -> {
 
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
@@ -213,7 +220,6 @@ public class ProductesController implements Initializable {
 
             //valor antic abans de la modificació
             int valorAntic = (int) e.getOldValue();
-            System.out.println("Valor antic:" + valorAntic);
 
             //valor nou
             int valorNou = (int) e.getNewValue();
@@ -227,7 +233,7 @@ public class ProductesController implements Initializable {
             p.setQuantityInStock(valorNou);
 
         });
-
+//preu
         columnProductBuyPice.setOnEditCommit(event -> {
 
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
@@ -235,7 +241,6 @@ public class ProductesController implements Initializable {
 
             //valor antic abans de la modificació
             float valorAntic = (float) e.getOldValue();
-            System.out.println("Valor antic:" + valorAntic);
 
             //valor nou
             float valorNou = (float) e.getNewValue();
@@ -254,7 +259,7 @@ public class ProductesController implements Initializable {
     /**
      * Mètode que afegeix botons dins la cel·la d'accions de la TableView
      *
-     * @author Izan Jimenez - Creació/Implementació
+     * @author Izan Jimenez - Implementació
      */
     private void addCellButtons() {
 
@@ -293,34 +298,38 @@ public class ProductesController implements Initializable {
                     alert.getButtonTypes().setAll(yesButton, cancelButton);
 
                     if (alert.showAndWait().get() == yesButton) {
-
-                        dataProducte.update(p);                                   // Actualitzar el registre actual dins la BD, taula 'products'
+                        //Actualitzar el registre actual dins la BD, taula 'products'
+                        dataProducte.update(p);
 
                     } else {
-                        dataProducte.getOne(p);                                   // Recuperar dades originals de la BD per revertir els canvis realitzats
+                        // Recuperar dades originals de la BD per revertir els canvis realitzats
+                        dataProducte.getOne(p);
                         System.out.println("producte no modificat: "
                                 + dataProducte.getOne(p));
                         alert.close();
                     }
 
-                    columnProductName.getStyleClass().add("netejar");           // Netejar estils aplicats als camps modificats
-                    productList.refresh();                                       // Refrescar llistat (NECESSARI)
+                    // Netejar estils aplicats als camps modificats
+                    columnProductName.getStyleClass().add("netejar");
+                    // Refrescar llistat (NECESSARI)
+                    productList.refresh();
 
                 });
 
-                btnDelete.setId("btnDelete");                                   // Botó per eliminar registre actual
+                // Botó per eliminar registre actual
+                btnDelete.setId("btnDelete");
                 btnDelete.setTooltip(tooltipEliminar);
                 btnDelete.setOnAction(event -> {
-//
-                    if (validate.productIsInOrders(p)) {                        // Mostrar avís si el client té comandes actives
+                    // Mostrar avís si el pructe encara esta en comandes actives
+                    if (validate.productIsInOrders(p)) {
 
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("NO ES POT ELIMINAR EL PRODUCTE");
                         alert.setHeaderText("El producte \"" + p.getProductName().toUpperCase() + "\" existeix encara en comandes.\nNo es pot eliminar de la base de dades.");
                         alert.show();
 
-                    } else {                                                    // Demanar confirmació per eliminar el client
-
+                    } else {
+                        // Demanar confirmació per eliminar el client
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setTitle("CONFIRMAR BAIXA");
                         alert.setHeaderText("Desitja eliminar el producte \"" + p.getProductName().toUpperCase() + "\"?");
@@ -331,8 +340,10 @@ public class ProductesController implements Initializable {
                         alert.getButtonTypes().setAll(yesButton, cancelButton);
 
                         if (alert.showAndWait().get() == yesButton) {
-                            dataProducte.delete(p);                               // Crido funció per eliminar el registre actual de la BD
-                            llistaObservableProducte.remove(p);                   // Elimino també del llistat al moment
+                            // Crido funció per eliminar el registre actual de la BD
+                            dataProducte.delete(p);
+                            // Elimino també del llistat al moment
+                            llistaObservableProducte.remove(p);
                         } else {
                             alert.close();
                         }
@@ -348,7 +359,7 @@ public class ProductesController implements Initializable {
      * numèriques no decimals. Conté una validació per evitar entrades
      * incorrectes de l'usuari.
      *
-     * @author Izan Jimenez - Implementació / Creació
+     * @author Izan Jimenez - Creació / Implementació
      */
     public class NumberCellInt extends TableCell<Producte, Number> {
 
@@ -367,17 +378,19 @@ public class ProductesController implements Initializable {
             {
                 textField.setText("0");
             }
-
-            if (pattern.matcher(value).matches()) {                           // Si són nombres i/o amb decimals
-
-                if (validate.checkStock(textField)) {                         // Validar dades introduïdes (valors mínim-màxim)
-                    commitEdit(Integer.parseInt(value));                             // Desar canvis
+            // Si són nombres 
+            if (pattern.matcher(value).matches()) {
+                // Validar dades introduïdes (valor mínim)
+                if (validate.checkStock(textField)) {
+                    // Desar canvis
+                    commitEdit(Integer.parseInt(value));
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("STOCK ERRÒNI");
                     alert.setHeaderText("ERROR: Stock incorrecte, indicar "
                             + "un valor major a 1");
-                    alert.show();                                                   // Mostrar error
+                    // Mostrar error
+                    alert.show();
 
                     cancelEdit();
                 }
@@ -456,17 +469,19 @@ public class ProductesController implements Initializable {
             {
                 textField.setText("0");
             }
-
-            if (pattern.matcher(value).matches()) {                           // Si són nombres i/o amb decimals
-
-                if (validate.checkPreu(textField)) {                         // Validar dades introduïdes (valors mínim-màxim)
-                    commitEdit(Float.parseFloat(value));                             // Desar canvis
+            // Si són nombres i/o amb decimals
+            if (pattern.matcher(value).matches()) {
+                //Validar dades introduïdes (valors mínim-màxim)
+                if (validate.checkPreu(textField)) {
+                    // Desar canvis
+                    commitEdit(Float.parseFloat(value));
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("PREU ERRÒNIA");
                     alert.setHeaderText("ERROR: Preu  incorrecte, indicar "
                             + "un valor major a 0");
-                    alert.show();                                                   // Mostrar error
+                    // Mostrar error
+                    alert.show();
 
                     cancelEdit();
                 }

@@ -453,7 +453,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             total = total + llistaObservableProductes.get(i).getTotal();
         }
 
-        totalAmount.setText("" + total);
+        totalAmount.setText(String.format("%.2f", total));
     }
 
     /**

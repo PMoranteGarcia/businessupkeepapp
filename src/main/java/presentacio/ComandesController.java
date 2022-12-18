@@ -34,6 +34,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javafx.util.StringConverter;
 
 /**
  * Controlador de la vista 'comandes.fxml'. Permet a l'usuari gestionar el CRUD
@@ -112,6 +114,56 @@ public class ComandesController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewOrder.setText(text5.toUpperCase());
+        
+        // Definir format:(dia/mes/any) a mostrar quan s'edita a dins els camps dels calendaris
+        String datePattern = "dd/MM/yyyy";                                      // Format per aplicar a la Data
+        datePickerFrom.setPromptText("Data inicial");                           // Texte que es mostra al camp Data
+        datePickerTo.setPromptText("Data final");                               // Texte que es mostra al camp Data 
+        
+        datePickerFrom.setConverter(new StringConverter<LocalDate>() {
+            
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            @Override 
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);                          // Aplico format a la data
+                } else {
+                    return "";
+                }
+            }
+
+            @Override 
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
+                } else {
+                    return null;
+                }
+            }
+        });
+        datePickerTo.setConverter(new StringConverter<LocalDate>() {
+            
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            @Override 
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);                          // Aplico format a la data
+                } else {
+                    return "";
+                }
+            }
+
+            @Override 
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
+                } else {
+                    return null;
+                }
+            }
+        });    
 
         //si no existeixen productes, no es pot crear una comanda
         try {

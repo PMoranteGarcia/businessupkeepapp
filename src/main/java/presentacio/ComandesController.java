@@ -1,6 +1,7 @@
 package presentacio;
 
 import dades.ComandaDAO;
+import dades.ProducteDAO;
 import entitats.Client;
 import entitats.Comanda;
 import entitats.ComandaLogic;
@@ -109,6 +110,13 @@ public class ComandesController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewOrder.setText(text5.toUpperCase());
+
+        //si no existeixen productes, no es pot crear una comanda
+        try {
+            btnNewOrder.setDisable(!(!new ProducteDAO().getAll().isEmpty()));
+        } catch (SQLException ex) {
+
+        }
 
         // Recuperar registres taula 'orders'
         fillOrdersTable();
@@ -237,7 +245,7 @@ public class ComandesController implements Initializable {
                             llistaObservableComanda.remove(t);
                         } catch (java.sql.SQLIntegrityConstraintViolationException ex) {
                             alert.setHeaderText("Una comanda amb productes no es pot eliminar. Vols eliminar tots els productes de la comanda i tornar a provar?");
-                            if(alert.showAndWait().get() == yesButton) {
+                            if (alert.showAndWait().get() == yesButton) {
                                 dataComanda.deleteAllProductsFromComanda(t.getNumOrdre());
                                 try {
                                     dataComanda.delete(t);
@@ -249,7 +257,7 @@ public class ComandesController implements Initializable {
                                 alert.close();
                             }
                         } catch (SQLException ex) {
-                            
+
                         }
                     } else {
                         alert.close();

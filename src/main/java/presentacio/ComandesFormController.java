@@ -368,6 +368,11 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     * 
+     * (RF36) La quantitat d'un producte per defecte ha de ser defaultQuantityOrdered
+     * @author Pablo Morante - Creació/Implementació
+     * (RF38) El marge de benefici per defecte ha de ser defaultProductBenefit
+     * @author Pablo Morante - Creació/Implementació
      */
     @FXML
     private void addProduct() {
@@ -401,8 +406,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 newProduct.setIdProducte(temp.getProductCode());
                 newProduct.setNumberLine(llistaObservableProductes.size() + 1);
                 newProduct.setOrderNummber(this.idComanda);
-                newProduct.setQuantitat(1);
-                newProduct.setUnitaryPrice(temp.getBuyPrice());
+                newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
+                newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * (validate.getDefaultProductBenefit()/100)));
                 newProduct.setNom(temp.getProductName());
                 newProduct.setTotal(temp.getBuyPrice() * 1);
                 llistaObservableProductes.add(newProduct);
@@ -565,6 +570,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * 
      * (RF48) No es pot donar d'alta una comanda amb més import que el valor de maxOrderAmount
      * @author Víctor García - Creació/Implementació
+     * 
+     * (RF42) No es pot donar d'alta una comanda amb una diferència d'hores menors a minShippingHours
+     * @author Pablo Morante - Creació/Implementació
      */
     public String validacions() {
         float totalComanda = calculateTotalAmountCheckMaxOrderAmount();
@@ -585,8 +593,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
         long milliseconds = requiredDayG.getTime() - today.getTime();
         long hour = TimeUnit.MILLISECONDS.toHours(milliseconds);
-        if (hour < 48) {
-            return "El mínim d'hores entre fer la comanda i enviar-la és de x";
+        if (hour < validate.getMinShippingHours()) {
+            return "El mínim d'hores entre fer la comanda i enviar-la és de " + validate.getMinShippingHours() + "h.";
         }
         
         if (totalComanda > validate.getMaxOrderAmount()){

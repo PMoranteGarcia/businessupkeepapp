@@ -48,6 +48,9 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
                 defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));
                 defaults.setDefaultStock(resultats.getInt("defaultQuantityInStock"));
                 defaults.setMaxOrderAmount(resultats.getFloat("maxOrderAmount"));
+                defaults.setMinShippingHours(resultats.getInt("minShippingHours"));
+                defaults.setDefaultQuantityOrdered(resultats.getInt("defaultQuantityOrdered"));
+                defaults.setDefaultProductBenefit(resultats.getInt("defaultProductBenefit"));
                 //defaults.setComandesList(resultats.getObject(""));
 
                 ret.add(defaults);

@@ -17,6 +17,9 @@ public class AppConfig {
     private int minCustomerAge;
     private int defaultStock;
     private float maxOrderAmount;
+    private int minShippingHours;
+    private int defaultQuantityOrdered;
+    private int defaultProductBenefit;
     private List<Comanda> comandesList;
 
     public AppConfig() {
@@ -62,5 +65,31 @@ public class AppConfig {
     public void setDefaultStock(int defaultStock) {
         this.defaultStock = defaultStock;
     }
+
+    public int getMinShippingHours() {
+        return minShippingHours;
+    }
+
+    public void setMinShippingHours(int minShippingHours) {
+        this.minShippingHours = minShippingHours;
+    }
+
+    public int getDefaultQuantityOrdered() {
+        return defaultQuantityOrdered;
+    }
+
+    public void setDefaultQuantityOrdered(int defaultQuantityOrdered) {
+        this.defaultQuantityOrdered = defaultQuantityOrdered;
+    }
+
+    public int getDefaultProductBenefit() {
+        return defaultProductBenefit;
+    }
+
+    public void setDefaultProductBenefit(int defaultProductBenefit) {
+        this.defaultProductBenefit = defaultProductBenefit;
+    }
+    
+    
 
 }

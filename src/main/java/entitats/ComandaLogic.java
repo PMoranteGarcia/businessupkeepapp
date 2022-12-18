@@ -49,4 +49,52 @@ public class ComandaLogic {
         return total;
         
     }
+    
+    public int getMinShippingHours() {
+        int hores = 0;
+        try {
+            
+            dataDefaults = new AppConfigDAO();
+            valuesList.addAll(dataDefaults.getAll());
+                
+            hores = valuesList.get(0).getMinShippingHours();
+           
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hores;
+    }
+    
+    public int getDefaultQuantityOrdered() {
+        int quantity = 0;
+        try {
+            
+            dataDefaults = new AppConfigDAO();
+            valuesList.addAll(dataDefaults.getAll());
+                
+            quantity = valuesList.get(0).getDefaultQuantityOrdered();
+           
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return quantity;
+    }
+    
+    public int getDefaultProductBenefit() {
+        int DBenefit = 0;
+        try {
+            
+            dataDefaults = new AppConfigDAO();
+            valuesList.addAll(dataDefaults.getAll());
+                
+            DBenefit = valuesList.get(0).getDefaultProductBenefit();
+           
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return DBenefit;
+    }
 }

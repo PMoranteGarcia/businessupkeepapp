@@ -407,9 +407,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 newProduct.setNumberLine(llistaObservableProductes.size() + 1);
                 newProduct.setOrderNummber(this.idComanda);
                 newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
-                newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * (validate.getDefaultProductBenefit()/100)));
+                newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * ((float)validate.getDefaultProductBenefit()/100)));
                 newProduct.setNom(temp.getProductName());
-                newProduct.setTotal(temp.getBuyPrice() * 1);
+                newProduct.setTotal(newProduct.getQuantitat() * newProduct.getUnitaryPrice());
                 llistaObservableProductes.add(newProduct);
             }
             calculateTotalAmount();

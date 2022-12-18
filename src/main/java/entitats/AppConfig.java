@@ -16,6 +16,7 @@ public class AppConfig {
     private float defaultCreditLimit;
     private int minCustomerAge;
     private int defaultStock;
+    private float maxOrderAmount;
     private List<Comanda> comandesList;
 
     public AppConfig() {
@@ -28,6 +29,14 @@ public class AppConfig {
 
     public List<Comanda> getComandesList() {
         return comandesList;
+    }
+
+    public float getMaxOrderAmount() {
+        return maxOrderAmount;
+    }
+
+    public void setMaxOrderAmount(float maxOrderAmount) {
+        this.maxOrderAmount = maxOrderAmount;
     }
 
     public void setComandesList(List<Comanda> comandesList) {

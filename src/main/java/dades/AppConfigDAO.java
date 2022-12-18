@@ -47,6 +47,7 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
                 defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));
                 defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));
                 defaults.setDefaultStock(resultats.getInt("defaultQuantityInStock"));
+                defaults.setMaxOrderAmount(resultats.getFloat("maxOrderAmount"));
                 //defaults.setComandesList(resultats.getObject(""));
 
                 ret.add(defaults);

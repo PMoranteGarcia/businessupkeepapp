@@ -149,6 +149,15 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         return ret;
     }
 
+    /**
+     * *
+     *Retorna tots els productes d'una comanda
+     * 
+     * @param id
+     * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
+     * @throws SQLException
+     * @author Izan Jimenez - Implementació
+     */
     public List<ProductesComanda> getProductes(int id) throws SQLException {
         List<ProductesComanda> ret = new ArrayList<>();
 

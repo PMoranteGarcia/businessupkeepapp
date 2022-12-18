@@ -42,6 +42,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -159,6 +160,33 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         selectorProduct.setOnMouseClicked(event -> {
             btnaddProduct.setDisable(false);
+        });
+        
+        // Definir format:(dia/mes/any) a mostrar quan s'edita a dins els camps dels calendaris
+        String datePattern = "dd/MM/yyyy";                                      // Format per aplicar a la Data
+        datePicker.setPromptText("dd/mm/aaaa");                                 // Texte que es mostra al camp Data
+        
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            @Override 
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);                          // Aplico format a la data
+                } else {
+                    return "";
+                }
+            }
+
+            @Override 
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
+                } else {
+                    return null;
+                }
+            }
         });
 
     }

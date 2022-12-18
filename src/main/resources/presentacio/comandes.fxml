@@ -89,11 +89,11 @@
 
                      <children>
 
-                        <DatePicker id="datePicker" fx:id="datePickerFrom" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" promptText="Data inicial" />
+                        <DatePicker id="datePicker" fx:id="datePickerFrom" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0"/>
 
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
 
-                        <DatePicker id="datePicker" fx:id="datePickerTo" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" promptText="Data final" />
+                        <DatePicker id="datePicker" fx:id="datePickerTo" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0"/>
 
                         <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
 

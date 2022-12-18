@@ -15,7 +15,7 @@ public abstract class DataLayer {
     Connection con;
     
     public DataLayer() throws SQLException {
-        this.con = connectarBD("m03uf6_22_23","root","izan1234");
+        this.con = connectarBD("m03uf6_22_23","root","root");
     }
     
     public Connection connectarBD (String db, String user, String password) throws SQLException {

@@ -4,7 +4,6 @@ import dades.AppConfigDAO;
 import dades.ClientDAO;
 import dades.ComandaDAO;
 import dades.ProducteDAO;
-import entitats.AppConfig;
 import entitats.Client;
 import entitats.Comanda;
 import entitats.ComandaLogic;
@@ -12,7 +11,6 @@ import entitats.Producte;
 import entitats.ProductesComanda;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -28,7 +26,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -43,10 +40,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -109,7 +104,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
     private final Tooltip tooltipDesar = new Tooltip("Desar Canvis");
     private final Tooltip tooltipEliminar = new Tooltip("Eliminar Producte");
-    
+
     // Instància del ClientLogic per carregar els mètodes de validacions
     private final ComandaLogic validate = new ComandaLogic();
 
@@ -368,10 +363,11 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
-     * 
-     * (RF36) La quantitat d'un producte per defecte ha de ser defaultQuantityOrdered
-     * @author Pablo Morante - Creació/Implementació
-     * (RF38) El marge de benefici per defecte ha de ser defaultProductBenefit
+     *
+     * (RF36) La quantitat d'un producte per defecte ha de ser
+     * defaultQuantityOrdered
+     * @author Pablo Morante - Creació/Implementació (RF38) El marge de benefici
+     * per defecte ha de ser defaultProductBenefit
      * @author Pablo Morante - Creació/Implementació
      */
     @FXML
@@ -402,20 +398,48 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 }
             }
             if (!producteRepetit) {
-                ProductesComanda newProduct = new ProductesComanda();
-                newProduct.setIdProducte(temp.getProductCode());
-                newProduct.setNumberLine(llistaObservableProductes.size() + 1);
-                newProduct.setOrderNummber(this.idComanda);
-                newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
-                newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * (validate.getDefaultProductBenefit()/100)));
-                newProduct.setNom(temp.getProductName());
-                newProduct.setTotal(temp.getBuyPrice() * 1);
-                llistaObservableProductes.add(newProduct);
+                //si el numero de productes supera el maxLinesPerOrder
+                if (!checkMaxLInesPerOrder(llistaObservableProductes.size())) {
+                    //Mostrar alerta per informar que no es pot afegir mes productes
+                    Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                    alert.setTitle("ALERTA");
+                    alert.setHeaderText("La quantitat de productes no pot superar " + validate.getmaxLinesPerOrder() + " productes");
+
+                    ButtonType yesButton = new ButtonType("Acceptar");
+
+                    alert.getButtonTypes().setAll(yesButton);
+                    if (alert.showAndWait().get() == yesButton) {
+                        alert.close();
+                    }
+                } else {
+
+                    ProductesComanda newProduct = new ProductesComanda();
+                    newProduct.setIdProducte(temp.getProductCode());
+                    newProduct.setNumberLine(llistaObservableProductes.size() + 1);
+                    newProduct.setOrderNummber(this.idComanda);
+                    newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
+                    newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * ((float) validate.getDefaultProductBenefit() / 100)));
+                    newProduct.setNom(temp.getProductName());
+                    newProduct.setTotal(newProduct.getQuantitat() * newProduct.getUnitaryPrice());
+                    llistaObservableProductes.add(newProduct);
+                }
             }
             calculateTotalAmount();
         } catch (NullPointerException ex) {
             System.out.println("No s'ha seleccionat producte.");
         }
+    }
+
+    /**
+     * *
+     * Comprova que la quantitat de productes a la comanda no superi el maxim
+     *
+     * @param quantitat
+     * @return true si no supera la quantitat, false si ja te el maxim de productes
+     * @author Izan Jimenez - Creació /Implementació
+     */
+    private boolean checkMaxLInesPerOrder(int quantitat) {
+        return validate.getmaxLinesPerOrder() < quantitat;
     }
 
     /**
@@ -433,7 +457,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         totalAmount.setText("" + total);
     }
-    
+
     /**
      * Mètode per obtenir el preu total de la comanda en curs
      *
@@ -559,31 +583,35 @@ public class ComandesFormController extends PresentationLayer implements Initial
     }
 
     /**
-     * Mètode per fer les comprovacions de què tots els camps estiguin plens i compleixin les regles de negoci
+     * Mètode per fer les comprovacions de què tots els camps estiguin plens i
+     * compleixin les regles de negoci
      *
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
-     * @return String amb el missatge d'error en cas que alguna condició no es compleixi
-     * 
+     * @return String amb el missatge d'error en cas que alguna condició no es
+     * compleixi
+     *
      * (RF40): No es pot donar d’alta una comanda amb zero línies de comanda.
      * @author Víctor García - Creació/Implementació
-     * 
-     * (RF48) No es pot donar d'alta una comanda amb més import que el valor de maxOrderAmount
+     *
+     * (RF48) No es pot donar d'alta una comanda amb més import que el valor de
+     * maxOrderAmount
      * @author Víctor García - Creació/Implementació
-     * 
-     * (RF42) No es pot donar d'alta una comanda amb una diferència d'hores menors a minShippingHours
+     *
+     * (RF42) No es pot donar d'alta una comanda amb una diferència d'hores
+     * menors a minShippingHours
      * @author Pablo Morante - Creació/Implementació
      */
     public String validacions() {
         float totalComanda = calculateTotalAmountCheckMaxOrderAmount();
-        
+
         if (selectorClient.getValue() == null || fieldHour.getText().isEmpty() || fieldMinutes.getText().isEmpty() || datePicker.getValue() == null) {
             return "Per guardar una comanda s'han d'omplir tots els valors";
         }
         if ((Integer.parseInt(fieldHour.getText()) > 23) || (Integer.parseInt(fieldHour.getText()) < 0) || (Integer.parseInt(fieldMinutes.getText()) > 59) || (Integer.parseInt(fieldMinutes.getText()) < 0)) {
             return "El format d'hora ha d'estar entre 0 i 23 i el de minuts entre 0 i 59 ";
         }
-        if (llistaObservableProductes.isEmpty()) {                              
+        if (llistaObservableProductes.isEmpty()) {
             return "Una comanda ha de tenir entre 1 i 20 productes.";
         }
         Timestamp today = Timestamp.from(Instant.now());
@@ -596,8 +624,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
         if (hour < validate.getMinShippingHours()) {
             return "El mínim d'hores entre fer la comanda i enviar-la és de " + validate.getMinShippingHours() + "h.";
         }
-        
-        if (totalComanda > validate.getMaxOrderAmount()){
+
+        if (totalComanda > validate.getMaxOrderAmount()) {
             return "L'import màxim de la comanda no pot superar els " + validate.getMaxOrderAmount() + "€";
         }
 

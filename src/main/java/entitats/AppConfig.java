@@ -21,9 +21,18 @@ public class AppConfig {
     private int defaultQuantityOrdered;
     private int defaultProductBenefit;
     private List<Comanda> comandesList;
+    private int maxLinesPerOrdes;
 
     public AppConfig() {
 
+    }
+
+    public int getMaxLinesPerOrdes() {
+        return maxLinesPerOrdes;
+    }
+
+    public void setMaxLinesPerOrdes(int maxLinesPerOrdes) {
+        this.maxLinesPerOrdes = maxLinesPerOrdes;
     }
 
     public float getDefaultCreditLimit() {
@@ -89,7 +98,5 @@ public class AppConfig {
     public void setDefaultProductBenefit(int defaultProductBenefit) {
         this.defaultProductBenefit = defaultProductBenefit;
     }
-    
-    
 
 }

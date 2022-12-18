@@ -97,4 +97,22 @@ public class ComandaLogic {
         }
         return DBenefit;
     }
+    
+    
+    public int getmaxLinesPerOrder(){
+        int max = 0;
+        try {
+            
+            dataDefaults = new AppConfigDAO();
+            valuesList.addAll(dataDefaults.getAll());
+                
+            max = valuesList.get(0).getMaxLinesPerOrdes();
+            System.out.println("MaxLiniesPerOrdre = " + max);
+           
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return max;
+    }
 }

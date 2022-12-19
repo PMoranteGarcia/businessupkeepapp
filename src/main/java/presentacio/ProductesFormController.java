@@ -110,7 +110,7 @@ public class ProductesFormController implements Initializable {
 
             ProducteDAO dadesProducte = new ProducteDAO();                      // Si tot ok, crear nou producte amb les dades introduïdes al formulari
             dadesProducte.save(c);
-       
+
             App.setRoot("productes");                                           // Redirigir a l'usuari al llistat de productes
         }
     }
@@ -237,7 +237,6 @@ public class ProductesFormController implements Initializable {
                 lblStock.getStyleClass().add("required");
             }
         }
-        System.out.println("errors:" + errors);
     }
 
 }

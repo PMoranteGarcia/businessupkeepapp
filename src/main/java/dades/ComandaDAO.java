@@ -30,7 +30,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
      * Mostra totes les comandes de la taula 'orders'
      *
      * @author Víctor García Creació/Implementació
-     * @throws SQLException
      */
     @Override
     public List<Comanda> getAll() {
@@ -92,7 +91,14 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         return ret;
     }
 
-    // En aquest cas no hem utilitzat la interfície
+    /**
+     * *
+     * En aquest cas no està implementada la interfície de guardar comanda, ja
+     * que té un mètode propi
+     *
+     * @param c Comanda
+     * @throws SQLException SQLException
+     */
     @Override
     public void save(Comanda c) throws SQLException {
     }
@@ -100,9 +106,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Guarda una comanda
      *
-     * @param c
-     * @return Retorna una id autoincremental
-     * @throws SQLException
+     * @param c Comanda
+     * @return int id autoincremental
+     * @throws SQLException SQLException
      * @author Víctor García Creació/Implementació
      * @author Pablo Morante - Creació/Implementació
      */
@@ -148,8 +154,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Actualitza una comanda
      *
-     * @param t
-     * @throws SQLException
+     * @param t Comanda
      * @author Pablo Morante - Creació/Implementació
      */
     @Override
@@ -179,9 +184,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Elimina una comanda
      *
-     * @param t
+     * @param t Comanda
      * @throws java.sql.SQLIntegrityConstraintViolationException
-     * @throws SQLException
+     * @throws SQLException SQLException
      * @author Víctor Garcia - Creació/Implementació
      * @author Pablo Morante - Creació/Implementació
      */
@@ -202,7 +207,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Mostra una comanda de la taula 'orders'
      *
-     * @param t
+     * @param t Comanda
      * @author Víctor Garcia - Creació/Implementació
      * @author Pablo Morante - Creació/Implementació
      */
@@ -256,10 +261,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Retorna tots els productes d'una comanda
      *
-     * @param id
+     * @param id int
      * @return Retorna una llista de ProductesComanda de la comanda amb el codi
      * del parametre id
-     * @throws SQLException
      * @author Pablo Morante - Creació Implementació
      * @author Izan Jimenez - Implementació
      */
@@ -332,8 +336,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Afegeix un producte a la taula 'orderDetails' amb una id de comanda
      *
-     * @param p
-     * @param idComanda
+     * @param p ProducteComanda
+     * @param idComanda idComanda
      * @author Pablo Morante - Creació/Implementació
      */
     public void saveProduct(ProductesComanda p, int idComanda) {
@@ -368,8 +372,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Actualitza un producte a la taula 'orderDetails' amb una id de comanda
      *
-     * @param p
-     * @param idComanda
+     * @param p ProductesComanda
+     * @param idComanda idComanda
      * @author Pablo Morante - Creació/Implementació
      */
     public void updateProduct(ProductesComanda p, int idComanda) {
@@ -400,8 +404,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     /**
      * Elimina un producte a la taula 'orderDetails' amb una id de comanda
      *
-     * @param p
-     * @param idComanda
+     * @param p ProductesComanda
+     * @param idComanda idComanda
      * @author Pablo Morante - Creació/Implementació
      */
     public void deleteProductFromComanda(ProductesComanda p, int idComanda) {
@@ -433,8 +437,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
      * Elimina tots els productes a la taula 'orderDetails' amb una id de
      * comanda
      *
-     * @param p
-     * @param idComanda
+     * @param idComanda idComanda
      * @author Pablo Morante - Creació/Implementació
      */
     public void deleteAllProductsFromComanda(int idComanda) {

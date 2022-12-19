@@ -57,6 +57,10 @@ public class ComandesFormController implements Initializable {
 
     @FXML
     private Button btnBack;
+
+    /**
+     * Label
+     */
     @FXML
     public Label orderNumber;
     @FXML
@@ -172,6 +176,9 @@ public class ComandesFormController implements Initializable {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
             @Override
+            /**
+             * {@inheritDoc}
+             */
             public String toString(LocalDate date) {
                 if (date != null) {
                     return dateFormatter.format(date);                          // Aplico format a la data
@@ -181,6 +188,9 @@ public class ComandesFormController implements Initializable {
             }
 
             @Override
+            /**
+             * {@inheritDoc}
+             */
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
@@ -217,6 +227,9 @@ public class ComandesFormController implements Initializable {
 
             // Aplicar estils pels camps NO EDITABLES
             columnProductCode.setCellFactory(tc -> new TableCell<Comanda, Integer>() {
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 protected void updateItem(Integer value, boolean empty) {
                     super.updateItem(value, empty);
@@ -230,6 +243,9 @@ public class ComandesFormController implements Initializable {
             });
             // Aplicar format de 2 decimals + símbnol monetari
             columnPriceEach.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 protected void updateItem(Number value, boolean empty) {
                     super.updateItem(value, empty);
@@ -243,6 +259,9 @@ public class ComandesFormController implements Initializable {
             });
             columnAmount.setCellFactory(tc -> new TableCell<Comanda, Number>() {
                 @Override
+                /**
+                 * {@inheritDoc}
+                 */
                 protected void updateItem(Number value, boolean empty) {
                     super.updateItem(value, empty);
                     if (empty) {
@@ -281,6 +300,9 @@ public class ComandesFormController implements Initializable {
             // conversor per pasar d'objecte a string per la dropdownlist
             selectorClient.setConverter(new StringConverter<Client>() {
                 @Override
+                /**
+                 * {@inheritDoc}
+                 */
                 public String toString(Client client) {
                     if (client == null) {
                         return null;
@@ -290,6 +312,9 @@ public class ComandesFormController implements Initializable {
                 }
 
                 @Override
+                /**
+                 * {@inheritDoc}
+                 */
                 public Client fromString(String id) {
                     return null;
                 }
@@ -301,6 +326,9 @@ public class ComandesFormController implements Initializable {
             // conversor per pasar d'objecte a string per la dropdownlist
             selectorProduct.setConverter(new StringConverter<Producte>() {
                 @Override
+                /**
+                 * {@inheritDoc}
+                 */
                 public String toString(Producte p) {
                     if (p == null) {
                         return null;
@@ -310,6 +338,9 @@ public class ComandesFormController implements Initializable {
                 }
 
                 @Override
+                /**
+                 * {@inheritDoc}
+                 */
                 public Producte fromString(String id) { // per passar de string a objecte si és necessari
                     return null;
                 }
@@ -324,6 +355,7 @@ public class ComandesFormController implements Initializable {
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
      *
+     * @param event ActionEvent
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació
      */
@@ -525,9 +557,9 @@ public class ComandesFormController implements Initializable {
     /**
      * Mètode per obtenir el preu total de la comanda en curs
      *
+     * @return float amb el preu total de la comanda en curs
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
-     * @return Float amb el preu total de la comanda en curs
      */
     private float calculateTotalAmountCheckMaxOrderAmount() {
         float total = 0;
@@ -609,6 +641,9 @@ public class ComandesFormController implements Initializable {
             private final HBox container = new HBox(btnDelete);
 
             @Override
+            /**
+             * {@inheritDoc}
+             */
             protected void updateItem(ProductesComanda t, boolean empty) {
                 super.updateItem(t, empty);
 

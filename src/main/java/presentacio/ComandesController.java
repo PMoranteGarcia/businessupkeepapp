@@ -88,13 +88,16 @@ public class ComandesController implements Initializable {
     // Instància de ComandaLogic per carregar els mètodes de validacions
     private final ComandaLogic validate = new ComandaLogic();
 
+    /**
+     * comandaActual
+     */
     public static Comanda comandaActual;
 
     /**
      * Inicialitza els components especificats.
      *
-     * @param url
-     * @param rb
+     * @param url url
+     * @param rb rb
      * @author Txell Llanas - Creació/Implementació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
@@ -125,6 +128,9 @@ public class ComandesController implements Initializable {
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String toString(LocalDate date) {
                 if (date != null) {
@@ -134,6 +140,9 @@ public class ComandesController implements Initializable {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
@@ -147,6 +156,9 @@ public class ComandesController implements Initializable {
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String toString(LocalDate date) {
                 if (date != null) {
@@ -156,6 +168,9 @@ public class ComandesController implements Initializable {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
@@ -222,6 +237,9 @@ public class ComandesController implements Initializable {
 
             // Aplicar estils pels camps NO EDITABLES
             columnOrderNumber.setCellFactory(tc -> new TableCell<Comanda, Integer>() {
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 protected void updateItem(Integer value, boolean empty) {
                     super.updateItem(value, empty);
@@ -233,16 +251,19 @@ public class ComandesController implements Initializable {
                     }
                 }
             });
-            
+
             // Aplicar format de 2 decimals + símbnol monetari
             columnOrderAmount.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 protected void updateItem(Number value, boolean empty) {
                     super.updateItem(value, empty);
                     if (empty) {
                         setText(null);
-                    } else {                        
-                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                    } else {
+                        setText(String.format("%.2f", Float.parseFloat(value.toString())) + " €");
                         setGraphic(null);
                     }
                 }
@@ -270,6 +291,9 @@ public class ComandesController implements Initializable {
             private final Button btnDelete = new Button("");
             private final HBox container = new HBox(btnDetail, btnDelete);
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected void updateItem(Comanda t, boolean empty) {
                 super.updateItem(t, empty);
@@ -353,7 +377,7 @@ public class ComandesController implements Initializable {
     /**
      * Estableix la comanda seleccionada
      *
-     * @param c
+     * @param c Comanda
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
@@ -364,6 +388,7 @@ public class ComandesController implements Initializable {
     /**
      * Mètode per saber quina comanda ha estat seleccionada
      *
+     * @return Comanda
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
@@ -406,11 +431,10 @@ public class ComandesController implements Initializable {
     private void goToAbout() throws IOException {
         App.setRoot("credits");
     }
-    
-    
+
     /**
      * Filtra les comandes entre dues dates
-     * 
+     *
      * @author Víctor García - Creació/Implementació
      */
     private void filteredTable() {
@@ -436,9 +460,9 @@ public class ComandesController implements Initializable {
 
     /**
      * Neteja els filtres de cercar comanda entre dues dates
-     * 
+     *
      * @author Víctor García - Creació/Implementació
-     * @param event 
+     * @param event
      */
     @FXML
     private void ClearHores(ActionEvent event) {

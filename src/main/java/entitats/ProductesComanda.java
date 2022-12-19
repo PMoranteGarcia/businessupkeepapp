@@ -5,7 +5,7 @@
 package entitats;
 
 /**
- *
+ * Classe de productes per la tabla de comandes
  * @author pablomorante
  */
 public class ProductesComanda {
@@ -18,24 +18,20 @@ public class ProductesComanda {
     private int numberLine;
     private int orderNumber;
 
-    /**
-     * *
-     * Constructor ProductesComanda
-     *
+    /***
+     * Constructor buit de ProductesComanda
      */
     public ProductesComanda() {
     }
-
-    /**
-     * *
-     * Constructor ProductesComanda
-     *
-     * @param idProducte idProducte
-     * @param nom nom
-     * @param quantitat quantitat
-     * @param unitaryPrice unitaryPrice
-     * @param total total
-     * @param numberLine numberLine
+    
+    /***
+     * Constructor ple de ProductesComanda
+     * @param idProducte int
+     * @param nom String
+     * @param quantitat int
+     * @param unitaryPrice float
+     * @param total float
+     * @param numberLine int
      */
     public ProductesComanda(int idProducte, String nom, int quantitat, float unitaryPrice, float total, int numberLine) {
         this.idProducte = idProducte;
@@ -46,139 +42,100 @@ public class ProductesComanda {
         this.total = total;
         this.numberLine = numberLine;
     }
-
-    /**
-     * *setIdProducte
-     *
-     * @param idProducte idProducte
+    /***
+     * setter de idProducte
+     * @param idProducte int
      */
     public void setIdProducte(int idProducte) {
         this.idProducte = idProducte;
     }
-
     /**
-     * setNom
-     *
-     * @param nom nom
+     * setter de nom de producte
+     * @param nom String
      */
     public void setNom(String nom) {
         this.nom = nom;
     }
-
-    /**
-     * setQuantitat
-     *
-     * @param quantitat quantitat
+    /***
+     * setter de quantitat de producte
+     * @param quantitat int
      */
     public void setQuantitat(int quantitat) {
         this.quantitat = quantitat;
     }
-
-    /**
-     * *
-     * setUnitaryPrice
-     *
-     * @param unitaryPrice unitaryPrice
+    /***
+     * setter de preu unitari de producte
+     * @param unitaryPrice float
      */
     public void setUnitaryPrice(float unitaryPrice) {
         this.unitaryPrice = unitaryPrice;
     }
-
-    /**
-     * *
-     * setTotal
-     *
-     * @param total total
+    /***
+     * setter de total preu del producte amb quantitat
+     * @param total float
      */
     public void setTotal(float total) {
         this.total = total;
     }
-
-    /**
-     * *
-     * setNumberLine
-     *
-     * @param numberLine numberLine
+    /***
+     * setter del número de línia de la comanda
+     * @param numberLine int
      */
     public void setNumberLine(int numberLine) {
         this.numberLine = numberLine;
     }
-
-    /**
-     * *
-     * setOrderNummber
-     *
-     * @param orderNumber orderNumber
+    /***
+     * setter de la idComanda a la que pertany el producte
+     * @param orderNumber int
      */
     public void setOrderNummber(int orderNumber) {
         this.orderNumber = orderNumber;
     }
-
-    /**
-     * *
-     * getIdProducte
-     *
-     * @return idProducte
+    /***
+     * getter id de producte
+     * @return int
      */
     public int getIdProducte() {
         return idProducte;
     }
-
-    /**
-     * *
-     * getNom
-     *
-     * @return nom
+    /***
+     * getter nom de producte
+     * @return String
      */
     public String getNom() {
         return nom;
     }
-
-    /**
-     * *
-     * getQuantitat
-     *
-     * @return quantitat
+    /***
+     * getter de quantitat de producte
+     * @return int
      */
     public int getQuantitat() {
         return quantitat;
     }
-
-    /**
-     * *
-     * getUnitaryPrice
-     *
-     * @return unitaryPrice
+    /***
+     * getter de preu unitari de producte
+     * @return float
      */
     public float getUnitaryPrice() {
         return unitaryPrice;
     }
-
-    /**
-     * *
-     * getTotal
-     *
-     * @return total
+    /***
+     * getter del total del producte amb quantitat
+     * @return float
      */
     public float getTotal() {
         return total;
     }
-
-    /**
-     * *
-     * getNumberLine
-     *
-     * @return numberLine
+    /***
+     * getter del número de línia del producte
+     * @return int
      */
     public int getNumberLine() {
         return numberLine;
     }
-
-    /**
-     * *
-     * getOrderNumber
-     *
-     * @return orderNumber
+    /***
+     * getter de id comanda que pertany el producte
+     * @return int
      */
     public int getOrderNumber() {
         return orderNumber;

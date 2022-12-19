@@ -392,7 +392,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
      *
      * (RF36) La quantitat d'un producte per defecte ha de ser
      * defaultQuantityOrdered
-     * @author Pablo Morante - Creació/Implementació (RF38) El marge de benefici
+     * @author Pablo Morante - Creació/Implementació 
+     * 
+     * (RF38) El marge de benefici
      * per defecte ha de ser defaultProductBenefit
      * @author Pablo Morante - Creació/Implementació
      */

@@ -1,8 +1,6 @@
 package dades;
 
-import entitats.Client;
 import entitats.Comanda;
-import entitats.Producte;
 import entitats.ProductesComanda;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,52 +27,91 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     /**
-     * Mostrar tots els clients de la taula 'orders'
+     * Mostra totes les comandes de la taula 'orders'
      *
-     * @author Víctor García
+     * @author Víctor García Creació/Implementació
      * @throws SQLException
      */
     @Override
-    public List<Comanda> getAll() throws SQLException {
+    public List<Comanda> getAll() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         // Crear llistat on desar els registres dels clients
         List<Comanda> ret = new ArrayList<>();
 
         // Definir consulta SQL per llegir totes les dades de la taula 'clients'
-        ResultSet resultats = stmt.executeQuery("SELECT * FROM orders;");
+        ResultSet resultats = null;
+        
+        try {
+            resultats = stmt.executeQuery("SELECT * FROM orders;");
 
-        // Mostrar resultats disponibles a la taula via nom del camp
-        while (resultats.next()) {
-            Comanda o = new Comanda();
-            o.setNumOrdre(resultats.getInt("orderNumber"));
-            o.setDataOrdre(resultats.getTimestamp("orderDate"));
-            o.setDataEntrega(resultats.getTimestamp("requiredDate"));
-            o.setDataEnviament(resultats.getTimestamp("shippedDate"));
-            o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
+            // Mostrar resultats disponibles a la taula via nom del camp
+            while (resultats.next()) {
+                
+                Comanda o = new Comanda();
+                o.setNumOrdre(resultats.getInt("orderNumber"));
+                o.setDataOrdre(resultats.getTimestamp("orderDate"));
+                o.setDataEntrega(resultats.getTimestamp("requiredDate"));
+                o.setDataEnviament(resultats.getTimestamp("shippedDate"));
+                o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
+                
 
-            List<ProductesComanda> productes = this.getProductes(resultats.getInt("orderNumber"));
-            float total = 0;
-            for (int i = 0; i < productes.size(); i++) {
-                total = total + productes.get(i).getTotal();
+                List<ProductesComanda> productes = this.getProductes(resultats.getInt("orderNumber"));
+                float total = 0;
+                
+                for (int i = 0; i < productes.size(); i++) {
+                    total = total + productes.get(i).getTotal();
+                }
+                o.setTotal(total);
+                ret.add(o);
             }
-            o.setTotal(total);
+        } catch (SQLException ex) {
+            
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT: " + e);
+                }
+            }
+            if (resultats != null) {
+                try {
+                    resultats.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR RESULT SET: " + e);
+                }
 
-            ret.add(o);
+            }
         }
 
         return ret;
     }
 
+    // En aquest cas no hem utilitzat la interfície
     @Override
     public void save(Comanda c) throws SQLException {
-
     }
 
+    /**
+     * Guarda una comanda
+     * 
+     * @param c
+     * @return Retorna una id autoincremental
+     * @throws SQLException
+     * @author Víctor García Creació/Implementació
+     * @author Pablo Morante - Creació/Implementació
+     */
     public int saveCommand(Comanda c) throws SQLException {
         String consulta = "INSERT INTO orders (orderDate, requiredDate, shippedDate, customers_customerEmail) VALUES (?,?,?,?);";
         int newId = 0;
 
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
 
             preparedStatement = con.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
@@ -96,17 +132,32 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A COMANDA: " + e);
+                }
+            }
         }
 
         return newId;
 
     }
 
+    /**
+     * Actualitza una comanda
+     * 
+     * @param t
+     * @throws SQLException
+     * @author Pablo Morante - Creació/Implementació
+     */
     @Override
     public void update(Comanda t) {
         String update = "UPDATE orders SET requiredDate = ? WHERE orderNumber = ?;";
 
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = con.prepareStatement(update);
 
@@ -115,9 +166,26 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A CLIENT: " + e);
+                }
+            }
         }
     }
 
+    /**
+     * Elimina una comanda 
+     * 
+     * @param t
+     * @throws java.sql.SQLIntegrityConstraintViolationException
+     * @throws SQLException
+     * @author Víctor Garcia - Creació/Implementació
+     * @author Pablo Morante - Creació/Implementació
+     */
     @Override
     public void delete(Comanda t) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
         // Definir consulta SQL per eliminar el registre actual de la taula 'orders'
@@ -133,16 +201,27 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     }
 
+    /**
+     * Mostra una comanda de la taula 'orders'
+     * 
+     * @param t
+     * @author Víctor Garcia - Creació/Implementació
+     * @author Pablo Morante - Creació/Implementació
+     */
     @Override
     public Comanda getOne(Comanda t) {
         Comanda ret = new Comanda();
         String consulta = "SELECT * FROM orders WHERE orderNumber = ?;";
+        PreparedStatement preparedStatement = null;
+        ResultSet resultats = null;
+        
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(consulta);
+            
+            preparedStatement = con.prepareStatement(consulta);
 
             preparedStatement.setInt(1, t.getNumOrdre());
 
-            ResultSet resultats = preparedStatement.executeQuery();
+            resultats = preparedStatement.executeQuery();
 
             while (resultats.next()) {
                 ret.setNumOrdre(resultats.getInt("orderNumber"));
@@ -151,58 +230,114 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
                 ret.setDataEntrega(resultats.getTimestamp("requiredDate"));
                 ret.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
             }
+            
         } catch (SQLException ex) {
+            
             Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT: " + e);
+                }
+            }
+            if (resultats != null) {
+                try {
+                    resultats.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR RESULTSET: " + e);
+                }
+
+            }
         }
         return ret;
     }
 
     /**
-     * *
-     *Retorna tots els productes d'una comanda
+     * Retorna tots els productes d'una comanda
      * 
      * @param id
      * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
      * @throws SQLException
-     * @author Izan Jimenez - Implementació
+     * @author Izan Jimenez - Creació/Implementació
      */
-    public List<ProductesComanda> getProductes(int id) throws SQLException {
+    public List<ProductesComanda> getProductes(int id) {
         List<ProductesComanda> ret = new ArrayList<>();
 
         String consulta = "SELECT * FROM orderdetails WHERE orderNumber = ?;";
         String consultaNom = "SELECT productName FROM products WHERE productCode = ?;";
-        PreparedStatement sentencia = con.prepareStatement(consulta);
-        PreparedStatement sentencia2 = con.prepareStatement(consultaNom);
+        PreparedStatement sentencia = null;
+        PreparedStatement sentencia2 = null;
+         ResultSet resultats = null;
 
-        sentencia.setInt(1, id);
+        try {
+            
+            sentencia = con.prepareStatement(consulta);
+            sentencia2 = con.prepareStatement(consultaNom);
+            sentencia.setInt(1, id);
 
-        ResultSet resultats = sentencia.executeQuery();
+            resultats = sentencia.executeQuery();
 
-        while (resultats.next()) {
-            ProductesComanda pc = new ProductesComanda();
+            while (resultats.next()) {
+                ProductesComanda pc = new ProductesComanda();
 
-            pc.setOrderNummber(id);
-            pc.setIdProducte(resultats.getInt("productCode"));
-            pc.setNumberLine(resultats.getInt("orderLineNumber"));
-            pc.setQuantitat(resultats.getInt("quantityOrdered"));
-            pc.setUnitaryPrice(resultats.getFloat("priceEach"));
-            pc.setTotal(resultats.getFloat("priceEach") * resultats.getInt("quantityOrdered"));
+                pc.setOrderNummber(id);
+                pc.setIdProducte(resultats.getInt("productCode"));
+                pc.setNumberLine(resultats.getInt("orderLineNumber"));
+                pc.setQuantitat(resultats.getInt("quantityOrdered"));
+                pc.setUnitaryPrice(resultats.getFloat("priceEach"));
+                pc.setTotal(resultats.getFloat("priceEach") * resultats.getInt("quantityOrdered"));
 
-            sentencia2.setInt(1, resultats.getInt("productCode"));
-            ResultSet resultatNom = sentencia2.executeQuery();
-            while (resultatNom.next()) {
-                pc.setNom(resultatNom.getString("productName"));
+                sentencia2.setInt(1, resultats.getInt("productCode"));
+                ResultSet resultatNom = sentencia2.executeQuery();
+                while (resultatNom.next()) {
+                    pc.setNom(resultatNom.getString("productName"));
+                }
+
+                ret.add(pc);
             }
 
-            ret.add(pc);
-        }
+        } catch (SQLException ex) {
+            
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (sentencia != null) {
+                try {
+                    sentencia.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT: " + e);
+                }
+            }
+            if (resultats != null) {
+                try {
+                    resultats.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR RESULT SET: " + e);
+                }
 
+            }
+        }
+        
         return ret;
 
     }
 
+    /**
+     * Afegeix un producte a la taula 'orderDetails' amb una id de comanda
+     * 
+     * @param p
+     * @param idComanda
+     * @author Pablo Morante - Creació/Implementació
+     */
     public void saveProduct(ProductesComanda p, int idComanda) {
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         String insert = "insert into orderdetails values ((select orderNumber from orders where orderNumber = ?), (select productCode from products where productCode = ?), ?, ?, ?)";
         try {
             preparedStatement = con.prepareStatement(insert);
@@ -218,12 +353,29 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             updateProduct(p, idComanda);
         } catch (SQLException ex) {
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            //tanquem el statement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
+                }
+
+            }
         }
     }
 
+    /**
+     * Actualitza un producte a la taula 'orderDetails' amb una id de comanda
+     * 
+     * @param p
+     * @param idComanda
+     * @author Pablo Morante - Creació/Implementació
+     */
     public void updateProduct(ProductesComanda p, int idComanda) {
         String update = "UPDATE orderdetails SET quantityOrdered = ? WHERE orderNumber = ? AND productCode = ?;";
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = con.prepareStatement(update);
 
@@ -233,11 +385,28 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            //tanquem el statement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
+                }
+
+            }
         }
     }
 
+    /**
+     * Elimina un producte a la taula 'orderDetails' amb una id de comanda
+     * 
+     * @param p
+     * @param idComanda
+     * @author Pablo Morante - Creació/Implementació
+     */
     public void deleteProductFromComanda(ProductesComanda p, int idComanda) {
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         String delete = "DELETE FROM orderdetails WHERE orderNumber = ? AND productCode = ?;";
 
         try {
@@ -248,11 +417,28 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            //tanquem el statement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
+                }
+
+            }
         }
     }
 
+    /**
+     * Elimina tots els productes a la taula 'orderDetails' amb una id de comanda
+     * 
+     * @param p
+     * @param idComanda
+     * @author Pablo Morante - Creació/Implementació
+     */
     public void deleteAllProductsFromComanda(int idComanda) {
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         String delete = "DELETE FROM orderdetails WHERE orderNumber = ?;";
 
         try {
@@ -262,6 +448,16 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            //tanquem el statement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STAT: " + e);
+                }
+
+            }
         }
     }
 

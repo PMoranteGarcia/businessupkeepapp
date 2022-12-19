@@ -152,6 +152,12 @@ public class ClientsController implements Initializable {
         App.setRoot("credits");
     }
 
+    /**
+     * Mostra un formulari per donar d'alta un nou 'Client'.
+     * 
+     * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
+     * @author Txell Llanas - Creació/Implementació 
+     */
     @FXML
     private void goToNewClient() throws IOException {
         App.setRoot("clientsForm");
@@ -159,6 +165,7 @@ public class ClientsController implements Initializable {
 
     /**
      * Mètode que neteja el camp de texte del cercador (clear).
+     * 
      * @param event Acció que afecti al 'btnClearContent' (ex: clicar)
      * @author Txell Llanas - Creació/Implementació
      */
@@ -169,6 +176,7 @@ public class ClientsController implements Initializable {
     
     /**
      * Mètode que recupera tots els registres de la taula 'customers'.
+     * 
      * @author Txell Llanas - Creació/Implementació
      */
     private void fillCustomersTable(){
@@ -232,7 +240,8 @@ public class ClientsController implements Initializable {
     }
     
     /**
-     * Mètode que afegeix botons dins la cel·la d'accions de la TableView
+     * Mètode que afegeix botons dins la cel·la d'accions de la TableView.
+     * 
      * @author Txell Llanas - Creació/Implementació
      */
     private void addCellButtons(){
@@ -323,6 +332,7 @@ public class ClientsController implements Initializable {
     /**
      * Mètode que defineix com a editables les dades de tots els camps d'una 
      * mateixa columna.
+     * 
      * @author Txell Llanas - Creació/Implementació
      */
     private void makeColsEditable() {

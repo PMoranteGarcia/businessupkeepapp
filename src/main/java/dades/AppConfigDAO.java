@@ -13,6 +13,9 @@ import java.util.logging.Logger;
  * CRUD de l'entitat appConfig a la BBDD.
  * 
  * @author Txell Llanas - Creació/Implementació
+ * @author Pablo Morante - Implementació
+ * @author Victor García - Implementació
+ * @author Izan Jimenez - Implementació
  */
 public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
     
@@ -27,7 +30,12 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
 
     /**
      * Mètode que permet recuperar els valors especificats a la taula 'appConfig'
+     * 
      * @return List amb tots els valors definits per defecte de l'aplicació
+     * @author Txell Llanas - Creació/Implementació
+     * @author Pablo Morante - Implementació
+     * @author Victor García - Implementació
+     * @author Izan Jimenez - Implementació
      */
     @Override
     public List<AppConfig> getAll() {
@@ -60,6 +68,14 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
             
         } catch (SQLException ex) {
             Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A APPCONFIG: " + e);
+                }
+            }
         }
         
         return ret;
@@ -80,55 +96,9 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    /**
-     * 
-     * @param defaults
-     * @return 
-     */
     @Override
-    public AppConfig getOne(AppConfig defaults) {
-
-        String consulta = "SELECT * FROM appConfig";                            // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
-        
-        try {
-            
-            statement.setMaxRows(1);
-            ResultSet resultats = statement.executeQuery(consulta);
-            
-            while (resultats.next())                                            // Mostrar resultats disponibles a la taula via nom del camp
-            {
-                defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));
-                defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));
-            }            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return defaults;
+    public AppConfig getOne(AppConfig defaults)  throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
-    public AppConfig getDefaults() {
-        
-        // Definir consulta SQL per llegir el primer registre de la taula 'appConfig'
-        String consulta = "SELECT * FROM appConfig";
-        try {
-            
-            defaults = new AppConfig();
-            statement.setMaxRows(1);
-            ResultSet resultats = statement.executeQuery(consulta);
-            
-        // Mostrar resultats disponibles a la taula via nom del camp
-           // while (resultats.next())
-           // {
-                defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));
-                defaults.setMinCustomerAge(resultats.getInt("minCustomerAge"));
-            //}            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        System.out.println("DAO: "+defaults.getDefaultCreditLimit());
-        return defaults;
-    }
 }

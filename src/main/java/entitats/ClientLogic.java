@@ -104,7 +104,7 @@ public class ClientLogic {
     public boolean checkUserMailExists(TextField f) {
         
         boolean res = false;
-        String mail = f.getText().trim();
+        String mail = f.getText().toLowerCase().trim();
         int count = 0;
         
         try {
@@ -143,7 +143,7 @@ public class ClientLogic {
     public boolean checkUserIdCardExists(TextField f) {
         
         boolean res = false;
-        String idCard = f.getText().trim();
+        String idCard = f.getText().toUpperCase().trim();
         int count = 0;
         
         try {

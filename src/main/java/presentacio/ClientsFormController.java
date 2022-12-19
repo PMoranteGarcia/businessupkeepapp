@@ -125,8 +125,8 @@ public class ClientsFormController implements Initializable {
             
         } else {
             
-            Client c = new Client(field_customerEmail.getText(),
-                                  field_idCard.getText(), 
+            Client c = new Client(field_customerEmail.getText().toLowerCase(),
+                                  field_idCard.getText().toUpperCase(), 
                                   field_customerName.getText(), 
                                   field_phone.getText(), 
                                   Float.parseFloat(field_creditLimit.getText()), 

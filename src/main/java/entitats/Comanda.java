@@ -85,7 +85,7 @@ public class Comanda {
         this.numOrdre = numOrdre;
     }
     
-    public void setDataOrdre(Timestamp dataEntrega) {
+    public void setDataOrdre(Timestamp dataOrdre) {
         this.dataOrdre = dataOrdre;
     }
 

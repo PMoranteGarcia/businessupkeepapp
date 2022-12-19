@@ -22,7 +22,13 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
     // Preparar instància per realitzar una consulta SQL
     private final Statement stmt = con.createStatement();
     
-        
+    /**
+     * Constructor d'una instància de tipus ClientDAO, que permet utilitzar la 
+     * connexió actual per accedir a la taula 'customers' i operar amb els seu registres.
+     *
+     * @throws java.sql.SQLException Mostra un error si no pot connectar amb la BD
+     * @author Txell Llanas Creació - Implementació
+     */    
     public ClientDAO() throws SQLException {
         super();
     }
@@ -40,26 +46,50 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
         List<Client> ret = new ArrayList<>();
 
         // Definir consulta SQL per llegir totes les dades de la taula 'clients'
-        ResultSet resultats; 
+        ResultSet resultats = null;
+        
         try {
+            
             resultats = stmt.executeQuery("SELECT * FROM customers;");
 
-        // Mostrar resultats disponibles a la taula via nom del camp
-        while (resultats.next())
-        {
-            Client c = new Client();
+            // Mostrar resultats disponibles a la taula via nom del camp
+            while (resultats.next())
+            {
+                Client c = new Client();
 
-            c.setCustomerEmail(resultats.getString("customerEmail"));
-            c.setIdCard(resultats.getString("idCard"));
-            c.setCustomerName(resultats.getString("customerName"));
-            c.setPhone(resultats.getString("phone"));
-            c.setCreditLimit(resultats.getFloat("creditLimit"));
-            c.setBirthDate(resultats.getDate("birthDate"));
+                c.setCustomerEmail(resultats.getString("customerEmail"));
+                c.setIdCard(resultats.getString("idCard"));
+                c.setCustomerName(resultats.getString("customerName"));
+                c.setPhone(resultats.getString("phone"));
+                c.setCreditLimit(resultats.getFloat("creditLimit"));
+                c.setBirthDate(resultats.getDate("birthDate"));
 
-            ret.add(c);
-        }
+                ret.add(c);
+            }
         } catch (SQLException ex) {
+            
+            System.out.println("Error gestionant la connexió a MySQL !!!");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT: " + e);
+                }
+            }
+            if (resultats != null) {
+                try {
+                    resultats.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR RESULT SET: " + e);
+                }
+
+            }
         }
         
         return ret;
@@ -76,7 +106,7 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
         // Definir consulta SQL per desar les dades especificades dins la taula 'clients'
         String consulta = "INSERT INTO customers () VALUES (?,?,?,?,?,?);";
         
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             
             preparedStatement = con.prepareStatement(consulta);
@@ -91,11 +121,21 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
             preparedStatement.executeUpdate();
             
         } catch (SQLException ex) {
+            
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A CLIENT: " + e);
+                }
+            }
         }
         
     }
@@ -115,7 +155,7 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
                             + "birthDate = ? "
                         + "WHERE customerEmail = ?;";
         
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             
             preparedStatement = con.prepareStatement(consulta);
@@ -129,11 +169,21 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
             preparedStatement.executeUpdate();
             
         } catch (SQLException ex) {
+            
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A CLIENT: " + e);
+                }
+            }
         }
         
     }
@@ -149,7 +199,7 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
         // Definir consulta SQL per eliminar el registre actual de la taula 'clients'
         String consulta = "DELETE FROM customers WHERE customerEmail = ?;";
         
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             
             preparedStatement = con.prepareStatement(consulta);
@@ -159,11 +209,21 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
             System.out.println(">> Eliminat client: "+c.toString());
             
         } catch (SQLException ex) {
+            
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT EN ACCEDIR A CLIENT: " + e);
+                }
+            }
         }
         
     }
@@ -180,14 +240,15 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
         // Definir consulta SQL per llegir totes les dades de la taula 'clients'
         String consulta = "SELECT * FROM customers WHERE customerEmail=?"; 
         String id = c.getCustomerEmail();
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
+         ResultSet resultats = null;
         
         try {
             
             preparedStatement = con.prepareStatement(consulta);            
             preparedStatement.setString(1, id);
             
-            ResultSet resultats = preparedStatement.executeQuery();
+            resultats = preparedStatement.executeQuery();
             while (resultats.next()) {
 
             c.setCustomerName(resultats.getString("customerName"));
@@ -197,11 +258,29 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
             }
             
         } catch (SQLException ex) {
+            
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR STATEMENT: " + e);
+                }
+            }
+            if (resultats != null) {
+                try {
+                    resultats.close();
+                } catch (SQLException e) {
+                    System.out.println("ERROR AL TANCAR RESULTSET: " + e);
+                }
+
+            }
         }
         
         return c;

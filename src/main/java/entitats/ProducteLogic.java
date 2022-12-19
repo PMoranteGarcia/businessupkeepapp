@@ -50,19 +50,14 @@ public class ProducteLogic {
             dataOrder = new ComandaDAO();
 
             ordersList.addAll(dataOrder.getAll());
-            System.out.println("OrderListSize " + ordersList.size());
 
             for (int i = 0; i <= ordersList.size() - 1; i++) {
-                System.out.println("Dentro de oderlistSize");
-                System.out.println("OrderList GET i " + ordersList.get(i).getNumOrdre());
 
                 List<ProductesComanda> llistProductesInComanda = dataOrder.getProductes(ordersList.get(i).getNumOrdre());
 
                 // List<ProductesComanda> llistProductesInComanda = ordersList.get(i).getProductes();
                 for (ProductesComanda productesComanda : llistProductesInComanda) {
-                    System.out.println("ProductesComandaGetComanda " + productesComanda.getIdProducte());
                     if (productCode == productesComanda.getIdProducte()) {
-                        System.out.println("LO ESSSS");
                         return true;
                     }
                 }

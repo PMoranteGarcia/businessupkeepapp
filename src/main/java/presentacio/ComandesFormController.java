@@ -96,7 +96,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldHour;
     @FXML
     private TextField fieldMinutes;
-
+    
     private ComandaDAO DAOComanda;
     private ClientDAO DAOClient;
     private ProducteDAO DAOProducte;
@@ -317,6 +317,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     * @author Izan Jimenez - Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
@@ -396,7 +397,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
      *
      * (RF36) La quantitat d'un producte per defecte ha de ser
      * defaultQuantityOrdered
-     * @author Pablo Morante - Creació/Implementació (RF38) El marge de benefici
+     * @author Pablo Morante - Creació/Implementació 
+     * 
+     * (RF38) El marge de benefici
      * per defecte ha de ser defaultProductBenefit
      * @author Pablo Morante - Creació/Implementació
      */
@@ -632,5 +635,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         return "";
     }
+
 
 }

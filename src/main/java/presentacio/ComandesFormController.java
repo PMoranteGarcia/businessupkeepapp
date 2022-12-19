@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -26,8 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,7 +51,7 @@ import java.util.ArrayList;
  * @author Pablo Morante - Creació/Implementació
  * @author Victor García - Creació/Implementació
  */
-public class ComandesFormController extends PresentationLayer implements Initializable {
+public class ComandesFormController implements Initializable {
 
     int idComanda; // comanda clicada per l'usuari
 
@@ -538,7 +535,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             total = total + llistaObservableProductes.get(i).getTotal();
         }
-        System.out.println(total);
         return total;
     }
 
@@ -700,7 +696,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
         if (hour < validate.getMinShippingHours()) {
             return "El mínim d'hores entre fer la comanda i enviar-la és de " + validate.getMinShippingHours() + "h.";
         }
-
+        if (llistaObservableProductes.isEmpty()) {
+            return "La comanda ha de tenir mínim 1 producte.";
+        }
         return "";
     }
 

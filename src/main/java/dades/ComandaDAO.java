@@ -40,24 +40,23 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
         // Definir consulta SQL per llegir totes les dades de la taula 'clients'
         ResultSet resultats = null;
-        
+
         try {
             resultats = stmt.executeQuery("SELECT * FROM orders;");
 
             // Mostrar resultats disponibles a la taula via nom del camp
             while (resultats.next()) {
-                
+
                 Comanda o = new Comanda();
                 o.setNumOrdre(resultats.getInt("orderNumber"));
                 o.setDataOrdre(resultats.getTimestamp("orderDate"));
                 o.setDataEntrega(resultats.getTimestamp("requiredDate"));
                 o.setDataEnviament(resultats.getTimestamp("shippedDate"));
                 o.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
-                
 
                 List<ProductesComanda> productes = this.getProductes(resultats.getInt("orderNumber"));
                 float total = 0;
-                
+
                 for (int i = 0; i < productes.size(); i++) {
                     total = total + productes.get(i).getTotal();
                 }
@@ -65,13 +64,13 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
                 ret.add(o);
             }
         } catch (SQLException ex) {
-            
+
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         } finally {
             if (stmt != null) {
                 try {
@@ -100,7 +99,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     /**
      * Guarda una comanda
-     * 
+     *
      * @param c
      * @return Retorna una id autoincremental
      * @throws SQLException
@@ -148,7 +147,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     /**
      * Actualitza una comanda
-     * 
+     *
      * @param t
      * @throws SQLException
      * @author Pablo Morante - Creació/Implementació
@@ -178,8 +177,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     /**
-     * Elimina una comanda 
-     * 
+     * Elimina una comanda
+     *
      * @param t
      * @throws java.sql.SQLIntegrityConstraintViolationException
      * @throws SQLException
@@ -197,13 +196,12 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
         preparedStatement.setString(1, Integer.toString(t.getNumOrdre()));
         preparedStatement.executeUpdate();
-        System.out.println(">> Eliminada ordre: " + t.toString());
 
     }
 
     /**
      * Mostra una comanda de la taula 'orders'
-     * 
+     *
      * @param t
      * @author Víctor Garcia - Creació/Implementació
      * @author Pablo Morante - Creació/Implementació
@@ -214,9 +212,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         String consulta = "SELECT * FROM orders WHERE orderNumber = ?;";
         PreparedStatement preparedStatement = null;
         ResultSet resultats = null;
-        
+
         try {
-            
+
             preparedStatement = con.prepareStatement(consulta);
 
             preparedStatement.setInt(1, t.getNumOrdre());
@@ -230,11 +228,11 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
                 ret.setDataEntrega(resultats.getTimestamp("requiredDate"));
                 ret.setCustomers_customerEmail(resultats.getString("customers_customerEmail"));
             }
-            
+
         } catch (SQLException ex) {
-            
+
             Logger.getLogger(ComandaDAO.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -257,9 +255,10 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     /**
      * Retorna tots els productes d'una comanda
-     * 
+     *
      * @param id
-     * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
+     * @return Retorna una llista de ProductesComanda de la comanda amb el codi
+     * del parametre id
      * @throws SQLException
      * @author Pablo Morante - Creació Implementació
      * @author Izan Jimenez - Implementació
@@ -271,10 +270,10 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
         String consultaNom = "SELECT productName FROM products WHERE productCode = ?;";
         PreparedStatement sentencia = null;
         PreparedStatement sentencia2 = null;
-         ResultSet resultats = null;
+        ResultSet resultats = null;
 
         try {
-            
+
             sentencia = con.prepareStatement(consulta);
             sentencia2 = con.prepareStatement(consultaNom);
             sentencia.setInt(1, id);
@@ -301,13 +300,13 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             }
 
         } catch (SQLException ex) {
-            
+
             System.out.println("Error gestionant la connexió a MySQL !!!");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
-            
+
         } finally {
             if (sentencia != null) {
                 try {
@@ -325,14 +324,14 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
             }
         }
-        
+
         return ret;
 
     }
 
     /**
      * Afegeix un producte a la taula 'orderDetails' amb una id de comanda
-     * 
+     *
      * @param p
      * @param idComanda
      * @author Pablo Morante - Creació/Implementació
@@ -349,7 +348,6 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
             preparedStatement.setFloat(4, p.getUnitaryPrice());
             preparedStatement.setInt(5, p.getOrderNumber());
             preparedStatement.executeUpdate();
-            System.out.println(">> Producte insertat: " + p.toString());
         } catch (java.sql.SQLIntegrityConstraintViolationException ex) {
             updateProduct(p, idComanda);
         } catch (SQLException ex) {
@@ -369,7 +367,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     /**
      * Actualitza un producte a la taula 'orderDetails' amb una id de comanda
-     * 
+     *
      * @param p
      * @param idComanda
      * @author Pablo Morante - Creació/Implementació
@@ -401,7 +399,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
     /**
      * Elimina un producte a la taula 'orderDetails' amb una id de comanda
-     * 
+     *
      * @param p
      * @param idComanda
      * @author Pablo Morante - Creació/Implementació
@@ -432,8 +430,9 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     /**
-     * Elimina tots els productes a la taula 'orderDetails' amb una id de comanda
-     * 
+     * Elimina tots els productes a la taula 'orderDetails' amb una id de
+     * comanda
+     *
      * @param p
      * @param idComanda
      * @author Pablo Morante - Creació/Implementació

@@ -68,7 +68,7 @@ public class ProductesController implements Initializable {
 
     /**
      * A l'inicialitzar, omplim la taula i iniciem el buscador de productes
-     * 
+     *
      * @param url
      * @param rb
      * @author Izan Jimenez - Creació / Implementació
@@ -198,7 +198,6 @@ public class ProductesController implements Initializable {
 
             //valor nou
             String valorNou = (String) e.getNewValue();
-            System.out.println("Valor nou:" + valorNou);
 
             // ** ACCIÓ x DESAR (BOTÓ SAVE)
             //recuperem l'objecte Producte de la fila afectada
@@ -216,7 +215,6 @@ public class ProductesController implements Initializable {
 
             //valor nou
             int valorNou = (int) e.getNewValue();
-            System.out.println("Valor nou:" + valorNou);
 
             // ** ACCIÓ x DESAR (BOTÓ SAVE)
             //recuperem l'objecte Producte de la fila afectada
@@ -234,7 +232,6 @@ public class ProductesController implements Initializable {
 
             //valor nou
             float valorNou = (float) e.getNewValue();
-            System.out.println("Valor nou:" + valorNou);
 
             // ** ACCIÓ x DESAR (BOTÓ SAVE)
             //recuperem l'objecte Producte de la fila afectada
@@ -294,8 +291,7 @@ public class ProductesController implements Initializable {
                     } else {
                         // Recuperar dades originals de la BD per revertir els canvis realitzats
                         dataProducte.getOne(p);
-                        System.out.println("producte no modificat: "
-                                + dataProducte.getOne(p));
+
                         alert.close();
                     }
 

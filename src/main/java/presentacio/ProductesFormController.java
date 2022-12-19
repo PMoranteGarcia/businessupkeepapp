@@ -89,8 +89,6 @@ public class ProductesFormController implements Initializable {
 
         if (!errors.isEmpty()) {
 
-            System.out.println(">> Hi ha errors al formulari!");
-
             String errorLines = "";
             for (int i = 0; i < errors.size(); i++) // Llistar els errors provinents de les validacions             
             {
@@ -105,7 +103,6 @@ public class ProductesFormController implements Initializable {
 
         } else {
 
-            System.out.println(">> Producte validat");
             Producte c = new Producte(textFieldNom.getText(),
                     textAreaDescripcio.getText(),
                     Integer.parseInt(textFieldStock.getText()),
@@ -113,8 +110,7 @@ public class ProductesFormController implements Initializable {
 
             ProducteDAO dadesProducte = new ProducteDAO();                      // Si tot ok, crear nou producte amb les dades introduïdes al formulari
             dadesProducte.save(c);
-            System.out.println(">> Producte desat satisfactòriament!");
-
+       
             App.setRoot("productes");                                           // Redirigir a l'usuari al llistat de productes
         }
     }

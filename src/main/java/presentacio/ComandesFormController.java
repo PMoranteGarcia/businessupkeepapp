@@ -231,6 +231,31 @@ public class ComandesFormController extends PresentationLayer implements Initial
                     }
                 }
             });
+            // Aplicar format de 2 decimals + símbnol monetari
+            columnPriceEach.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                @Override
+                protected void updateItem(Number value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {                        
+                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                        setGraphic(null);
+                    }
+                }
+            });
+            columnAmount.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                @Override
+                protected void updateItem(Number value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {                        
+                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                        setGraphic(null);
+                    }
+                }
+            });
 
             Comparator<ProductesComanda> comparator = Comparator.comparingInt(ProductesComanda::getNumberLine);
             llistaObservableProductes.sort(comparator);
@@ -239,7 +264,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             orderLinesList.setItems(llistaObservableProductes);
 
         } catch (SQLException ex) {
-            Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("S'ha produit un error a l'agafar productes de la BD");
         }
     }
 
@@ -294,7 +319,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
             });
 
         } catch (SQLException ex) {
-            this.alertInfo(ex.toString());
+            System.out.println("S'ha produit un error a l'agafar els items de les DropDownLists de la BD");
         }
     }
 
@@ -336,8 +361,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 if (this.idComanda == 0) {
                     try {
                         createNewCommand();
-                    } catch (ParseException ex) {
-                        Logger.getLogger(ComandesFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        System.out.println("S'ha produit un error al crear una comanda a la BD.");
                     }
                 } else {
                     updateCommand();
@@ -475,16 +500,19 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
-    private void createNewCommand() throws SQLException, ParseException {
+    private void createNewCommand() throws SQLException {
         Timestamp today = new Timestamp(System.currentTimeMillis());
         LocalDate requiredDay = datePicker.getValue();
         LocalDateTime requiredDayTemp = requiredDay.atTime(Integer.parseInt(fieldHour.getText()), Integer.parseInt(fieldMinutes.getText()), 0);
 
         Timestamp requiredDayG = new java.sql.Timestamp((Timestamp.valueOf(requiredDayTemp).getTime()));
+        LocalDateTime dataEnviament = LocalDateTime.now();
+        dataEnviament = dataEnviament.plusHours(validate.getMinShippingHours());
 
         String cus = selectorClient.getValue().getCustomerEmail();
 
         Comanda c = new Comanda(new java.sql.Timestamp(today.getTime()), requiredDayG, cus);
+        c.setDataEnviament(new java.sql.Timestamp((Timestamp.valueOf(dataEnviament)).getTime()));
 
         DAOComanda = new ComandaDAO();
         this.idComanda = DAOComanda.saveCommand(c);

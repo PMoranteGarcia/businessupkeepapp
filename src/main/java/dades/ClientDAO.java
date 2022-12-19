@@ -206,7 +206,6 @@ public class ClientDAO extends DataLayer implements DAOInterface<Client> {
             
             preparedStatement.setString(1, c.getCustomerEmail());
             preparedStatement.executeUpdate();
-            System.out.println(">> Eliminat client: "+c.toString());
             
         } catch (SQLException ex) {
             

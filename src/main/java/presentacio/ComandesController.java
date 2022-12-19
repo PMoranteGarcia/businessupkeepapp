@@ -96,6 +96,8 @@ public class ComandesController implements Initializable {
      * @param url
      * @param rb
      * @author Txell Llanas - Creació/Implementació
+     * @author Pablo Morante - Implementació
+     * @author Víctor García - Implementació
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -237,7 +239,7 @@ public class ComandesController implements Initializable {
             ordersList.setItems(llistaObservableComanda);
 
         } catch (SQLException ex) {
-            Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("S'ha produit un error a la BD.");
         }
     }
 
@@ -275,7 +277,7 @@ public class ComandesController implements Initializable {
                     try {
                         goToOrderDetails(t);
                     } catch (IOException ex) {
-                        Logger.getLogger(ComandesController.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("S'ha produit un error d'interficie.");
                     }
                 });
 
@@ -311,7 +313,7 @@ public class ComandesController implements Initializable {
                                 alert.close();
                             }
                         } catch (SQLException ex) {
-
+                            System.out.println("S'ha produit un error de BD.");
                         }
                     } else {
                         alert.close();
@@ -390,7 +392,13 @@ public class ComandesController implements Initializable {
     private void goToAbout() throws IOException {
         App.setRoot("credits");
     }
-
+    
+    
+    /**
+     * Filtra les comandes entre dues dates
+     * 
+     * @author Víctor García - Creació/Implementació
+     */
     private void filteredTable() {
         ObservableList<Comanda> allItems = llistaObservableComanda;
         FilteredList<Comanda> filteredItems = new FilteredList<>(allItems);
@@ -412,6 +420,12 @@ public class ComandesController implements Initializable {
         ordersList.setItems(filteredItems);
     }
 
+    /**
+     * Neteja els filtres de cercar comanda entre dues dates
+     * 
+     * @author Víctor García - Creació/Implementació
+     * @param event 
+     */
     @FXML
     private void ClearHores(ActionEvent event) {
         datePickerFrom.setValue(null);

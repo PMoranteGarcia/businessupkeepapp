@@ -72,7 +72,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
     }
 
     public int saveCommand(Comanda c) throws SQLException {
-        String consulta = "INSERT INTO orders (orderDate, requiredDate, customers_customerEmail) VALUES (?,?,?);";
+        String consulta = "INSERT INTO orders (orderDate, requiredDate, shippedDate, customers_customerEmail) VALUES (?,?,?,?);";
         int newId = 0;
 
         PreparedStatement preparedStatement;
@@ -82,7 +82,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
             preparedStatement.setTimestamp(1, c.getDataOrdre());
             preparedStatement.setTimestamp(2, c.getDataEntrega());
-            preparedStatement.setString(3, c.getCustomers_customerEmail());
+            preparedStatement.setTimestamp(3, c.getDataEnviament());
+            preparedStatement.setString(4, c.getCustomers_customerEmail());
 
             preparedStatement.executeUpdate();
             ResultSet temp = preparedStatement.getGeneratedKeys();

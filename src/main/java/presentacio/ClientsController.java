@@ -408,6 +408,9 @@ public class ClientsController implements Initializable {
         private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");      // Regex per limitar introducció de dades numèriques amb decimals  
         String defaultCredit = Float.toString(validate.getDefaultCreditLimit()); // String amb el valor per defecte pel Crèdit per assignar aun client
         
+        /**
+         * Constructor que serveix per crear un objecte de tipus NumberCell.
+         */
         public NumberCell() {
 
             textField.setOnAction(event -> processEdit());
@@ -442,6 +445,12 @@ public class ClientsController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que afegeix a l'original el visualitzar la dada numèrica com a un decimal de 2 xifres.
+         * 
+         * @param value Number amb el valor a processar
+         * @param empty boolean per verificar si la cel·la conté informació o no
+         */
         @Override
         public void updateItem(Number value, boolean empty) {
             super.updateItem(value, empty);
@@ -458,6 +467,9 @@ public class ClientsController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que detecta si s'està editant la cel·la actual.
+         */
         @Override
         public void startEdit() {
             super.startEdit();
@@ -469,6 +481,9 @@ public class ClientsController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que cancel·la l'edició de la cel·la actual.
+         */
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -476,6 +491,10 @@ public class ClientsController implements Initializable {
             setGraphic(null);
         }
 
+        /**
+         * Mètode que desa els canvis aplicats a la cel·la actual
+         * @param value Number amb el valor a processar
+         */
         @Override
         public void commitEdit(Number value) {
             super.commitEdit(value);
@@ -497,13 +516,19 @@ public class ClientsController implements Initializable {
         private final SimpleDateFormat dateOutput = new SimpleDateFormat(datePattern);   // Especificar format per la data 
         int defaultMinAge = validate.getDefaultMinCustomerAge();                // Valor per defecte d'edat mínima d'un client
         
+        /**
+         * Constructor que serveix per crear un objecte de tipus DatePicker. 
+         */
         public DatePickerCell() {
             
             super();
             textField.setOnAction(event -> startEdit());
         }
         
-         @Override
+        /**
+         * Mètode que detecta si s'està editant la cel·la actual.
+         */
+        @Override
         public void startEdit() {
             super.startEdit();
             if (datePicker == null) {
@@ -522,6 +547,12 @@ public class ClientsController implements Initializable {
              });  
         }
         
+        /**
+         * Mètode que afegeix a l'original el visualitzar la dada numèrica com a un decimal de 2 xifres.
+         * 
+         * @param item Date amb el valor a processar
+         * @param empty boolean per verificar si la cel·la conté informació o no
+         */
         @Override
         public void updateItem(Date item, boolean empty) {
 
@@ -543,6 +574,9 @@ public class ClientsController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que cancel·la l'edició de la cel·la actual.
+         */
         @Override
         public void cancelEdit() {
             super.cancelEdit();

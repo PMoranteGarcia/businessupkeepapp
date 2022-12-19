@@ -55,6 +55,7 @@ public class ProductesFormController implements Initializable {
 
     /**
      * Initializes the controller class.
+     *
      * @param url
      * @param rb
      */
@@ -64,9 +65,9 @@ public class ProductesFormController implements Initializable {
         textFieldNom.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
         textAreaDescripcio.setPrefHeight(Screen.getPrimary().getBounds().getHeight());
         textAreaDescripcio.setPrefWidth(Screen.getPrimary().getBounds().getWidth());
-        
+
         // Inserir valor per defecte
-        textFieldStock.setText(defaultStock); 
+        textFieldStock.setText(defaultStock);
 
     }
 
@@ -89,7 +90,7 @@ public class ProductesFormController implements Initializable {
     @FXML
     private void saveProducte() throws IOException, SQLException {
         validacions();
-        
+
         if (!errors.isEmpty()) {
 
             System.out.println(">> Hi ha errors al formulari!");
@@ -163,8 +164,8 @@ public class ProductesFormController implements Initializable {
 
     /**
      * Mètode per validar el formulari d'alta d'un nou producte. Validacions: -
-     * Que no hi hagi camps buits - Que no existeixi el mateix producte a la BBDD - Que
-     * el preu sigui un numero positiu
+     * Que no hi hagi camps buits - Que no existeixi el mateix producte a la
+     * BBDD - Que el preu sigui un numero positiu
      *
      * @author Izan JImenez - Implementació
      */
@@ -219,7 +220,6 @@ public class ProductesFormController implements Initializable {
             textFieldPreu.getStyleClass().add("required");
             lblPreu.getStyleClass().add("required");
         } else {
-            System.out.println(textFieldPreu.getText());
             if (validate.checkPreu(textFieldPreu)) {
                 textFieldPreu.getStyleClass().add("filled");
                 lblPreu.getStyleClass().add("filled");

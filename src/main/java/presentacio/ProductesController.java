@@ -127,7 +127,6 @@ public class ProductesController implements Initializable {
 
         //afegim els elements
         llistaObservableProducte.addAll(dataProducte.getAll());
-        System.out.println(dataProducte.getAll());
 
         //Establim un vincle entre els atributs de l'objecte Producte i cada columna del tableview.
         columnProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));

@@ -161,16 +161,16 @@ public class ComandesFormController extends PresentationLayer implements Initial
         selectorProduct.setOnMouseClicked(event -> {
             btnaddProduct.setDisable(false);
         });
-        
+
         // Definir format:(dia/mes/any) a mostrar quan s'edita a dins els camps dels calendaris
         String datePattern = "dd/MM/yyyy";                                      // Format per aplicar a la Data
         datePicker.setPromptText("dd/mm/aaaa");                                 // Texte que es mostra al camp Data
-        
+
         datePicker.setConverter(new StringConverter<LocalDate>() {
-            
+
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
-            @Override 
+            @Override
             public String toString(LocalDate date) {
                 if (date != null) {
                     return dateFormatter.format(date);                          // Aplico format a la data
@@ -179,7 +179,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
                 }
             }
 
-            @Override 
+            @Override
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
@@ -313,6 +313,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * @author Txell Llanas - Creació
      * @author Pablo Morante - Implementació
      * @author Víctor García - Implementació
+     * @author Izan Jimenez - Implementació
      */
     @FXML
     private void saveOrder() throws IOException, SQLException {
@@ -425,9 +426,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
             }
             if (!producteRepetit) {
                 //si el numero de productes supera el maxLinesPerOrder
-                System.out.println(llistaObservableProductes.size());
-                System.out.println(validate.getmaxLinesPerOrder());
-                System.out.println(checkMaxLInesPerOrder(llistaObservableProductes.size()));
                 if (checkMaxLInesPerOrder(llistaObservableProductes.size())) {
                     //Mostrar alerta per informar que no es pot afegir mes productes
                     Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
@@ -464,7 +462,8 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * Comprova que la quantitat de productes a la comanda no superi el maxim
      *
      * @param quantitat
-     * @return true si no supera la quantitat, false si ja te el maxim de productes
+     * @return true si no supera la quantitat, false si ja te el maxim de
+     * productes
      * @author Izan Jimenez - Creació /Implementació
      */
     private boolean checkMaxLInesPerOrder(int quantitat) {

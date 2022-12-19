@@ -117,8 +117,7 @@ public class AppConfigDAO extends DataLayer implements DAOInterface<AppConfig> {
             statement.setMaxRows(1);
             ResultSet resultats = statement.executeQuery(consulta);
             
-            System.out.println(">> Carregar RS a objecte DAO");
-            // Mostrar resultats disponibles a la taula via nom del camp
+        // Mostrar resultats disponibles a la taula via nom del camp
            // while (resultats.next())
            // {
                 defaults.setDefaultCreditLimit(resultats.getFloat("defaultCreditLimit"));

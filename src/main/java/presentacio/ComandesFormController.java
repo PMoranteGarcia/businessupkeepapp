@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * @author Pablo Morante - Creació/Implementació
  * @author Victor García - Creació/Implementació
  */
-public class ComandesFormController extends PresentationLayer implements Initializable {
+public class ComandesFormController implements Initializable {
 
     int idComanda; // comanda clicada per l'usuari
 
@@ -327,6 +327,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
      * Mostra l'apartat 'Comandes' i un llistat que conté tots els registres de
      * la BD.
      *
+     * @param event ActionEvent
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Txell Llanas - Creació
      */
@@ -480,9 +481,9 @@ public class ComandesFormController extends PresentationLayer implements Initial
     /**
      * Mètode per obtenir el preu total de la comanda en curs
      *
+     * @return float amb el preu total de la comanda en curs
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
-     * @return Float amb el preu total de la comanda en curs
      */
     private float calculateTotalAmountCheckMaxOrderAmount() {
         float total = 0;

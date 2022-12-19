@@ -49,7 +49,12 @@ public class ComandaLogic {
         return total;
         
     }
-    
+    /***
+     * (RF42) Mètode per recuperar el valor per defecte de les hores mínimes que han de pasar
+     * per poder fer l'ordre de la comanda
+     * @return int amb les hores
+     * @author Pablo Morante - Creació/Implementació
+     */
     public int getMinShippingHours() {
         int hores = 0;
         try {
@@ -65,7 +70,12 @@ public class ComandaLogic {
         }
         return hores;
     }
-    
+    /***
+     * (RF36) Mètode per recuperar el valor per defecte de la quantitat que es posarà
+     * a l'afegir un producte a una comanda
+     * @return int quantitat del producte
+     * @author Pablo Morante - Creació/Implementació
+     */
     public int getDefaultQuantityOrdered() {
         int quantity = 0;
         try {
@@ -81,7 +91,11 @@ public class ComandaLogic {
         }
         return quantity;
     }
-    
+    /***
+     * (RF38) Mètode per recuperar el benefici extra de cada producte per defecte
+     * @return int percentatge extra
+     * @author Pablo Morante - Creació/Implementació
+     */
     public int getDefaultProductBenefit() {
         int DBenefit = 0;
         try {
@@ -98,7 +112,12 @@ public class ComandaLogic {
         return DBenefit;
     }
     
-    
+    /***
+     * (RF46) Mètode per recuperar el valor per defecte del màxim de productes que poden
+     * haver-hi en una comanda
+     * @return int número màxim de productes
+     * @author Izan Jimenez
+     */
     public int getmaxLinesPerOrder(){
         int max = 0;
         try {

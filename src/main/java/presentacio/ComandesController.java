@@ -353,7 +353,7 @@ public class ComandesController implements Initializable {
     /**
      * Estableix la comanda seleccionada
      *
-     * @param c
+     * @param c Comanda
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */
@@ -364,6 +364,7 @@ public class ComandesController implements Initializable {
     /**
      * Mètode per saber quina comanda ha estat seleccionada
      *
+     * @return Comanda
      * @author Pablo Morante - Creació/Implementació
      * @author Víctor García - Creació/Implementació
      */

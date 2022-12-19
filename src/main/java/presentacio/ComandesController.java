@@ -335,7 +335,7 @@ public class ComandesController implements Initializable {
                             dataComanda.delete(t);
                             llistaObservableComanda.remove(t);
                         } catch (java.sql.SQLIntegrityConstraintViolationException ex) {
-                            alert.setHeaderText("Una comanda amb productes no es pot eliminar. Vols eliminar tots els productes de la comanda i tornar a provar?");
+                            alert.setHeaderText("Una comanda amb productes no es pot eliminar. Vols eliminar tots els productes d'aquesta la comanda?");
                             if (alert.showAndWait().get() == yesButton) {
                                 dataComanda.deleteAllProductsFromComanda(t.getNumOrdre());
                                 try {

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -26,8 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -96,7 +93,7 @@ public class ComandesFormController implements Initializable {
     private TextField fieldHour;
     @FXML
     private TextField fieldMinutes;
-    
+
     private ComandaDAO DAOComanda;
     private ClientDAO DAOClient;
     private ProducteDAO DAOProducte;
@@ -238,8 +235,8 @@ public class ComandesFormController implements Initializable {
                     super.updateItem(value, empty);
                     if (empty) {
                         setText(null);
-                    } else {                        
-                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                    } else {
+                        setText(String.format("%.2f", Float.parseFloat(value.toString())) + " €");
                         setGraphic(null);
                     }
                 }
@@ -250,8 +247,8 @@ public class ComandesFormController implements Initializable {
                     super.updateItem(value, empty);
                     if (empty) {
                         setText(null);
-                    } else {                        
-                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                    } else {
+                        setText(String.format("%.2f", Float.parseFloat(value.toString())) + " €");
                         setGraphic(null);
                     }
                 }
@@ -423,10 +420,9 @@ public class ComandesFormController implements Initializable {
      *
      * (RF36) La quantitat d'un producte per defecte ha de ser
      * defaultQuantityOrdered
-     * @author Pablo Morante - Creació/Implementació 
-     * 
-     * (RF38) El marge de benefici
-     * per defecte ha de ser defaultProductBenefit
+     * @author Pablo Morante - Creació/Implementació
+     *
+     * (RF38) El marge de benefici per defecte ha de ser defaultProductBenefit
      * @author Pablo Morante - Creació/Implementació
      */
     @FXML
@@ -437,29 +433,78 @@ public class ComandesFormController implements Initializable {
             for (int i = 0; i < llistaObservableProductes.size(); i++) {
                 ProductesComanda llistTemp = llistaObservableProductes.get(i);
                 if (llistTemp.getIdProducte() == temp.getProductCode()) {
-                    llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
-                    llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
-                    llistaObservableProductes.set(i, llistTemp);
 
+                    float totalComanda = calculateTotalAmountCheckMaxOrderAmount();
+                    if (totalComanda + llistTemp.getUnitaryPrice() > validate.getMaxOrderAmount()) {
+
+                        //Mostrar alerta per informar que no es pot afegir mes productes
+                        Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                        alert.setTitle("ALERTA");
+                        alert.setHeaderText("L'import màxim de la comanda no pot superar els " + validate.getMaxOrderAmount() + "€");
+
+                        ButtonType yesButton = new ButtonType("Acceptar");
+
+                        alert.getButtonTypes().setAll(yesButton);
+                        if (alert.showAndWait().get() == yesButton) {
+                            alert.close();
+                        }
+                    } else {
+
+                        llistTemp.setQuantitat(llistTemp.getQuantitat() + 1);
+                        llistTemp.setTotal(llistTemp.getUnitaryPrice() * llistTemp.getQuantitat());
+                        llistaObservableProductes.set(i, llistTemp);
+                    }
                     producteRepetit = true;
+
                 }
             }
-            if (!producteRepetit) {
 
-                ProductesComanda newProduct = new ProductesComanda();
-                newProduct.setIdProducte(temp.getProductCode());
-                newProduct.setNumberLine(llistaObservableProductes.size() + 1);
-                newProduct.setOrderNummber(this.idComanda);
-                newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
-                newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * ((float) validate.getDefaultProductBenefit() / 100)));
-                newProduct.setNom(temp.getProductName());
-                newProduct.setTotal(newProduct.getQuantitat() * newProduct.getUnitaryPrice());
-                llistaObservableProductes.add(newProduct);
+            if (!producteRepetit) {
+                //si el numero de productes supera el maxLinesPerOrder
+                if (checkMaxLInesPerOrder(llistaObservableProductes.size())) {
+                    //Mostrar alerta per informar que no es pot afegir mes productes
+                    Alert alert = new Alert(Alert.AlertType.WARNING);                    // Mostrar alerta per confirmar si cancel·lar el procés d'alta
+                    alert.setTitle("ALERTA");
+                    alert.setHeaderText("La quantitat de productes no pot superar " + validate.getmaxLinesPerOrder() + " productes");
+
+                    ButtonType yesButton = new ButtonType("Acceptar");
+
+                    alert.getButtonTypes().setAll(yesButton);
+                    if (alert.showAndWait().get() == yesButton) {
+                        alert.close();
+                    }
+
+                } else {
+
+                    ProductesComanda newProduct = new ProductesComanda();
+                    newProduct.setIdProducte(temp.getProductCode());
+                    newProduct.setNumberLine(llistaObservableProductes.size() + 1);
+                    newProduct.setOrderNummber(this.idComanda);
+                    newProduct.setQuantitat(validate.getDefaultQuantityOrdered());
+                    newProduct.setUnitaryPrice(temp.getBuyPrice() + (temp.getBuyPrice() * ((float) validate.getDefaultProductBenefit() / 100)));
+                    newProduct.setNom(temp.getProductName());
+                    newProduct.setTotal(newProduct.getQuantitat() * newProduct.getUnitaryPrice());
+                    llistaObservableProductes.add(newProduct);
+                }
+
             }
             calculateTotalAmount();
         } catch (NullPointerException ex) {
             System.out.println("No s'ha seleccionat producte.");
         }
+    }
+
+    /**
+     * *
+     * Comprova que la quantitat de productes a la comanda no superi el maxim
+     *
+     * @param quantitat
+     * @return true si no supera la quantitat, false si ja te el maxim de
+     * productes
+     * @author Izan Jimenez - Creació /Implementació
+     */
+    private boolean checkMaxLInesPerOrder(int quantitat) {
+        return validate.getmaxLinesPerOrder() <= quantitat;
     }
 
     /**
@@ -491,7 +536,6 @@ public class ComandesFormController implements Initializable {
         for (int i = 0; i < llistaObservableProductes.size(); i++) {
             total = total + llistaObservableProductes.get(i).getTotal();
         }
-
         return total;
     }
 
@@ -629,7 +673,6 @@ public class ComandesFormController implements Initializable {
      * @author Pablo Morante - Creació/Implementació
      */
     public String validacions() {
-        float totalComanda = calculateTotalAmountCheckMaxOrderAmount();
 
         if (selectorClient.getValue() == null || fieldHour.getText().isEmpty() || fieldMinutes.getText().isEmpty() || datePicker.getValue() == null) {
             return "Per guardar una comanda s'han d'omplir tots els valors.";
@@ -643,9 +686,6 @@ public class ComandesFormController implements Initializable {
         if ((Integer.parseInt(fieldHour.getText()) > 23) || (Integer.parseInt(fieldHour.getText()) < 0) || (Integer.parseInt(fieldMinutes.getText()) > 59) || (Integer.parseInt(fieldMinutes.getText()) < 0)) {
             return "El format d'hora ha d'estar entre 0 i 23 i el de minuts entre 0 i 59 ";
         }
-        if (llistaObservableProductes.isEmpty() || llistaObservableProductes.size() > validate.getmaxLinesPerOrder()) {
-            return "Una comanda ha de tenir entre 1 i " + validate.getmaxLinesPerOrder() + " productes.";
-        }
 
         Timestamp today = Timestamp.from(Instant.now());
         LocalDate requiredDay = datePicker.getValue();
@@ -657,13 +697,10 @@ public class ComandesFormController implements Initializable {
         if (hour < validate.getMinShippingHours()) {
             return "El mínim d'hores entre fer la comanda i enviar-la és de " + validate.getMinShippingHours() + "h.";
         }
-
-        if (totalComanda > validate.getMaxOrderAmount()) {
-            return "L'import màxim de la comanda no pot superar els " + validate.getMaxOrderAmount() + "€";
+        if (llistaObservableProductes.isEmpty()) {
+            return "La comanda ha de tenir mínim 1 producte.";
         }
-
         return "";
     }
-
 
 }

@@ -30,6 +30,9 @@ public class ClientLogic {
     private final List<Comanda> ordersList = new ArrayList<>();                 // Llistat amb comandes (taula: orders)
     private final List<AppConfig> valuesList = new ArrayList<>();               // Llistat per desar valors per defecte (Regles de negoci, taula: appConfig)
     
+    /**
+     * Constructor que serveix per crear un objecte de tipus ClientLogic.
+     */
     public ClientLogic() {
     }
     

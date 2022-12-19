@@ -129,7 +129,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     @Override
     public void delete(Producte t) {
         PreparedStatement stat = null;
-        System.out.println("Eliminat producte producte: " + t.getProductCode());
+        System.out.println("Eliminat producte : " + t.getProductCode());
 
         try {
             stat = super.getCon().prepareStatement(DELETE);

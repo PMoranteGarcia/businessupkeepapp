@@ -1,7 +1,6 @@
 package presentacio;
 
-import dades.AppConfigDAO;
-import entitats.AppConfig;
+import entitats.AppConfigLogic;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,13 +8,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 /**
  * Classe que defineix l'objecte Aplicació. Permet configurar la finestra de
@@ -28,11 +20,9 @@ import javafx.scene.control.ButtonType;
 public class App extends Application {
 
     private static Scene scene;
-
-    private AppConfigDAO appConfigVal;
-
-    // Definir una llista observable d'objectes de tipus AppConfig
-    private ObservableList<AppConfig> llistaObservableAppConfig = FXCollections.observableArrayList();
+    
+    // Instància del ClientLogic per carregar els mètodes de validacions
+    private final AppConfigLogic validate = new AppConfigLogic();
 
     public static void main(String[] args) {
         App.starter(args);
@@ -42,7 +32,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws IOException, SQLException {
 
         //(RF30) Comprovem que existeix almenys un registre a la taula appConfig
-        appConfigValidation();
+        validate.appConfigValidation();
 
         try {
 
@@ -65,39 +55,6 @@ public class App extends Application {
             System.out.println("No s'ha pogut carregat la interfície d'usuari.");
             System.out.println(ex.toString());
         }
-    }
-
-    /**
-     * Mètode per comprovar que existeix almenys un registre a la taula
-     * appConfig abans de carregar la primera vista, si no hi ha res,
-     * directament no s'obre l'aplicació.(RF30).
-     *
-     * @author Víctor García - Creació/Implementació
-     */
-    public void appConfigValidation() throws SQLException {
-
-        appConfigVal = new AppConfigDAO();
-        try {
-            llistaObservableAppConfig.addAll(appConfigVal.getAll());
-            if (llistaObservableAppConfig.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
-                        alert.setTitle("ERROR");
-                        alert.setHeaderText("No hi ha cap regla de negoci a la base de dades. L'aplicació es tancarà.");
-
-                        ButtonType okButton = new ButtonType("D'acord");
-
-                        alert.getButtonTypes().setAll(okButton);
-                        if (alert.showAndWait().get() == okButton) {
-                            alert.close();
-                            Platform.exit();
-                            System.exit(0);
-                        }
-                
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
     /**

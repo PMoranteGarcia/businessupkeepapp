@@ -231,6 +231,31 @@ public class ComandesFormController extends PresentationLayer implements Initial
                     }
                 }
             });
+            // Aplicar format de 2 decimals + símbnol monetari
+            columnPriceEach.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                @Override
+                protected void updateItem(Number value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {                        
+                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                        setGraphic(null);
+                    }
+                }
+            });
+            columnAmount.setCellFactory(tc -> new TableCell<Comanda, Number>() {
+                @Override
+                protected void updateItem(Number value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {                        
+                        setText(String.format("%.2f",  Float.parseFloat(value.toString())) + " €");
+                        setGraphic(null);
+                    }
+                }
+            });
 
             Comparator<ProductesComanda> comparator = Comparator.comparingInt(ProductesComanda::getNumberLine);
             llistaObservableProductes.sort(comparator);

@@ -152,7 +152,7 @@ public class ProductesFormController implements Initializable {
         ButtonType yesButton = new ButtonType("Descartar");
         ButtonType cancelButton = new ButtonType("Seguir Editant");
 
-        alert.getButtonTypes().setAll(yesButton, cancelButton);
+        alert.getButtonTypes().setAll(cancelButton, yesButton);
 
         if (alert.showAndWait().get() == yesButton) {
             App.setRoot("productes");                                         // Redirigir a l'usuari al llistat de productes

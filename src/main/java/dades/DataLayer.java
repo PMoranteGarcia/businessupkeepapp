@@ -14,6 +14,11 @@ public abstract class DataLayer {
 
     Connection con;
 
+    /**
+     * *
+     * Contructor DataLayer
+     * @throws SQLException SQLException
+     */
     public DataLayer() throws SQLException {
         this.con = connectarBD("m03uf6_22_23", "user", "password");
     }

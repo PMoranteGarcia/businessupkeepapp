@@ -69,8 +69,8 @@ public class ProductesController implements Initializable {
     /**
      * A l'inicialitzar, omplim la taula i iniciem el buscador de productes
      *
-     * @param url
-     * @param rb
+     * @param url url
+     * @param rb rb
      * @author Izan Jimenez - Creació / Implementació
      */
     @Override
@@ -352,6 +352,9 @@ public class ProductesController implements Initializable {
         private final TextField textField = new TextField();
         private final Pattern pattern = Pattern.compile("[0-9]+");
 
+        /**
+         * Constructor que serveix per crear un objecte de tipus NumberCell.
+         */
         public NumberCellInt() {
             textField.setOnAction(event -> processEdit());
         }
@@ -389,6 +392,13 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que afegeix a l'original el visualitzar la dada numèrica com a
+         * un decimal de 2 xifres.
+         *
+         * @param value Number amb el valor a processar
+         * @param empty boolean per verificar si la cel·la conté informació o no
+         */
         @Override
         public void updateItem(Number value, boolean empty) {
             super.updateItem(value, empty);
@@ -405,6 +415,9 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que detecta si s'està editant la cel·la actual.
+         */
         @Override
         public void startEdit() {
             super.startEdit();
@@ -416,6 +429,9 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que cancel·la l'edició de la cel·la actual.
+         */
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -423,6 +439,11 @@ public class ProductesController implements Initializable {
             setGraphic(null);
         }
 
+        /**
+         * Mètode que desa els canvis aplicats a la cel·la actual
+         *
+         * @param value Number amb el valor a processar
+         */
         @Override
         public void commitEdit(Number value) {
             super.commitEdit(value);
@@ -443,6 +464,9 @@ public class ProductesController implements Initializable {
         private final TextField textField = new TextField();
         private final Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");
 
+        /**
+         * Constructor que serveix per crear un objecte de tipus NumberCell.
+         */
         public NumberCellFloat() {
             textField.setOnAction(event -> processEdit());
         }
@@ -480,6 +504,13 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que afegeix a l'original el visualitzar la dada numèrica com a
+         * un decimal de 2 xifres.
+         *
+         * @param value Number amb el valor a processar
+         * @param empty boolean per verificar si la cel·la conté informació o no
+         */
         @Override
         public void updateItem(Number value, boolean empty) {
             super.updateItem(value, empty);
@@ -496,6 +527,9 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que detecta si s'està editant la cel·la actual.
+         */
         @Override
         public void startEdit() {
             super.startEdit();
@@ -507,6 +541,9 @@ public class ProductesController implements Initializable {
             }
         }
 
+        /**
+         * Mètode que cancel·la l'edició de la cel·la actual.
+         */
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -514,6 +551,11 @@ public class ProductesController implements Initializable {
             setGraphic(null);
         }
 
+        /**
+         * Mètode que desa els canvis aplicats a la cel·la actual
+         *
+         * @param value Number amb el valor a processar
+         */
         @Override
         public void commitEdit(Number value) {
             super.commitEdit(value);

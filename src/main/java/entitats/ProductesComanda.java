@@ -33,7 +33,7 @@ public class ProductesComanda {
      * @param idProducte idProducte
      * @param nom nom
      * @param quantitat quantitat
-     * @param unitaryPrice
+     * @param unitaryPrice unitaryPrice
      * @param total total
      * @param numberLine numberLine
      */

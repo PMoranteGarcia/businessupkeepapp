@@ -18,6 +18,15 @@ public abstract class DataLayer {
         this.con = connectarBD("m03uf6_22_23","root","izan1234");
     }
     
+    /**
+     *Metode per crear la conexió amb la BBDD
+     * 
+     * @param db url de la BBDD
+     * @param user usuari de la BBDD
+     * @param password password de la BBDD
+     * @return retorna la conexió
+     * @throws SQLException
+     */
     public Connection connectarBD (String db, String user, String password) throws SQLException {
         Connection ret = null;
         ret = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?useUnicode=true&"

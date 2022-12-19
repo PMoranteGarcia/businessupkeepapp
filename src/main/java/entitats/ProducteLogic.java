@@ -70,7 +70,7 @@ public class ProducteLogic {
     }
 
     /**
-     * Mètode per retornar la quantitat minima d'stock (RF32).
+     * Mètode per retornar la quantitat mínima d'stock (RF32).
      *
      * @author Izan Jimenez - Implementació
      * @return Retorna el minim d'stock configurat a la BBDD
@@ -91,10 +91,10 @@ public class ProducteLogic {
 
     /**
      * *
-     * Métode per comprovar si el parametre introduit es major al minim Stock
+     * Mètode per comprovar si el paràmetre introduït és major al mínim Stock
      *
-     * @param f Camp de texte del formulari
-     * @return boolean (True/False) si el valor es valid
+     * @param f Camp de text del formulari
+     * @return boolean (True/False) si el valor és vàlid
      * @author Izan Jimenez - Implementació
      */
     public boolean checkStock(TextField f) {
@@ -113,7 +113,7 @@ public class ProducteLogic {
     }
 
     /**
-     * Mètode per verificar que el prodcute no existeixi ja a la BD (nom).
+     * Mètode per verificar que el producte no existeixi ja a la BD (nom).
      *
      * @param f Camp de texte del formulari
      * @return boolean (True/False) si es troben coincidències o no amb la BD

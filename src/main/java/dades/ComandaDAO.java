@@ -1,8 +1,6 @@
 package dades;
 
-import entitats.Client;
 import entitats.Comanda;
-import entitats.Producte;
 import entitats.ProductesComanda;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -163,6 +160,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
      * @param id
      * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
      * @throws SQLException
+     * @author Pablo Morante - Creació Implementació
      * @author Izan Jimenez - Implementació
      */
     public List<ProductesComanda> getProductes(int id) throws SQLException {

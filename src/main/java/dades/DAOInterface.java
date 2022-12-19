@@ -20,8 +20,7 @@ public interface DAOInterface<T> {
     
     /***
      * Desa un nou element a la taula si aquest no existeix ja
-     * @param t
-     * @return 
+     * @param t 
      * @throws java.sql.SQLException 
      */
     public void save(T t) throws SQLException;

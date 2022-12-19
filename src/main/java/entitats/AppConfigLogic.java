@@ -31,9 +31,9 @@ public class AppConfigLogic {
      * @author Víctor García - Creació/Implementació
      */
     public void appConfigValidation() throws SQLException {
-
-        appConfigVal = new AppConfigDAO();
+        
         try {
+            appConfigVal = new AppConfigDAO();
             llistaObservableAppConfig.addAll(appConfigVal.getAll());
             if (llistaObservableAppConfig.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
@@ -51,7 +51,19 @@ public class AppConfigLogic {
                 
             }
         } catch (Exception ex) {
-            Logger.getLogger(AppConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
+                        alert.setTitle("ERROR");
+                        alert.setHeaderText("No hi ha cap BBDD connectada. L'aplicació es tancarà.");
+
+                        ButtonType okButton = new ButtonType("D'acord");
+
+                        alert.getButtonTypes().setAll(okButton);
+                        if (alert.showAndWait().get() == okButton) {
+                            alert.close();
+                            Platform.exit();
+                            System.exit(0);
+                        }
         }
 
     }

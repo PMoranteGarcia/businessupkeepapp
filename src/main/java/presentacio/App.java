@@ -20,7 +20,7 @@ import java.sql.SQLException;
 public class App extends Application {
 
     private static Scene scene;
-    
+
     // Instància del ClientLogic per carregar els mètodes de validacions
     private final AppConfigLogic validate = new AppConfigLogic();
 
@@ -33,7 +33,6 @@ public class App extends Application {
 
         //(RF30) Comprovem que existeix almenys un registre a la taula appConfig
         validate.appConfigValidation();
-
         try {
 
             // Carregar vista principal "COMANDES (Llistat)"
@@ -55,6 +54,7 @@ public class App extends Application {
             System.out.println("No s'ha pogut carregat la interfície d'usuari.");
             System.out.println(ex.toString());
         }
+
     }
 
     /**

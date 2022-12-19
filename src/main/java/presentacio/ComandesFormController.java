@@ -95,7 +95,7 @@ public class ComandesFormController extends PresentationLayer implements Initial
     private TextField fieldHour;
     @FXML
     private TextField fieldMinutes;
-
+    
     private ComandaDAO DAOComanda;
     private ClientDAO DAOClient;
     private ProducteDAO DAOProducte;
@@ -659,5 +659,6 @@ public class ComandesFormController extends PresentationLayer implements Initial
 
         return "";
     }
+
 
 }

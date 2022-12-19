@@ -55,7 +55,7 @@
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-            <VBox prefWidth="120.0">
+            <VBox>
                <children>
                   <Label text="Hora d'entrega" />
                   <HBox alignment="CENTER_LEFT">
@@ -90,7 +90,7 @@
                </children>
             </VBox>
             <Separator opacity="0.0" orientation="VERTICAL" prefWidth="15.0" />
-            <Button id="searchBtn" fx:id="btnaddProduct" mnemonicParsing="false" onAction="#addProduct" text="Afegir" disable="true" />
+            <Button id="searchBtn" fx:id="btnaddProduct" disable="true" mnemonicParsing="false" onAction="#addProduct" text="Afegir" />
          </children>
          <padding>
             <Insets left="20.0" right="20.0" />

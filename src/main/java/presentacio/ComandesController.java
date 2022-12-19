@@ -2,7 +2,6 @@ package presentacio;
 
 import dades.ComandaDAO;
 import dades.ProducteDAO;
-import entitats.Client;
 import entitats.Comanda;
 import entitats.ComandaLogic;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
@@ -29,7 +27,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -75,19 +72,21 @@ public class ComandesController implements Initializable {
     private TableColumn columnOrderAmount;
     @FXML
     private TableColumn<Comanda, Comanda> columnActions;
+    @FXML
+    private Button ClearButton;
 
-    private Tooltip tooltipEliminar = new Tooltip("Eliminar Comanda");
+    private final Tooltip tooltipEliminar = new Tooltip("Eliminar Comanda");
 
-    private Tooltip tooltipDetail = new Tooltip("Veure Comanda");
+    private final Tooltip tooltipDetail = new Tooltip("Veure Comanda");
 
     // Definir una llista observable d'objectes de tipus Client
-    private ObservableList<Comanda> llistaObservableComanda = FXCollections.observableArrayList();
+    private final ObservableList<Comanda> llistaObservableComanda = FXCollections.observableArrayList();
 
     // Instància de ComandaDAO per carregar els registres de la taula 'orders'
     private ComandaDAO dataComanda;
 
     // Instància de ComandaLogic per carregar els mètodes de validacions
-    private ComandaLogic validate = new ComandaLogic();
+    private final ComandaLogic validate = new ComandaLogic();
 
     public static Comanda comandaActual;
 
@@ -114,17 +113,17 @@ public class ComandesController implements Initializable {
         btnProducts.setText(text3.toUpperCase());
         btnAbout.setText(text4.toUpperCase());
         btnNewOrder.setText(text5.toUpperCase());
-        
+
         // Definir format:(dia/mes/any) a mostrar quan s'edita a dins els camps dels calendaris
         String datePattern = "dd/MM/yyyy";                                      // Format per aplicar a la Data
         datePickerFrom.setPromptText("Data inicial");                           // Texte que es mostra al camp Data
         datePickerTo.setPromptText("Data final");                               // Texte que es mostra al camp Data 
-        
+
         datePickerFrom.setConverter(new StringConverter<LocalDate>() {
-            
+
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
-            @Override 
+            @Override
             public String toString(LocalDate date) {
                 if (date != null) {
                     return dateFormatter.format(date);                          // Aplico format a la data
@@ -133,7 +132,7 @@ public class ComandesController implements Initializable {
                 }
             }
 
-            @Override 
+            @Override
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
@@ -143,10 +142,10 @@ public class ComandesController implements Initializable {
             }
         });
         datePickerTo.setConverter(new StringConverter<LocalDate>() {
-            
+
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
-            @Override 
+            @Override
             public String toString(LocalDate date) {
                 if (date != null) {
                     return dateFormatter.format(date);                          // Aplico format a la data
@@ -155,7 +154,7 @@ public class ComandesController implements Initializable {
                 }
             }
 
-            @Override 
+            @Override
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     return LocalDate.parse(string, dateFormatter);              // Aplico format a la data
@@ -163,7 +162,7 @@ public class ComandesController implements Initializable {
                     return null;
                 }
             }
-        });    
+        });
 
         //si no existeixen productes, no es pot crear una comanda
         try {
@@ -329,7 +328,6 @@ public class ComandesController implements Initializable {
      * @throws IOException Excepció a mostrar en cas que no es trobi el Layout
      * @author Víctor García - Creació
      */
-    @FXML
     private void goToOrderDetails(Comanda t) throws IOException {
         setComandaActual(t);
 
@@ -393,16 +391,6 @@ public class ComandesController implements Initializable {
         App.setRoot("credits");
     }
 
-    /**
-     * Mètode per cercar comandes que es trobin entre l'interval de dates
-     * especificat.
-     *
-     * @author Txell Llanas - Creació
-     */
-    @FXML
-    private void searchOrderBetweenDates() {
-    }
-
     private void filteredTable() {
         ObservableList<Comanda> allItems = llistaObservableComanda;
         FilteredList<Comanda> filteredItems = new FilteredList<>(allItems);
@@ -422,5 +410,11 @@ public class ComandesController implements Initializable {
                 datePickerTo.valueProperty()));
 
         ordersList.setItems(filteredItems);
+    }
+
+    @FXML
+    private void ClearHores(ActionEvent event) {
+        datePickerFrom.setValue(null);
+        datePickerTo.setValue(null);
     }
 }

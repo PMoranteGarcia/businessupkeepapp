@@ -29,6 +29,11 @@ public class ProducteLogic {
     private final List<Comanda> ordersList = new ArrayList<>();
     private final List<AppConfig> valuesList = new ArrayList<>();
 
+    /**
+     * *
+     * Constructor ProducteLogic
+     *
+     */
     public ProducteLogic() {
     }
 

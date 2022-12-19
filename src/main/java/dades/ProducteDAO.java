@@ -27,7 +27,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
      * *
      * Al crear un ProducteDAO crea una connexió amb la BBDD
      *
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException java.sql.SQLException
      */
     public ProducteDAO() throws SQLException {
         super();

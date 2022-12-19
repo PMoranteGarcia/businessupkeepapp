@@ -17,53 +17,54 @@ import javafx.scene.control.ButtonType;
  * @author Victor García - Creació/Implementació
  */
 public class AppConfigLogic {
-    
+
     private AppConfigDAO appConfigVal;
 
     // Definir una llista observable d'objectes de tipus AppConfig
     private ObservableList<AppConfig> llistaObservableAppConfig = FXCollections.observableArrayList();
-    
+
     /**
      * Mètode per comprovar que existeix almenys un registre a la taula
      * appConfig abans de carregar la primera vista, si no hi ha res,
      * directament no s'obre l'aplicació.(RF30).
      *
      * @author Víctor García - Creació/Implementació
+     * @throws SQLException SQLException
      */
     public void appConfigValidation() throws SQLException {
-        
+
         try {
             appConfigVal = new AppConfigDAO();
             llistaObservableAppConfig.addAll(appConfigVal.getAll());
             if (llistaObservableAppConfig.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
-                        alert.setTitle("ERROR");
-                        alert.setHeaderText("No hi ha cap regla de negoci a la base de dades. L'aplicació es tancarà.");
+                alert.setTitle("ERROR");
+                alert.setHeaderText("No hi ha cap regla de negoci a la base de dades. L'aplicació es tancarà.");
 
-                        ButtonType okButton = new ButtonType("D'acord");
+                ButtonType okButton = new ButtonType("D'acord");
 
-                        alert.getButtonTypes().setAll(okButton);
-                        if (alert.showAndWait().get() == okButton) {
-                            alert.close();
-                            Platform.exit();
-                            System.exit(0);
-                        }
-                
+                alert.getButtonTypes().setAll(okButton);
+                if (alert.showAndWait().get() == okButton) {
+                    alert.close();
+                    Platform.exit();
+                    System.exit(0);
+                }
+
             }
         } catch (Exception ex) {
             System.out.println(ex);
             Alert alert = new Alert(Alert.AlertType.ERROR);                 // Mostrar alerta per avisar que l'aplicació es tancarà
-                        alert.setTitle("ERROR");
-                        alert.setHeaderText("No hi ha cap BBDD connectada. L'aplicació es tancarà.");
+            alert.setTitle("ERROR");
+            alert.setHeaderText("No hi ha cap BBDD connectada. L'aplicació es tancarà.");
 
-                        ButtonType okButton = new ButtonType("D'acord");
+            ButtonType okButton = new ButtonType("D'acord");
 
-                        alert.getButtonTypes().setAll(okButton);
-                        if (alert.showAndWait().get() == okButton) {
-                            alert.close();
-                            Platform.exit();
-                            System.exit(0);
-                        }
+            alert.getButtonTypes().setAll(okButton);
+            if (alert.showAndWait().get() == okButton) {
+                alert.close();
+                Platform.exit();
+                System.exit(0);
+            }
         }
 
     }

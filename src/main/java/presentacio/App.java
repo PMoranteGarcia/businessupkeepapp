@@ -24,6 +24,11 @@ public class App extends Application {
     // Instància del ClientLogic per carregar els mètodes de validacions
     private final AppConfigLogic validate = new AppConfigLogic();
 
+    /**
+     * *
+     * MAIN
+     * @param args arguments
+     */
     public static void main(String[] args) {
         App.starter(args);
     }
@@ -86,7 +91,7 @@ public class App extends Application {
     /**
      * Executa l'aplicació.
      *
-     * @param args
+     * @param args args
      * @author Txell Llanas - Creació/Implementació
      */
     public static void starter(String[] args) {

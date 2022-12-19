@@ -3,7 +3,6 @@ package dades;
 import entitats.Producte;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
 
     /**
      * *
-     * Al crear un ProducteDAO crea una conexió amb la BBDD
+     * Al crear un ProducteDAO crea una connexió amb la BBDD
      *
      * @throws java.sql.SQLException
      */
@@ -48,7 +47,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         ResultSet rs = null;
 
         try {
-            //es carrega el statement amb la conexió i la comanda
+            //es carrega el statement amb la connexió i la comanda
             stat = super.getCon().prepareStatement(INSERT);
             //inserim els camps del producte al statement
             stat.setString(1, p.getProductName());
@@ -56,14 +55,14 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             stat.setInt(3, p.getQuantityInStock());
             stat.setFloat(4, p.getBuyPrice());
 
-            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a la BBDD
             if (stat.executeUpdate() == 0) {
                 throw new SQLException();
             }
         } catch (SQLException e) {
             System.out.println("ERROR AL GUARDAR PRODUCTE: " + e);
         } finally {
-            //tanquem el statement
+            //tanquem l'statement
             if (stat != null) {
                 try {
                     stat.close();
@@ -92,7 +91,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         System.out.println("Modificant producte");
         PreparedStatement stat = null;
         try {
-            //es carrega el statement amb la conexió i la comanda
+            //es carrega l'statement amb la connexió i la comanda
             stat = super.getCon().prepareStatement(UPDATE);
             //inserim els camps del producte al statement
             stat.setString(1, t.getProductName());
@@ -101,7 +100,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             stat.setFloat(4, t.getBuyPrice());
             stat.setInt(5, t.getProductCode());
 
-            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap filaa la BBDD
             if (stat.executeUpdate() == 0) {
                 throw new SQLException();
             }
@@ -135,7 +134,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             stat = super.getCon().prepareStatement(DELETE);
             //posem el codi del producte a eliminar en la consulta
             stat.setInt(1, t.getProductCode());
-            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a a BBDD
+            //si executeUpdate torna 0, no s'ha afegit/modificat cap fila a la BBDD
             if (stat.executeUpdate() == 0) {
                 throw new SQLException();
             }
@@ -157,7 +156,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
      *
      * @param t Instància de tipus Producte a recuperar
      * @return Instància de tipus Producte amb totes les dades recuperades de la
-     * BD
+     * BBDD
      * @author Izan Jimenez - Implementació
      */
     @Override
@@ -171,7 +170,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             stat = super.getCon().prepareStatement(GETONE);
             stat.setInt(1, t.getProductCode());
             rs = stat.executeQuery();
-            //si rep algun parametre el transformem a Porducte
+            //si rep algun paràmetre el transformem a Producte
             if (rs.next()) {
                 p = convertir(rs);
             } else {
@@ -204,7 +203,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     /**
      * Recupera tots els productes de la taula 'productes' (RF64)
      *
-     * @return List de tipus Producte amb tots els registres de la BD
+     * @return List de Producte de tipus Producte amb tots els registres de la BBDD
      * @author Izan Jimenez - Implementació
      */
     @Override
@@ -217,7 +216,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             //fem la consulta a la BBDD
             stat = super.getCon().prepareStatement(GETALL);
             rs = stat.executeQuery();
-            //mentres retorni un resultat, el guardem a la llista que retornarem
+            //mentre retorni un resultat, el guardem a la llista que retornarem
             while (rs.next()) {
                 p.add(convertir(rs));
             }
@@ -245,10 +244,10 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     }
 
     /**
-     * *Transforma un Resulset no null a un instancia Producte
+     * *Transforma un Resulset no null a un instància Producte
      *
      * @param rs
-     * @return Retorna una instancia Producte del ResulSet
+     * @return Retorna una instància Producte del ResulSet
      * @throws SQLException
      * @author Izan JImenez - Implementació
      */
@@ -258,7 +257,7 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
         String descProducte = rs.getString("productDescription");
         int stock = rs.getInt("quantityInStock");
         float preu = rs.getFloat("buyPrice");
-//      retornem una instanci aproducte
+//      retornem una instància producte
         Producte p = new Producte(nomProducte, descProducte, stock, preu);
         p.setProductCode(rs.getInt("productCode"));
 

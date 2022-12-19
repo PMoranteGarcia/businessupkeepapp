@@ -108,7 +108,7 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
      * @author Pablo Morante - Creació/Implementació
      */
     public int saveCommand(Comanda c) throws SQLException {
-        String consulta = "INSERT INTO orders (orderDate, requiredDate, customers_customerEmail) VALUES (?,?,?);";
+        String consulta = "INSERT INTO orders (orderDate, requiredDate, shippedDate, customers_customerEmail) VALUES (?,?,?,?);";
         int newId = 0;
 
         PreparedStatement preparedStatement = null;
@@ -118,7 +118,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
 
             preparedStatement.setTimestamp(1, c.getDataOrdre());
             preparedStatement.setTimestamp(2, c.getDataEntrega());
-            preparedStatement.setString(3, c.getCustomers_customerEmail());
+            preparedStatement.setTimestamp(3, c.getDataEnviament());
+            preparedStatement.setString(4, c.getCustomers_customerEmail());
 
             preparedStatement.executeUpdate();
             ResultSet temp = preparedStatement.getGeneratedKeys();
@@ -260,7 +261,8 @@ public class ComandaDAO extends DataLayer implements DAOInterface<Comanda> {
      * @param id
      * @return Retorna una llista de ProductesComanda de la comanda amb el codi del parametre id
      * @throws SQLException
-     * @author Izan Jimenez - Creació/Implementació
+     * @author Pablo Morante - Creació Implementació
+     * @author Izan Jimenez - Implementació
      */
     public List<ProductesComanda> getProductes(int id) {
         List<ProductesComanda> ret = new ArrayList<>();

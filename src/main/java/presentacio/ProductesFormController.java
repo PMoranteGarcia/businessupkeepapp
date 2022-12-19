@@ -4,7 +4,6 @@
  */
 package presentacio;
 
-import entitats.ProducteLogic;
 import javafx.scene.control.TextArea;
 import javafx.stage.Screen;
 
@@ -13,7 +12,6 @@ import entitats.Producte;
 import entitats.ProducteLogic;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,11 +34,9 @@ public class ProductesFormController implements Initializable {
 
     @FXML
     private Button btnBack, btnDesarProducte, btnCancelProducte;
-    @FXML
-    private Label orderNumber;
 
     @FXML
-    private Label lblPreu, lblStock, lblNom, lblDescripcio;
+    private Label lblPreu, lblStock, lblNom, lblDescripcio, orderNumber;
 
     @FXML
     private TextField textFieldNom, textFieldPreu, textFieldStock;
@@ -83,7 +79,7 @@ public class ProductesFormController implements Initializable {
 
     /**
      * *Guarda a la BBDD el producte a la taula productes amb les dades
-     * introduides
+     * introduïdes
      *
      * @throws IOException
      */
@@ -124,7 +120,7 @@ public class ProductesFormController implements Initializable {
     }
 
     /**
-     * *Cancela la creacio del nou producte i torna a la vista de productes
+     * *Cancel·la la creació del nou producte i torna a la vista de productes
      *
      * @throws IOException
      * @author Izan Jimenez - Implementació
@@ -165,7 +161,7 @@ public class ProductesFormController implements Initializable {
     /**
      * Mètode per validar el formulari d'alta d'un nou producte. Validacions: -
      * Que no hi hagi camps buits - Que no existeixi el mateix producte a la
-     * BBDD - Que el preu sigui un numero positiu
+     * BBDD - Que el preu sigui un número positiu
      *
      * @author Izan JImenez - Implementació
      */
@@ -193,7 +189,8 @@ public class ProductesFormController implements Initializable {
         textFieldPreu.applyCss();
         lblPreu.applyCss();
 
-        // VALIDACIONS: Que no hi hagi camps buits - Que no existeixi el mateix producte a la BBDD - Que el preu sigui un numero positiu
+        // VALIDACIONS: Que no hi hagi camps buits - Que no existeixi el mateix 
+        //producte a la BBDD - Que el preu sigui un  número positiu.
         if (textFieldNom.getText().isEmpty() || textFieldNom.getText().isBlank()) {
             errors.add("El camp 'Nom' és obligatori.");
             textFieldNom.getStyleClass().add("required");

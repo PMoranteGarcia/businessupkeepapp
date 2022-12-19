@@ -63,12 +63,12 @@ public class ProductesController implements Initializable {
     // Instància del ProducteLogic per carregar els mètodes de validacions
     private final ProducteLogic validate = new ProducteLogic();
 
-    //INstancia de la llista que carrega el TableView
+    //Instància de la llista que carrega el TableView
     private final ObservableList<Producte> llistaObservableProducte = FXCollections.observableArrayList();
 
     /**
-     * Al inicialitzar, omplim la taula i iniciem el buscador de productes
-     *
+     * A l'inicialitzar, omplim la taula i iniciem el buscador de productes
+     * 
      * @param url
      * @param rb
      * @author Izan Jimenez - Creació / Implementació
@@ -164,7 +164,7 @@ public class ProductesController implements Initializable {
                 }
             }
         });
-        //fem les celes editables
+        //Fem les cel·les editables
         makeColsEditable();
 
         //omplim la taula
@@ -196,9 +196,6 @@ public class ProductesController implements Initializable {
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
             TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
 
-            //valor antic abans de la modificació
-            String valorAntic = (String) e.getOldValue();
-
             //valor nou
             String valorNou = (String) e.getNewValue();
             System.out.println("Valor nou:" + valorNou);
@@ -217,9 +214,6 @@ public class ProductesController implements Initializable {
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
             TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
 
-            //valor antic abans de la modificació
-            int valorAntic = (int) e.getOldValue();
-
             //valor nou
             int valorNou = (int) e.getNewValue();
             System.out.println("Valor nou:" + valorNou);
@@ -237,9 +231,6 @@ public class ProductesController implements Initializable {
 
             //recuperem l'objecte CellEditEvent que ens dona informació de l'esdeveniment
             TableColumn.CellEditEvent e = (TableColumn.CellEditEvent) event;
-
-            //valor antic abans de la modificació
-            float valorAntic = (float) e.getOldValue();
 
             //valor nou
             float valorNou = (float) e.getNewValue();
@@ -354,7 +345,7 @@ public class ProductesController implements Initializable {
 
     /**
      * *
-     * Classe que extén de TableCell i permet a la cel·la actual contenir dades
+     * Classe que estén de TableCell i permet a la cel·la actual contenir dades
      * numèriques no decimals. Conté una validació per evitar entrades
      * incorrectes de l'usuari.
      *
@@ -445,7 +436,7 @@ public class ProductesController implements Initializable {
 
     /**
      * *
-     * Classe que extén de TableCell i permet a la cel·la actual contenir dades
+     * Classe que estén de TableCell i permet a la cel·la actual contenir dades
      * numèriques. Conté una validació per evitar entrades incorrectes de
      * l'usuari.
      *
@@ -535,7 +526,7 @@ public class ProductesController implements Initializable {
     }
 
     /**
-     * Mètode que filtra els registres segons el texte introduït al cercador.
+     * Mètode que filtra els registres segons el text introduït al cercador.
      *
      * @author Izan Jimenez - Creació/Implementació
      */
@@ -547,7 +538,7 @@ public class ProductesController implements Initializable {
 
             filteredData.setPredicate(producte -> {
 
-                // Si no s'escriu res al cercador, o no hi ha coincidències amb el texte introduït, mostra tots els registres
+                // Si no s'escriu res al cercador, o no hi ha coincidències amb el text introduït, mostra tots els registres
                 if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
                     return true;
                 }
@@ -561,7 +552,7 @@ public class ProductesController implements Initializable {
                     return true;
                 } else if (producte.getProductDescription().toLowerCase().contains(searchKeyword)) {
                     return true;
-                } else if (Integer.toString(producte.getQuantityInStock()).toString().contains(searchKeyword)) {
+                } else if (Integer.toString(producte.getQuantityInStock()).contains(searchKeyword)) {
                     return true;
                 } else if (Float.toString(producte.getBuyPrice()).toLowerCase().contains(searchKeyword)) {
                     return true;

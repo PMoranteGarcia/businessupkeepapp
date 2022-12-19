@@ -42,7 +42,6 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     @Override
     public void save(Producte p) {
         //es prepara el Statement
-        System.out.println("Guardant producte");
         PreparedStatement stat = null;
         ResultSet rs = null;
 
@@ -88,7 +87,6 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
      */
     @Override
     public void update(Producte t) {
-        System.out.println("Modificant producte");
         PreparedStatement stat = null;
         try {
             //es carrega l'statement amb la connexió i la comanda
@@ -128,7 +126,6 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     @Override
     public void delete(Producte t) {
         PreparedStatement stat = null;
-        System.out.println("Eliminat producte : " + t.getProductCode());
 
         try {
             stat = super.getCon().prepareStatement(DELETE);
@@ -174,7 +171,6 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
             if (rs.next()) {
                 p = convertir(rs);
             } else {
-                System.out.println("No s'ha trobat aquest registre");
                 throw new SQLException();
             }
         } catch (SQLException e) {
@@ -203,7 +199,8 @@ public class ProducteDAO extends DataLayer implements DAOInterface<Producte> {
     /**
      * Recupera tots els productes de la taula 'productes' (RF64)
      *
-     * @return List de Producte de tipus Producte amb tots els registres de la BBDD
+     * @return List de Producte de tipus Producte amb tots els registres de la
+     * BBDD
      * @author Izan Jimenez - Implementació
      */
     @Override
